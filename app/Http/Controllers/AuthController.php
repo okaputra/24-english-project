@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Session;
 use App\Helper\Validator\userValidator;
 use App\Models\tb_users as User;
+use App\Models\tb_admin as Admin;
 use RealRashid\SweetAlert\Facades\Alert;
 
 class AuthController extends Controller
@@ -69,9 +70,51 @@ class AuthController extends Controller
         }
     }
 
-    // === General
+    // === user
     public function logout(){
         Session::flush();
         return redirect("/");
+    }
+
+
+
+    // ======================== ADMIN ============================
+
+    // === Admin
+    private function setSessionAdmin($admin){
+        $sessionData = [
+            "login-admin"=>true,
+            "role"=>1,
+            "id"=>$admin->id,
+            "username"=>$admin->username,
+        ];
+        Session::put($sessionData);
+    }
+
+    public function LoginAdmin(){
+        return view('admin.login');
+    }
+
+    public function PostLoginAdmin(Request $req){
+        $post=(object)$req->validate([
+            "username"=>"required",
+            "password"=>"required"
+        ]);
+        $result = Admin::loginAdminProcess($post->username,$post->password);
+        // dd($result);
+        if($result->success){
+            if($result->login){
+                $this->setSessionAdmin($result->data);
+                return redirect('/admin-dashboard')->with('success',"Login success");
+            }
+            else{
+                return redirect('/admin-login')->with('error',"Email or Password Incorrect");
+            }
+        }return redirect('/admin-login')->with('error',"Email not registered, Please Register First!");
+    }
+
+    public function LogoutAdmin(){
+        Session::flush();
+        return redirect("/admin-login");
     }
 }
