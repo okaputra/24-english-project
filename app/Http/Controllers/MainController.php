@@ -1,13 +1,17 @@
 <?php
 
 namespace App\Http\Controllers;
+use App\Models\tb_courses as Course;
 
 use Illuminate\Http\Request;
 
 class MainController extends Controller
 {
     public function index(){
-        return view('main.main');
+        $courses = Course::orderBy('created_at', 'asc')->get();
+        return view('main.main',[
+            'courses'=>$courses
+        ]);
     }
     public function about(){
         return view('main.about');

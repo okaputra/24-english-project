@@ -48,6 +48,9 @@ Route::middleware(['checkLogin'])->group(function(){
 // MIDDLEWARE CHECKING ADMIN
 Route::middleware(['checkLoginAdmin'])->group(function(){
     Route::get('/admin-dashboard','App\Http\Controllers\AdminController@index');
+    Route::get('/admin-input-course','App\Http\Controllers\AdminController@inputCourse');
+    Route::post('/admin-input-course','App\Http\Controllers\AdminController@postCourse');
+    Route::get('/admin-get-all-course','App\Http\Controllers\AdminController@indexCourse');
 });
 
 

@@ -157,68 +157,29 @@
             <h1 class="display-6 mb-4">Our Courses Upskill Your English</h1>
         </div>
         <div class="row g-4 justify-content-center">
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                <div class="courses-item d-flex flex-column bg-light overflow-hidden h-100">
-                    <div class="text-center p-4 pt-0">
-                        <div class="d-inline-block bg-primary text-white fs-5 py-1 px-4 mb-4">$99</div>
-                        <h5 class="mb-3">General English</h5>
-                        <p>Tempor erat elitr rebum at clita dolor diam ipsum sit diam amet diam et eos</p>
-                        <ol class="breadcrumb justify-content-center mb-0">
-                            <li class="breadcrumb-item small">Basic English</li>
-                            <li class="breadcrumb-item small">Intermediate English</li>
-                            <li class="breadcrumb-item small">Advance English</li>
-                        </ol>
-                    </div>
-                    <div class="position-relative mt-auto">
-                        <img class="img-fluid" src="{{asset('main/img/courses-1.jpg')}}" alt="">
-                        <div class="courses-overlay">
-                            <a class="btn btn-outline-primary border-2" href="">Read More</a>
+            @foreach ($courses as $c)
+            <?php $components = explode('|', $c['components']); ?>
+                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+                    <div class="courses-item d-flex flex-column bg-light overflow-hidden h-100">
+                        <div class="text-center p-4 pt-0">
+                            <div class="d-inline-block bg-primary text-white fs-5 py-1 px-4 mb-4">Rp {{number_format($c['pricing'])}}</div>
+                            <h5 class="mb-3">{{$c['course_name']}}</h5>
+                            <p>{{Str::limit($c['description'], 120, '...')}}</p>
+                            <ol class="breadcrumb justify-content-center mb-0">
+                                @foreach ($components as $com)
+                                    <li class="breadcrumb-item small">{{$com}}</li>
+                                @endforeach
+                            </ol>
+                        </div>
+                        <div class="position-relative mt-auto">
+                            <img class="img-fluid" src="{{asset('/images/course-thumbnail/'. $c['thumbnail'] .'/'.$c['thumbnail'])}}" alt="">
+                            <div class="courses-overlay">
+                                <a class="btn btn-outline-primary border-2" href="/user-detail-course/{{$c['id']}}">Read More</a>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                <div class="courses-item d-flex flex-column bg-light overflow-hidden h-100">
-                    <div class="text-center p-4 pt-0">
-                        <div class="d-inline-block bg-primary text-white fs-5 py-1 px-4 mb-4">$99</div>
-                        <h5 class="mb-3">TOEFL</h5>
-                        <p>Tempor erat elitr rebum at clita dolor diam ipsum sit diam amet diam et eos</p>
-                        <ol class="breadcrumb justify-content-center mb-0">
-                            <li class="breadcrumb-item small">Reading</li>
-                            <li class="breadcrumb-item small">Writing</li>
-                            <li class="breadcrumb-item small">Listening</li>
-                            <li class="breadcrumb-item small">Speaking</li>
-                        </ol>
-                    </div>
-                    <div class="position-relative mt-auto">
-                        <img class="img-fluid" src="{{asset('main/img/courses-2.jpg')}}" alt="">
-                        <div class="courses-overlay">
-                            <a class="btn btn-outline-primary border-2" href="">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                <div class="courses-item d-flex flex-column bg-light overflow-hidden h-100">
-                    <div class="text-center p-4 pt-0">
-                        <div class="d-inline-block bg-primary text-white fs-5 py-1 px-4 mb-4">$99</div>
-                        <h5 class="mb-3">IELTS</h5>
-                        <p>Tempor erat elitr rebum at clita dolor diam ipsum sit diam amet diam et eos</p>
-                        <ol class="breadcrumb justify-content-center mb-0">
-                            <li class="breadcrumb-item small">Reading</li>
-                            <li class="breadcrumb-item small">Writing</li>
-                            <li class="breadcrumb-item small">Listening</li>
-                            <li class="breadcrumb-item small">Speaking</li>
-                        </ol>
-                    </div>
-                    <div class="position-relative mt-auto">
-                        <img class="img-fluid" src="{{asset('main/img/courses-3.jpg')}}" alt="">
-                        <div class="courses-overlay">
-                            <a class="btn btn-outline-primary border-2" href="">Read More</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endforeach
         </div>
     </div>
 </div>
