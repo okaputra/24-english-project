@@ -7,28 +7,18 @@
             <div class="col-xl-10 col-xxl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Form Input Course</h4>
+                        <h4 class="card-title">Form Input Sub Course</h4>
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
-                            <form action="/admin-input-course" method="POST" enctype="multipart/form-data">
+                            <form action="/admin-input-sub-course/{{$id_course}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Course Name</label>
+                                    <label class="col-sm-2 col-form-label">Current Sub Course</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="course_name" value="{{old('course_name')}}">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Description</label>
-                                    <div class="col-sm-10">
-                                        <textarea class="form-control" rows="6" name="description">{{old('description')}}</textarea>
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Price</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="pricing" value="{{old('pricing')}}">
+                                        @foreach ($datasub as $ds)
+                                            <input type="text" style="margin-bottom: 10px" class="form-control" name="pricing" value="{{$ds['sub_course']}}" readonly>
+                                        @endforeach
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -39,14 +29,8 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Thumbnail</label>
                                     <div class="col-sm-10">
-                                        <input class="form-control" name="thumbnail" accept="image/png, image/gif, image/jpeg" type="file" id="formFile">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <div class="col-sm-10">
-                                        <button type="submit" class="btn btn-primary">Add Course</button>
+                                        <button type="submit" class="btn btn-primary">Add Sub Course</button>
                                     </div>
                                 </div>
                             </form>

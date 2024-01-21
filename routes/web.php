@@ -34,9 +34,8 @@ Route::get('/logout-admin','App\Http\Controllers\AuthController@LogoutAdmin');
 
 // USER ==============
 Route::get('/','App\Http\Controllers\MainController@index');
-
 Route::get('/our-courses','App\Http\Controllers\MainController@courses');
-Route::get('/detail-courses','App\Http\Controllers\MainController@detailCourses');
+Route::get('/detail-course/{id}','App\Http\Controllers\MainController@detailCourses');
 
 
 // MIDDLEWARE CHECKING USER
@@ -51,6 +50,15 @@ Route::middleware(['checkLoginAdmin'])->group(function(){
     Route::get('/admin-input-course','App\Http\Controllers\AdminController@inputCourse');
     Route::post('/admin-input-course','App\Http\Controllers\AdminController@postCourse');
     Route::get('/admin-get-all-course','App\Http\Controllers\AdminController@indexCourse');
+    Route::get('/admin-detail-course/{id}','App\Http\Controllers\AdminController@detailCourse');
+    Route::get('/admin-delete-subcourse/{id}','App\Http\Controllers\AdminController@deleteSubCourse');
+    Route::get('/admin-delete-course/{id}','App\Http\Controllers\AdminController@deleteCourse');
+    Route::get('/admin-edit-course/{id}','App\Http\Controllers\AdminController@UpdateCourse');
+    Route::post('/admin-update-course/{id}','App\Http\Controllers\AdminController@PostUpdateCourse');
+    Route::get('/admin-edit-subcourse/{id}','App\Http\Controllers\AdminController@UpdateSubCourse');
+    Route::post('/admin-update-subcourse/{id}','App\Http\Controllers\AdminController@PostUpdateSubCourse');
+    Route::get('/admin-input-sub-course/{id}','App\Http\Controllers\AdminController@AddNewSubCourse');
+    Route::post('/admin-input-sub-course/{id}','App\Http\Controllers\AdminController@PostNewSubCourse');
 });
 
 

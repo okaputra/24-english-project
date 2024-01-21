@@ -4,7 +4,7 @@
 <!-- Page Header Start -->
 <div class="container-fluid page-header py-6 my-6 mt-0 wow">
     <div class="container text-center">
-        <h1 class="display-4 text-white animated slideInDown mb-4">Courses</h1>
+        <h1 class="display-4 text-white animated slideInDown mb-4">Course</h1>
         <nav aria-label="breadcrumb animated slideInDown">
             <ol class="breadcrumb justify-content-center mb-0">
                 <li class="breadcrumb-item"><a class="text-white" href="#">Home</a></li>
@@ -21,21 +21,19 @@
     <div class="container">
         <div class="row g-5">
             <div class="col-lg-6 wow">
-                <div class="position-relative overflow-hidden pe-5 pt-5 h-100" style="min-height: 400px;">
-                    {{-- <img class="position-absolute w-100 h-100" src="img/about-1.jpg" alt="" style="object-fit: cover;">
-                    <img class="position-absolute top-0 end-0 bg-white ps-3 pb-3" src="img/about-2.jpg" alt="" style="width: 200px; height: 200px"> --}}
-                    <video width="700" height="500" style="margin-top: -90px" poster="{{asset('main/img/courses-3.jpg')}}" controls>
+                <div class="position-relative">
+                    <img class="img-fluid" src="{{asset('/images/course-thumbnail/'. $detailCourse['thumbnail'] .'/'.$detailCourse['thumbnail'])}}" alt="">
+                    {{-- <video width="700" height="500" style="margin-top: -90px" poster="{{asset('main/img/courses-3.jpg')}}" controls>
                         <source src="{{asset('main/video/vid.mp4')}}" type="video/mp4">
                         <source src="{{asset('main/video/vid.ogg')}}" type="video/ogg">
                       Your browser does not support the video tag.
-                      </video>
+                      </video> --}}
                 </div>
             </div>
 
             <div class="col-lg-6 wow">
-                <h1 class="display-6 mb-4">General English</h1>
-                <p class="mb-5"><b>Disini kasih wording beberapa kalimat tentang pelajaran ini ya</b>, Lorem ipsum dolor sit amet, consectetur adipisicing elit. Delectus obcaecati velit praesentium officia atque suscipit, fugit fugiat exercitationem dignissimos nisi!</p>
-
+                <h1 class="display-6 mb-4">{{$detailCourse['course_name']}}</h1>
+                <p class="mb-5">{{$detailCourse['description']}}</p>
                 <h5 class="display-6 mb-2" style="font-size: x-large">What I will learn?</h5>
                 <div class="row gy-3 gx-4">
                     <div class="col-sm-6 wow">
@@ -108,7 +106,7 @@
                     <div class="accordion-body">
                         <div class="card">
                             <div class="card-body">
-                              <h5 class="card-title">Rp 100.000</h5>
+                              <h5 class="card-title">Rp {{number_format($detailCourse['pricing'])}}</h5>
                               <p class="card-text">Level</p> 
                               <p class="card-text">Enrolled</p>
                               <p class="card-text">Last Update</p>

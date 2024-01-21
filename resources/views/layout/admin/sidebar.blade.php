@@ -11,7 +11,7 @@
             <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-app-store"></i><span class="nav-text">My Course</span></a>
                 <ul aria-expanded="false">
                     <li><a href="/admin-get-all-course">List Course</a></li>
-                    <li><a href="/admin-assign-feature">Assign Feature</a></li>
+                    <li><a href="/admin-assign-feature">Assign Features</a></li>
                 </ul>
             </li>
             <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-chart-bar-33"></i><span class="nav-text">Assign Quiz</span></a>

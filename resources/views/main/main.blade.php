@@ -174,7 +174,7 @@
                         <div class="position-relative mt-auto">
                             <img class="img-fluid" src="{{asset('/images/course-thumbnail/'. $c['thumbnail'] .'/'.$c['thumbnail'])}}" alt="">
                             <div class="courses-overlay">
-                                <a class="btn btn-outline-primary border-2" href="/user-detail-course/{{$c['id']}}">Read More</a>
+                                <a class="btn btn-outline-primary border-2" href="/detail-course/{{$c['id']}}">Read More</a>
                             </div>
                         </div>
                     </div>
