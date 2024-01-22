@@ -58,6 +58,7 @@ Route::middleware(['checkLoginAdmin'])->group(function(){
     Route::get('/admin-edit-subcourse/{id}','App\Http\Controllers\AdminController@UpdateSubCourse');
     Route::post('/admin-update-subcourse/{id}','App\Http\Controllers\AdminController@PostUpdateSubCourse');
     Route::get('/admin-input-sub-course/{id}','App\Http\Controllers\AdminController@AddNewSubCourse');
+    Route::get('/admin-input-subcourse-content/{id}','App\Http\Controllers\AdminContentController@AddNewSubCourseContent');
     Route::post('/admin-input-sub-course/{id}','App\Http\Controllers\AdminController@PostNewSubCourse');
 });
 
