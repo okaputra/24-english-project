@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tb_courses as Course;
+use App\Models\tb_quiz as Quiz;
 
 class tb_sub_courses extends Model
 {
@@ -30,5 +31,18 @@ class tb_sub_courses extends Model
     public function course()
     {
         return $this->belongsTo(Course::class, 'id_course');
+    }
+
+    public function Quiz(){
+        return $this->hasMany(Quiz::class, 'id_sub_course');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($quiz) {
+            $quiz->Quiz()->delete();
+        });
     }
 }

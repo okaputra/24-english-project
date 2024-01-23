@@ -60,6 +60,10 @@ Route::middleware(['checkLoginAdmin'])->group(function(){
     Route::get('/admin-input-sub-course/{id}','App\Http\Controllers\AdminController@AddNewSubCourse');
     Route::get('/admin-input-subcourse-content/{id}','App\Http\Controllers\AdminContentController@AddNewSubCourseContent');
     Route::post('/admin-input-sub-course/{id}','App\Http\Controllers\AdminController@PostNewSubCourse');
+
+    // soal
+    Route::get('/admin-create-soal','App\Http\Controllers\AdminContentController@CreateSoal');
+    Route::post('/admin-create-soal','App\Http\Controllers\AdminContentController@PostCreateSoal');
 });
 
 

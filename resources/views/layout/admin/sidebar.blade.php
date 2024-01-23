@@ -11,17 +11,12 @@
             <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-app-store"></i><span class="nav-text">My Course</span></a>
                 <ul aria-expanded="false">
                     <li><a href="/admin-get-all-course">List Course</a></li>
-                    <li><a href="/admin-assign-feature">Assign Features</a></li>
                 </ul>
             </li>
-            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-chart-bar-33"></i><span class="nav-text">Assign Quiz</span></a>
+            <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-chart-bar-33"></i><span class="nav-text">Bank Soal</span></a>
                 <ul aria-expanded="false">
-                    <li><a href="./chart-flot.html">Flot</a></li>
-                    <li><a href="./chart-morris.html">Morris</a></li>
-                    <li><a href="./chart-chartjs.html">Chartjs</a></li>
-                    <li><a href="./chart-chartist.html">Chartist</a></li>
-                    <li><a href="./chart-sparkline.html">Sparkline</a></li>
-                    <li><a href="./chart-peity.html">Peity</a></li>
+                    <li><a href="/admin-create-soal">Tambah Soal</a></li>
+                    <li><a href="/admin-create-paket">Buat Paket</a></li>
                 </ul>
             </li>
             {{-- <li class="nav-label">Components</li>
