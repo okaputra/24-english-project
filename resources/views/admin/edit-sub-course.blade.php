@@ -11,7 +11,7 @@
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
-                            <form action="/admin-update-subcourse/{{$detail['id']}}" method="POST" enctype="multipart/form-data">
+                            <form action="/admin-update-subcourse/{{$detail['id']}}/{{$id_course}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Sub Course Name</label>

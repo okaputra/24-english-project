@@ -51,7 +51,7 @@
                                             <td>
                                                 <span style="color: black">
                                                     <a href="/admin-input-subcourse-content/{{$sc['id']}}" class="mr-4" data-toggle="tooltip" data-placement="top" title="Input"><i class="fa fa-file color-muted"></i> </a>
-                                                    <a href="/admin-edit-subcourse/{{$sc['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
+                                                    <a href="/admin-edit-subcourse/{{$sc['id']}}/{{$detail['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
                                                     <a href="/admin-delete-subcourse/{{$sc['id']}}" type="button" class="mr-4 delSub"><i class="fa fa-close color-danger"></i></a>
                                                 </span>
                                             </td>

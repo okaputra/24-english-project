@@ -14,6 +14,9 @@
     <link href="{{asset('admin/css/style.css')}}" rel="stylesheet">
     <link href="{{asset('admin/vendor/jquery-steps/css/jquery.steps.css')}}" rel="stylesheet">
 
+    <!-- Datatable -->
+    <link href="{{asset('admin/vendor/datatables/css/jquery.dataTables.min.css')}}" rel="stylesheet">
+
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.17.2/dist/sweetalert2.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/sweetalert2@9.17.2/dist/sweetalert2.min.css">
@@ -116,6 +119,9 @@
     <script src="{{asset('admin/vendor/jqvmap/js/jquery.vmap.usa.js')}}"></script>
     <script src="{{asset('admin/vendor/jquery.counterup/jquery.counterup.min.js')}}"></script>
 
+    <!-- Datatable -->
+    <script src="{{asset('admin/vendor/datatables/js/jquery.dataTables.min.js')}}"></script>
+    <script src="{{asset('admin/js/plugins-init/datatables.init.js')}}"></script>
 
     <script src="{{asset('admin//js/dashboard/dashboard-1.js')}}"></script>
 

@@ -10,15 +10,26 @@ use App\Models\tb_paket_terpilih as Paket_Terpilih;
 class tb_soal extends Model
 {
     use HasFactory;
-    protected $table='tb_soal';
+    protected $table = 'tb_soal';
 
     protected $guarded = ['id'];
 
-    public function opsi(){
+    public function opsi()
+    {
         return $this->hasMany(Opsi::class, 'id_soal');
     }
 
-    public function paketTerpilih(){
+    public function paketTerpilih()
+    {
         return $this->belongsTo(Paket_Terpilih::class, 'id_soal');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::deleting(function ($opsi) {
+            $opsi->opsi()->delete();
+        });
     }
 }

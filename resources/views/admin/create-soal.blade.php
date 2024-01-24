@@ -48,6 +48,55 @@
                 </div>
             </div>
         </div>
+
+        {{-- Datatable --}}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Daftar Soal</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example" class="display" style="min-width: 845px">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Pertanyaan</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $no=1;
+                                    @endphp
+                                    @foreach ($dataSoal as $ds)
+                                    <tr>
+                                        <td style="color: black">{{$no++}}</td>
+                                        <td style="color: black">{{$ds['pertanyaan']}}</td>
+                                        <td>
+                                            <span style="color: black">
+                                                <a href="/admin-update-soal/{{$ds['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
+                                                <a href="/admin-delete-soal/{{$ds['id']}}" type="button" class="mr-4 delSub"><i class="fa fa-close color-danger"></i></a>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                                {{-- <tfoot>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Position</th>
+                                    </tr>
+                                </tfoot> --}}
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- End --}}
+
     </div>
 </div>
 
@@ -77,5 +126,36 @@
         });
     });
 </script>
+
+<script>
+    $(document).ready(function() {
+        $('.delSub').on('click',function(e){
+        e.preventDefault();
+        const delButton = $(this).attr('href');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This Question will be Deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#09bf25',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete!',
+            width: '600px',
+            height: '20px'
+            }).then((result) => {
+            if (result.value) {
+                document.location.href = delButton;
+            }else{
+                Swal.fire({
+                title: 'Canceled!',
+                icon: 'error',
+                timer: 1300,
+                showConfirmButton: false, 
+            })
+            }
+        })
+        });
+    });
+  </script>
 
 @endsection
