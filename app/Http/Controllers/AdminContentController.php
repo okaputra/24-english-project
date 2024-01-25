@@ -65,14 +65,53 @@ class AdminContentController extends Controller
     {
         $soal = Soal::find($id);
         $opsi = $soal->opsi()->get()->toArray();
+        $jawabanBenar = array_filter($opsi, function ($opsi) {
+            return $opsi['is_jawaban_benar'] == 1;
+        });
         return view('admin.update-soal', [
             'soal' => $soal,
-            'opsi' => $opsi
+            'opsi' => $opsi,
+            'jawaban_benar' => $jawabanBenar,
         ]);
     }
 
-    public function PostUpdateSoal($id)
+    public function PostUpdateSoal(Request $req, $id)
     {
+        $req->validate([
+            "pertanyaan" => 'required',
+            "opsi.*" => 'required',
+            'jawaban_benar' => 'required|array|size:1', // Hanya boleh satu jawaban benar
+            'jawaban_benar.*' => 'integer',
+        ]);
+        
+        $soal = Soal::find($id);
+        $soal->update([
+            'pertanyaan' => $req->pertanyaan,
+        ]);
+        
+        // Hapus opsi lama sebelum menambahkan yang baru
+        $soal->opsi()->delete();
+        
+        // Simpan opsi baru
+        foreach ($req->input('opsi') as $key => $io) {
+            $isJawabanBenar = $req->has('jawaban_benar') && in_array($key, $req->input('jawaban_benar'));
+        
+            $soal->opsi()->create([
+                'opsi' => $io,
+                'is_jawaban_benar' => $isJawabanBenar,
+            ]);
+        }
 
+        return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
+    }
+
+    public function DeleteOpsi($id)
+    {
+        $opsi = Opsi::find($id);
+        if (!$opsi) {
+            return redirect()->back()->with('error', "Opsi not found!");
+        }
+        $opsi->delete();
+        return redirect()->back()->with('success', "Opsi deleted successfully!");
     }
 }
