@@ -15,8 +15,8 @@
             </li>
             <li><a class="has-arrow" href="javascript:void()" aria-expanded="false"><i class="icon icon-chart-bar-33"></i><span class="nav-text">Bank Soal</span></a>
                 <ul aria-expanded="false">
-                    <li><a href="/admin-create-soal">Tambah Soal</a></li>
-                    <li><a href="/admin-create-paket">Buat Paket</a></li>
+                    <li><a href="/admin-create-soal">Soal</a></li>
+                    <li><a href="/admin-create-paket">Paket</a></li>
                 </ul>
             </li>
             {{-- <li class="nav-label">Components</li>
