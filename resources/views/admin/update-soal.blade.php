@@ -25,12 +25,12 @@
                                     <div class="col-sm-10" id="disini">
                                         <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+ Tambah Opsi</button>
                                         <div id="opsi-container">
-                                        @foreach ($opsi as $o)
+                                        @foreach ($opsi as $key => $o)
                                             <div class="input-group" style="margin-bottom: 10px;">
                                                 <input type="text" class="form-control opsi-input" name="opsi[]" value="{{$o['opsi']}}">
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text">
-                                                        <input type="radio" name="jawaban_benar[]" value="{{$o['is_jawaban_benar']}}">
+                                                        <input type="radio" name="jawaban_benar[]" value="{{ $key }}" {{ $o['is_jawaban_benar'] ? 'checked' : '' }}>
                                                     </div>
                                                 </div>
                                                 <a href="/admin-delete-opsi/{{$o['id']}}" type="button" class="btn btn-danger remove-opsi" style="margin-left:10px">X</a>

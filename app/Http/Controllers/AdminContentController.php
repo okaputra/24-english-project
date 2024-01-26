@@ -84,19 +84,19 @@ class AdminContentController extends Controller
             "opsi.*" => 'required',
             'jawaban_benar' => 'required|array|size:1', // Hanya boleh satu jawaban benar
             'jawaban_benar.*' => 'integer',
-        ]);
-
+        ]);        
+        
         $soal = Soal::find($id);
         $soal->update([
             'pertanyaan' => $req->pertanyaan,
         ]);
-
+        
         // Hapus opsi lama sebelum menambahkan yang baru
         $soal->opsi()->delete();
-
+        
         // Simpan opsi baru
         foreach ($req->input('opsi') as $key => $io) {
-            $isJawabanBenar = $req->has('jawaban_benar') && in_array($key, $req->input('jawaban_benar'));
+            $isJawabanBenar = $req->input('jawaban_benar')[0] == $key;
 
             $soal->opsi()->create([
                 'opsi' => $io,
@@ -104,6 +104,7 @@ class AdminContentController extends Controller
             ]);
         }
 
+        
         return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
     }
 
