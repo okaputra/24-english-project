@@ -68,6 +68,16 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     Route::get('/admin-update-soal/{id}', 'App\Http\Controllers\AdminContentController@UpdateSoal');
     Route::post('/admin-update-soal/{id}', 'App\Http\Controllers\AdminContentController@PostUpdateSoal');
     Route::post('/admin-create-soal', 'App\Http\Controllers\AdminContentController@PostCreateSoal');
+
+    // Paket
+    Route::get('/admin-create-paket', 'App\Http\Controllers\AdminContentController@CreatePaket');
+    Route::get('/admin-assign-paket/{id}', 'App\Http\Controllers\AdminContentController@AssignPaket');
+    Route::post('/admin-assign-paket/{id}', 'App\Http\Controllers\AdminContentController@PostAssignPaket');
+    Route::get('/admin-delete-paket/{id}', 'App\Http\Controllers\AdminContentController@DeletePaket');
+    Route::get('/admin-update-paket/{id}', 'App\Http\Controllers\AdminContentController@UpdatePaket');
+    Route::post('/admin-update-paket/{id}', 'App\Http\Controllers\AdminContentController@PostUpdatePaket');
+    Route::post('/admin-create-paket', 'App\Http\Controllers\AdminContentController@PostCreatePaket');
+
 });
 
 
