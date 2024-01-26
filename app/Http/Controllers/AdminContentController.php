@@ -103,8 +103,6 @@ class AdminContentController extends Controller
                 'is_jawaban_benar' => $isJawabanBenar,
             ]);
         }
-
-        
         return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
     }
 
