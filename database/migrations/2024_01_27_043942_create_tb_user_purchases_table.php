@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tb_opsis', function (Blueprint $table) {
+        Schema::create('tb_user_purchases', function (Blueprint $table) {
             $table->id();
-            $table->longText("opsi");
-            $table->boolean("is_jawaban_benar");
-            $table->integer("id_soal");
+            $table->integer("id_user");
+            $table->boolean("is_sudah_bayar");
+            $table->integer("id_sub_terbayar");
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tb_opsis');
+        Schema::dropIfExists('tb_user_purchases');
     }
 };

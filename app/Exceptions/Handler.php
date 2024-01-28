@@ -27,4 +27,14 @@ class Handler extends ExceptionHandler
             //
         });
     }
+
+    public function render($request, Throwable $exception)
+    {
+        if ($exception instanceof TokenMismatchException) {
+            // Redirect ke halaman login jika terjadi TokenMismatchException
+            return redirect('/login-user')->with('error', 'Sesi Anda telah berakhir. Silakan login kembali.');
+        }
+
+        return parent::render($request, $exception);
+    }
 }

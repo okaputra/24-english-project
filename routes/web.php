@@ -58,10 +58,9 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     Route::get('/admin-edit-subcourse/{id}/{id_course}', 'App\Http\Controllers\AdminController@UpdateSubCourse');
     Route::post('/admin-update-subcourse/{id}/{id_course}', 'App\Http\Controllers\AdminController@PostUpdateSubCourse');
     Route::get('/admin-input-sub-course/{id}', 'App\Http\Controllers\AdminController@AddNewSubCourse');
-    Route::get('/admin-input-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@AddNewSubCourseContent');
     Route::post('/admin-input-sub-course/{id}', 'App\Http\Controllers\AdminController@PostNewSubCourse');
 
-    // soal
+    // SOAL
     Route::get('/admin-create-soal', 'App\Http\Controllers\AdminContentController@CreateSoal');
     Route::get('/admin-delete-soal/{id}', 'App\Http\Controllers\AdminContentController@DeleteSoal');
     Route::get('/admin-delete-opsi/{id}', 'App\Http\Controllers\AdminContentController@DeleteOpsi');
@@ -69,7 +68,7 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     Route::post('/admin-update-soal/{id}', 'App\Http\Controllers\AdminContentController@PostUpdateSoal');
     Route::post('/admin-create-soal', 'App\Http\Controllers\AdminContentController@PostCreateSoal');
 
-    // Paket
+    // PAKET
     Route::get('/admin-create-paket', 'App\Http\Controllers\AdminContentController@CreatePaket');
     Route::get('/admin-assign-paket/{id}', 'App\Http\Controllers\AdminContentController@AssignPaket');
     Route::post('/admin-assign-paket/{id}', 'App\Http\Controllers\AdminContentController@PostAssignPaket');
@@ -77,6 +76,10 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     Route::get('/admin-update-paket/{id}', 'App\Http\Controllers\AdminContentController@UpdatePaket');
     Route::post('/admin-update-paket/{id}', 'App\Http\Controllers\AdminContentController@PostUpdatePaket');
     Route::post('/admin-create-paket', 'App\Http\Controllers\AdminContentController@PostCreatePaket');
+
+    // SUB COURSE CONTENT
+    Route::get('/admin-input-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@AddNewSubCourseContent');
+    Route::post('/admin-input-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@PostSubCourseContent');
 
 });
 

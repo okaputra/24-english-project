@@ -16,7 +16,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Pertanyaan</label>
                                     <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="pertanyaan" value="{{ old('pertanyaan') }}">
+                                        <textarea name="pertanyaan" class="summernote" id="" cols="30" rows="10"></textarea>
                                     </div>
                                 </div>
                             
@@ -26,7 +26,7 @@
                                         <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+ Tambah Opsi</button>
                                         <div id="opsi-container">
                                             <div class="input-group" style="margin-bottom: 10px;">
-                                                <input type="text" class="form-control opsi-input" name="opsi[]" required>
+                                                <textarea name="opsi[]" class="summernote opsi-input" id="" cols="30" rows="10"></textarea>
                                                 <div class="input-group-prepend">
                                                     <div class="input-group-text">
                                                         <input type="radio" name="jawaban_benar[]" value="0">
@@ -36,7 +36,6 @@
                                         </div>
                                     </div>
                                 </div>
-                            
                                 <div class="form-group row">
                                     <div class="col-sm-10">
                                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -73,7 +72,7 @@
                                     @foreach ($dataSoal as $ds)
                                     <tr>
                                         <td style="color: black">{{$no++}}</td>
-                                        <td style="color: black">{{$ds['pertanyaan']}}</td>
+                                        <td style="color: black">{!!$ds['pertanyaan']!!}</td>
                                         <td>
                                             <span style="color: black">
                                                 <a href="/admin-update-soal/{{$ds['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
@@ -101,6 +100,24 @@
 </div>
 
 <script>
+    $(document).ready(function() {
+        $('.summernote').summernote({
+            height: 150,
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture', 'audio']],
+                ['height', ['height']]
+            ],
+        });
+    });
+</script>
+
+<script>
     $(document).ready(function () {
         var dynamicForm = $('#disini');
         var addButton = $('#add-form');
@@ -115,7 +132,7 @@
             // Tambahkan formulir input baru beserta checkbox
             var newIndex = opsiContainer.find('.opsi-input').length;
             var newForm = '<div class="input-group" style="margin-bottom: 10px;">' +
-                              '<input type="text" class="form-control opsi-input" name="opsi[]" required>' +
+                              '<textarea name="opsi[]" class="summernote opsi-input" id="" cols="30" rows="10"></textarea>' +
                               '<div class="input-group-prepend">' +
                                   '<div class="input-group-text">' +
                                       '<input type="radio" name="jawaban_benar[]" value="' + newIndex + '">' +
@@ -123,6 +140,25 @@
                               '</div>' +
                           '</div>';
             opsiContainer.append(newForm);
+            // Inisialisasi Summernote pada elemen terakhir
+            opsiContainer.find('.opsi-input:last').summernote({
+                height: 150,
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture', 'audio']],
+                    ['height', ['height']]
+                ],
+                callbacks: {
+                    onChange: function (contents, $editable) {
+                        console.log('onChange:', contents, $editable);
+                    }
+                }
+            });
         });
     });
 </script>

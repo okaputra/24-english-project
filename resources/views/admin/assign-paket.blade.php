@@ -43,7 +43,7 @@
                                                             @foreach ($soal as $s)
                                                             <tr>
                                                                 <td style="color: black">{{$no++}}</td>
-                                                                <td style="color: black">{{$s['pertanyaan']}}</td>
+                                                                <td style="color: black">{!!$s['pertanyaan']!!}</td>
                                                                 <td>
                                                                     <span style="color: blue">
                                                                         <div class="input-group-prepend">

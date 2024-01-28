@@ -5,17 +5,57 @@ namespace App\Http\Controllers;
 use App\Models\tb_soal as Soal;
 use App\Models\tb_opsi as Opsi;
 use App\Models\tb_paket as Paket;
+use App\Models\tb_quiz as Quiz;
 use App\Models\tb_paket_terpilih as PaketTerpilih;
+use File;
+use Str;
 
 use Illuminate\Http\Request;
 
 class AdminContentController extends Controller
 {
+    // QUIZ / CATEGORY ============================================================================================================
     public function AddNewSubCourseContent(Request $req, $id)
     {
-        return view('admin.input-subcourse-content');
+        $paket = Paket::all();
+        $id_sub_course = $id;
+        return view('admin.input-subcourse-content',[
+            'paket' => $paket,
+            'id_sub_course' => $id_sub_course
+        ]);
     }
 
+    public function PostSubCourseContent(Request $req, $id){
+        $req->validate([
+            "nama_quiz" => 'required',
+            "id_paket" => 'required',
+            "durasi" => 'required',
+            "is_berbayar" => 'required',
+            "video" => 'required|file|mimetypes:video/mp4'
+        ]);
+
+        if (!$req->hasFile('video')) {
+            return redirect()->back()->with('error', "File Not Found!");
+        }
+        $video_quiz = $req->file('video');
+        $filename = date('YmdHis') . "." . $video_quiz->getClientOriginalExtension();
+        $path = public_path() . '/videos/quiz-video/' . $filename;
+        if (!File::isDirectory($path))
+            File::makeDirectory($path, 0755, true);
+        $quiz = Quiz::create([
+            'nama_quiz' => $req->nama_quiz,
+            'id_paket' => $req->id_paket,
+            'id_sub_course' => $id,
+            'durasi' => $req->durasi,
+            'is_berbayar' => $req->is_berbayar,
+            'video' => $filename,
+        ]);
+        $video_quiz->move($path, $filename);
+        return redirect()->back()->with('success', "Quiz Submitted Succesfully!");
+    }
+
+
+    // SOAL =======================================================================================================================
     public function CreateSoal()
     {
         $dataSoal = Soal::all();
@@ -29,26 +69,60 @@ class AdminContentController extends Controller
         $req->validate([
             "pertanyaan" => 'required',
             "opsi.*" => 'required',
-            'jawaban_benar' => 'required|array|size:1', // Hanya boleh satu jawaban benar
+            'jawaban_benar' => 'required|array|size:1',
             'jawaban_benar.*' => 'integer',
         ]);
 
-        // Simpan pertanyaan
+        $content = $req->pertanyaan;
+        $dom = new \DomDocument();
+        $dom->loadHtml($content, 9);
+        $imageFile = $dom->getElementsByTagName('img');
+
+        foreach ($imageFile as $item => $image) {
+            // if(strpos($image->getAttribute('src'),'data:image/')===0){
+            $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+            $image_name= "/soal-images/" . time() . $item . '.png';
+            $path = public_path() . $image_name;
+            file_put_contents($path, $imgeData);
+
+            $image->removeAttribute('src');
+            $image->setAttribute('src', $image_name);
+            // }
+        }
+        $content = $dom->saveHTML();
         $soal = Soal::create([
-            'pertanyaan' => $req->pertanyaan,
+            'pertanyaan' => $content,
         ]);
 
         // Simpan opsi
         foreach ($req->input('opsi') as $key => $io) {
+            // Dapatkan bidang atau elemen terkait lainnya untuk opsi ini
             $isJawabanBenar = $req->has('jawaban_benar') && in_array($key, $req->input('jawaban_benar'));
 
+            $dom = new \DomDocument();
+            $dom->loadHtml($io, 9);
+            $imageFile = $dom->getElementsByTagName('img');
+
+            foreach ($imageFile as $item => $image) {
+                $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+
+                // Memperbaiki pembuatan nama file dengan menambahkan ID opsi ke nama file
+                $image_name = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
+                $path = public_path() . $image_name;
+                file_put_contents($path, $imgeData);
+
+                $image->removeAttribute('src');
+                $image->setAttribute('src', $image_name);
+            }
+            $contentOpsi = $dom->saveHTML();
+
+            // Simpan $contentOpsi dan bidang lain terkait ke database
             Opsi::create([
-                'opsi' => $io,
+                'opsi' => $contentOpsi,
                 'is_jawaban_benar' => $isJawabanBenar,
                 'id_soal' => $soal->id,
             ]);
         }
-
         return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
     }
 
@@ -58,7 +132,34 @@ class AdminContentController extends Controller
         if (!$soal) {
             return redirect()->back()->with('error', "Soal not found!");
         }
-        // Panggil metode delete untuk memicu event deleting
+        $dom = new \DOMDocument();
+        $dom->loadHTML($soal->pertanyaan, 9);
+        $images = $dom->getElementsByTagName('img');
+
+        foreach($images as $key => $img){
+            $src = $img->getAttribute('src');
+            $path = Str::of($src)->after('/');
+
+            if(File::exists($path)){
+                File::delete($path);
+            }
+        }
+        // Loop untuk gambar opsi
+        $opsi = $soal->opsi; // Gantilah ini dengan cara Anda mengakses data opsi pada model Soal
+        foreach ($opsi as $opsi) {
+            $domOpsi = new \DOMDocument();
+            $domOpsi->loadHTML($opsi->opsi, 9);
+            $imagesOpsi = $domOpsi->getElementsByTagName('img');
+
+            foreach ($imagesOpsi as $key => $img) {
+                $srcOpsi = $img->getAttribute('src');
+                $pathOpsi = Str::of($srcOpsi)->after('/');
+
+                if (File::exists($pathOpsi)) {
+                    File::delete($pathOpsi);
+                }
+            }
+        }
         $soal->delete();
         return redirect()->back()->with('success', "Soal and related Opsi deleted successfully!");
     }
@@ -67,13 +168,12 @@ class AdminContentController extends Controller
     {
         $soal = Soal::find($id);
         $opsi = $soal->opsi()->get()->toArray();
-        $jawabanBenar = array_filter($opsi, function ($opsi) {
-            return $opsi['is_jawaban_benar'] == 1;
-        });
+        // $jawabanBenar = array_filter($opsi, function ($opsi) {
+        //     return $opsi['is_jawaban_benar'] == 1;
+        // });
         return view('admin.update-soal', [
             'soal' => $soal,
             'opsi' => $opsi,
-            'jawaban_benar' => $jawabanBenar,
         ]);
     }
 
@@ -82,13 +182,32 @@ class AdminContentController extends Controller
         $req->validate([
             "pertanyaan" => 'required',
             "opsi.*" => 'required',
-            'jawaban_benar' => 'required|array|size:1', // Hanya boleh satu jawaban benar
+            'jawaban_benar' => 'required|array|size:1',
             'jawaban_benar.*' => 'integer',
         ]);        
         
+        $content = $req->pertanyaan;
+        $dom = new \DomDocument();
+        $dom->loadHtml($content, 9);
+        $imageFile = $dom->getElementsByTagName('img');
+
+        foreach ($imageFile as $item => $image) {
+            if(strpos($image->getAttribute('src'),'data:image/')===0){
+                $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+                $image_name= "/soal-images/" . time() . $item . '.png';
+                $path = public_path() . $image_name;
+                file_put_contents($path, $imgeData);
+    
+                $image->removeAttribute('src');
+                $image->setAttribute('src', $image_name);
+            }
+        }
+
+        $content = $dom->saveHTML();
+
         $soal = Soal::find($id);
         $soal->update([
-            'pertanyaan' => $req->pertanyaan,
+            'pertanyaan' => $content,
         ]);
         
         // Hapus opsi lama sebelum menambahkan yang baru
@@ -97,10 +216,27 @@ class AdminContentController extends Controller
         // Simpan opsi baru
         foreach ($req->input('opsi') as $key => $io) {
             $isJawabanBenar = $req->input('jawaban_benar')[0] == $key;
+            // $contentOpsi = $req->opsi;
+            $dom = new \DomDocument();
+            $dom->loadHtml($io, 9);
+            $imageFile = $dom->getElementsByTagName('img');
 
+            foreach ($imageFile as $item => $image) {
+                if(strpos($image->getAttribute('src'),'data:image/')===0){
+                    $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+                    $image_name= "/soal-images-opsi/" . time() . $item . '.png';
+                    $path = public_path() . $image_name;
+                    file_put_contents($path, $imgeData);
+        
+                    $image->removeAttribute('src');
+                    $image->setAttribute('src', $image_name);
+                }
+            }
+            $contentOpsi = $dom->saveHTML();
             $soal->opsi()->create([
-                'opsi' => $io,
+                'opsi' => $contentOpsi,
                 'is_jawaban_benar' => $isJawabanBenar,
+                'id_soal' => $soal->id
             ]);
         }
         return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
@@ -112,12 +248,26 @@ class AdminContentController extends Controller
         if (!$opsi) {
             return redirect()->back()->with('error', "Opsi not found!");
         }
+        // Dapatkan nama file gambar dari atribut 'opsi'
+        $dom = new \DomDocument();
+        $dom->loadHtml($opsi->opsi, 9);
+        $imageFile = $dom->getElementsByTagName('img');
+
+        foreach ($imageFile as $image) {
+            $src = $image->getAttribute('src');
+            $path = public_path($src);
+
+            // Hapus file gambar jika ada
+            if (File::exists($path)) {
+                File::delete($path);
+            }
+        }
         $opsi->delete();
         return redirect()->back()->with('success', "Opsi deleted successfully!");
     }
 
-    // Paket 
 
+    // PAKET ======================================================================================================================
     public function CreatePaket()
     {
         $paket = Paket::all();
@@ -168,21 +318,17 @@ class AdminContentController extends Controller
 
     public function PostUpdatePaket(Request $request, $id)
     {
-        // Validasi input
         $request->validate([
             'nama_paket' => 'required',
             'soal' => 'array', // Pastikan 'soal' adalah array
         ]);
 
-        // Temukan paket
         $paket = Paket::find($id);
 
-        // Periksa apakah paket ditemukan
         if (!$paket) {
             return redirect()->back()->with('error', 'Paket not found!');
         }
 
-        // Update nama paket
         $paket->update([
             'nama_paket' => $request->nama_paket,
         ]);
@@ -216,7 +362,6 @@ class AdminContentController extends Controller
     {
         $soal = Soal::all();
         $paket = Paket::find($id);
-
         return view('admin.assign-paket', [
             'soal' => $soal,
             'paket' => $paket,

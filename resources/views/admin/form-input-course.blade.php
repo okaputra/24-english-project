@@ -34,7 +34,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Sub Course</label>
                                     <div class="col-sm-10" id="disini">
-                                        <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+</button>
+                                        <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+ Sub Course</button>
                                         <input type="text" class="form-control" name="components[]" style="margin-bottom: 10px;">
                                     </div>
                                 </div>

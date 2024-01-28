@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tb_soal', function (Blueprint $table) {
             $table->id();
-            $table->string("pertanyaan");
+            $table->longText("pertanyaan");
             $table->timestamps();
         });
     }

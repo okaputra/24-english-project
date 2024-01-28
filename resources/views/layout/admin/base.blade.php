@@ -12,10 +12,17 @@
     <link rel="stylesheet" href="{{asset('admin/vendor/owl-carousel/css/owl.theme.default.min.css')}}">
     <link href="{{asset('admin/vendor/jqvmap/css/jqvmap.min.css')}}" rel="stylesheet">
     <link href="{{asset('admin/css/style.css')}}" rel="stylesheet">
+
+    {{-- Audio CSS Summernote --}}
+    <link href="{{asset('admin/css/summernote-audio.css')}}" rel="stylesheet">
+
     <link href="{{asset('admin/vendor/jquery-steps/css/jquery.steps.css')}}" rel="stylesheet">
 
     <!-- Datatable -->
     <link href="{{asset('admin/vendor/datatables/css/jquery.dataTables.min.css')}}" rel="stylesheet">
+
+    <!-- Summernote -->
+    <link href="{{asset('admin/vendor/summernote/summernote.css')}}" rel="stylesheet">
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9.17.2/dist/sweetalert2.min.js"></script>
@@ -92,8 +99,6 @@
     <!-- Form validate init -->
     <script src="{{asset('admin/js/plugins-init/jquery.validate-init.js')}}"></script>
 
-
-
     <!-- Form step init -->
     <script src="{{asset('admin/js/plugins-init/jquery-steps-init.js')}}"></script>
 
@@ -123,7 +128,15 @@
     <script src="{{asset('admin/vendor/datatables/js/jquery.dataTables.min.js')}}"></script>
     <script src="{{asset('admin/js/plugins-init/datatables.init.js')}}"></script>
 
-    <script src="{{asset('admin//js/dashboard/dashboard-1.js')}}"></script>
+    <!-- Summernote -->
+    <script src="{{asset('admin/vendor/summernote/js/summernote.min.js')}}"></script>
+    <!-- Summernote init -->
+    <script src="{{asset('admin/js/plugins-init/summernote-init.js')}}"></script>
+
+    {{-- Summernote Audio --}}
+    <script src="{{asset('admin/js/summernote-audio.js')}}"></script>
+
+    <script src="{{asset('admin/js/dashboard/dashboard-1.js')}}"></script>
 
 </body>
 
