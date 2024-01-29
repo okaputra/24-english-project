@@ -14,30 +14,47 @@
                             <form action="/admin-update-soal/{{$soal['id']}}" method="POST">
                                 @csrf
                                 <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Tipe soal ini</label>
+                                    <div class="col-sm-10">
+                                        <h5>{{$soal['tipe']}}</h5>
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Pertanyaan</label>
                                     <div class="col-sm-10">
-                                        {{-- <input type="text" class="form-control" name="pertanyaan" value="{{$soal['pertanyaan']}}"> --}}
                                         <textarea name="pertanyaan" class="summernote" id="" cols="30" rows="10">{!!$soal['pertanyaan']!!}</textarea>
                                     </div>
                                 </div>
-                            
+
                                 <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Ubah Tipe Soal</label>
+                                    <div class="col-sm-10">
+                                        <select name="tipe" id="tipeSoal" class="form-control" style="width: 300px;">
+                                            <option value="deskripsi" {{ $soal['tipe'] === 'deskripsi' ? 'selected' : '' }}>Deskripsi</option>
+                                            <option value="opsi" {{ $soal['tipe'] === 'opsi' ? 'selected' : '' }}>Opsi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group row" id="opsiSection" style="{{ $soal['tipe'] === 'deskripsi' ? 'display: none;' : '' }}">
                                     <label class="col-sm-2 col-form-label">Opsi</label>
                                     <div class="col-sm-10" id="disini">
                                         <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+ Tambah Opsi</button>
                                         <div id="opsi-container">
-                                        @foreach ($opsi as $key => $o)
-                                            <div class="input-group" style="margin-bottom: 10px;">
-                                                {{-- <input type="text" class="form-control opsi-input" name="opsi[]" value="{{$o['opsi']}}"> --}}
-                                                <textarea name="opsi[]" class="summernote opsi-input" id="" cols="30" rows="10">{!!$o['opsi']!!}</textarea>
-                                                <div class="input-group-prepend">
-                                                    <div class="input-group-text">
-                                                        <input type="radio" name="jawaban_benar[]" value="{{ $key }}" {{ $o['is_jawaban_benar'] ? 'checked' : '' }}>
+                                            @if($soal['tipe'] === 'opsi')
+                                                @foreach ($opsi as $key => $o)
+                                                    <div class="input-group" style="margin-bottom: 10px;">
+                                                        <textarea name="opsi[]" class="summernote opsi-input" id="" cols="30" rows="10">{!! $o['opsi'] !!}</textarea>
+                                                        <div class="input-group-prepend">
+                                                            <div class="input-group-text">
+                                                                <input type="radio" name="jawaban_benar[]" value="{{ $key }}" {{ $o['is_jawaban_benar'] ? 'checked' : '' }}>
+                                                            </div>
+                                                        </div>
+                                                        <a href="/admin-delete-opsi/{{$o['id']}}" type="button" class="btn btn-danger remove-opsi" style="margin-left:10px">X</a>
                                                     </div>
-                                                </div>
-                                                <a href="/admin-delete-opsi/{{$o['id']}}" type="button" class="btn btn-danger remove-opsi" style="margin-left:10px">X</a>
-                                            </div>
-                                        @endforeach
+                                                @endforeach
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
@@ -55,6 +72,86 @@
         </div>
     </div>
 </div>
+
+<script>
+    const tipeSoalSelect = document.getElementById('tipeSoal');
+    const opsiSection = document.getElementById('opsiSection');
+    const opsiContainer = document.getElementById('opsi-container');
+    const addButton = document.getElementById('add-form');
+
+    // Tambahkan event listener untuk memantau perubahan pada select
+    tipeSoalSelect.addEventListener('change', function () {
+        if (this.value === 'deskripsi') {
+            opsiSection.style.display = 'none';
+        } else {
+            opsiSection.style.display = 'flex';
+
+            // Hapus event listener sebelumnya dari tombol tambah
+            addButton.removeEventListener('click', tambahFormInputOpsi);
+
+            // Tambahkan event listener baru untuk tombol tambah
+            addButton.addEventListener('click', tambahFormInputOpsi);
+
+            // Jika soal awalnya adalah "deskripsi", tambahkan satu form input opsi kosong
+            if ({{ $soal['tipe'] === 'deskripsi' ? 'true' : 'false' }}) {
+                tambahFormInputOpsi();
+            }
+        }
+    });
+
+    if (tipeSoalSelect.value === 'deskripsi') {
+        opsiSection.style.display = 'none';
+    }
+
+    function tambahFormInputOpsi() {
+        const divInputGroup = document.createElement('div');
+        divInputGroup.className = 'input-group';
+        divInputGroup.style.marginBottom = '10px';
+
+        const textareaOpsi = document.createElement('textarea');
+        textareaOpsi.name = 'opsi[]';
+        textareaOpsi.className = 'summernote opsi-input';
+        textareaOpsi.cols = '30';
+        textareaOpsi.rows = '10';
+
+        $(document).ready(function() {
+            $('.summernote').summernote({
+                height: 150,
+                toolbar: [
+                    // [groupName, [list of button]]
+                    ['style', ['bold', 'italic', 'underline', 'clear']],
+                    ['font', ['strikethrough', 'superscript', 'subscript']],
+                    ['fontsize', ['fontsize']],
+                    ['color', ['color']],
+                    ['para', ['ul', 'ol', 'paragraph']],
+                    ['insert', ['link', 'picture']],
+                    ['height', ['height']]
+                ],
+            });
+        });
+
+        const divInputGroupPrepend = document.createElement('div');
+        divInputGroupPrepend.className = 'input-group-prepend';
+
+        const divInputGroupText = document.createElement('div');
+        divInputGroupText.className = 'input-group-text';
+
+        const inputRadio = document.createElement('input');
+        inputRadio.type = 'radio';
+        inputRadio.name = 'jawaban_benar[]';
+        inputRadio.value = '0';
+        
+        divInputGroupText.appendChild(inputRadio);
+        divInputGroupPrepend.appendChild(divInputGroupText);
+        divInputGroup.appendChild(textareaOpsi);
+        divInputGroup.appendChild(divInputGroupPrepend);
+
+        opsiContainer.appendChild(divInputGroup);
+
+        // Hapus event listener dari tombol tambah untuk menghindari penambahan berulang
+        addButton.removeEventListener('click', tambahFormInputOpsi);
+    }
+</script>
 
 <script>
     $(document).ready(function() {

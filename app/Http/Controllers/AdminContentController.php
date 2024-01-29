@@ -68,10 +68,11 @@ class AdminContentController extends Controller
     {
         $req->validate([
             "pertanyaan" => 'required',
-            "opsi.*" => 'required',
-            'jawaban_benar' => 'required|array|size:1',
-            'jawaban_benar.*' => 'integer',
-        ]);
+            "tipe" => 'required',
+            "opsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
+            'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
+            'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
+        ]);        
 
         $content = $req->pertanyaan;
         $dom = new \DomDocument();
@@ -90,8 +91,20 @@ class AdminContentController extends Controller
             // }
         }
         $content = $dom->saveHTML();
+
+        // Simpan soal dengan tipe "deskripsi"
+        if ($req->input('tipe') === 'deskripsi') {
+            $soal = Soal::create([
+                'pertanyaan' => $content,
+                'tipe' => 'deskripsi',
+            ]);
+
+            return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
+        }
+
         $soal = Soal::create([
             'pertanyaan' => $content,
+            'tipe' => 'opsi',
         ]);
 
         // Simpan opsi
@@ -181,65 +194,72 @@ class AdminContentController extends Controller
     {
         $req->validate([
             "pertanyaan" => 'required',
-            "opsi.*" => 'required',
-            'jawaban_benar' => 'required|array|size:1',
-            'jawaban_benar.*' => 'integer',
-        ]);        
+            "opsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
+            'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
+            'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
+        ]);
         
         $content = $req->pertanyaan;
         $dom = new \DomDocument();
-        $dom->loadHtml($content, 9);
+        $dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $imageFile = $dom->getElementsByTagName('img');
-
+        
         foreach ($imageFile as $item => $image) {
-            if(strpos($image->getAttribute('src'),'data:image/')===0){
-                $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-                $image_name= "/soal-images/" . time() . $item . '.png';
-                $path = public_path() . $image_name;
-                file_put_contents($path, $imgeData);
-    
+            if (strpos($image->getAttribute('src'), 'data:image/') === 0) {
+                $imageData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+                $imageName = "/soal-images/" . time() . $item . '.png';
+                $path = public_path() . $imageName;
+                file_put_contents($path, $imageData);
+        
                 $image->removeAttribute('src');
-                $image->setAttribute('src', $image_name);
+                $image->setAttribute('src', $imageName);
             }
         }
-
+        
         $content = $dom->saveHTML();
-
+        
+        // Update soal
         $soal = Soal::find($id);
         $soal->update([
             'pertanyaan' => $content,
+            'tipe' => $req->tipe,
         ]);
         
         // Hapus opsi lama sebelum menambahkan yang baru
         $soal->opsi()->delete();
         
-        // Simpan opsi baru
-        foreach ($req->input('opsi') as $key => $io) {
-            $isJawabanBenar = $req->input('jawaban_benar')[0] == $key;
-            // $contentOpsi = $req->opsi;
-            $dom = new \DomDocument();
-            $dom->loadHtml($io, 9);
-            $imageFile = $dom->getElementsByTagName('img');
-
-            foreach ($imageFile as $item => $image) {
-                if(strpos($image->getAttribute('src'),'data:image/')===0){
-                    $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-                    $image_name= "/soal-images-opsi/" . time() . $item . '.png';
-                    $path = public_path() . $image_name;
-                    file_put_contents($path, $imgeData);
+        // Jika tipe soal adalah "opsi", simpan opsi baru
+        if ($req->input('tipe') === 'opsi') {
+            foreach ($req->input('opsi') as $key => $io) {
+                $isJawabanBenar = $req->input('jawaban_benar')[0] == $key;
         
-                    $image->removeAttribute('src');
-                    $image->setAttribute('src', $image_name);
+                $dom = new \DomDocument();
+                $dom->loadHtml($io, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                $imageFile = $dom->getElementsByTagName('img');
+        
+                foreach ($imageFile as $item => $image) {
+                    if (strpos($image->getAttribute('src'), 'data:image/') === 0) {
+                        $imageData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+                        $imageName = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
+                        $path = public_path() . $imageName;
+                        file_put_contents($path, $imageData);
+        
+                        $image->removeAttribute('src');
+                        $image->setAttribute('src', $imageName);
+                    }
                 }
+        
+                $contentOpsi = $dom->saveHTML();
+        
+                $soal->opsi()->create([
+                    'opsi' => $contentOpsi,
+                    'is_jawaban_benar' => $isJawabanBenar,
+                    'id_soal' => $soal->id
+                ]);
             }
-            $contentOpsi = $dom->saveHTML();
-            $soal->opsi()->create([
-                'opsi' => $contentOpsi,
-                'is_jawaban_benar' => $isJawabanBenar,
-                'id_soal' => $soal->id
-            ]);
         }
-        return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
+        
+        return redirect('/admin-create-soal')->with('success', "Update Successfully!");
     }
 
     public function DeleteOpsi($id)

@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('tb_soal', function (Blueprint $table) {
             $table->id();
             $table->longText("pertanyaan");
+            $table->string("tipe");
             $table->timestamps();
         });
     }

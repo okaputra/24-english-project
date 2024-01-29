@@ -16,6 +16,49 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Pertanyaan</label>
                                     <div class="col-sm-10">
+                                        <textarea name="pertanyaan" class="summernote" cols="30" rows="10"></textarea>
+                                    </div>
+                                </div>
+                            
+                                <div class="form-group row" >
+                                    <label class="col-sm-2 col-form-label">Tipe Soal</label>
+                                    <div class="col-sm-10">
+                                        <select name="tipe" id="tipeSoal" class="form-control" style="width: 300px;">
+                                            <option value="deskripsi">Deskripsi</option>
+                                            <option value="opsi">Opsi</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            
+                                <div class="form-group row" id="opsiSection">
+                                    <label class="col-sm-2 col-form-label">Opsi</label>
+                                    <div class="col-sm-10" id="disini">
+                                        <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+ Tambah Opsi</button>
+                                        <div id="opsi-container">
+                                            <div class="input-group" style="margin-bottom: 10px;">
+                                                <textarea name="opsi[]" class="summernote opsi-input" id="" cols="30" rows="10"></textarea>
+                                                <div class="input-group-prepend">
+                                                    <div class="input-group-text">
+                                                        <input type="radio" name="jawaban_benar[]" value="0">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            
+                                <div class="form-group row">
+                                    <div class="col-sm-10">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            {{-- <form action="/admin-create-soal" method="POST">
+                                @csrf
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Pertanyaan</label>
+                                    <div class="col-sm-10">
                                         <textarea name="pertanyaan" class="summernote" id="" cols="30" rows="10"></textarea>
                                     </div>
                                 </div>
@@ -41,7 +84,7 @@
                                         <button type="submit" class="btn btn-primary">Submit</button>
                                     </div>
                                 </div>
-                            </form>
+                            </form> --}}
                         </div>
                     </div>
                 </div>
@@ -98,6 +141,28 @@
 
     </div>
 </div>
+
+<script>
+    // Ambil elemen-elemen yang dibutuhkan
+    const tipeSoalSelect = document.getElementById('tipeSoal');
+    const opsiSection = document.getElementById('opsiSection');
+
+    // Tambahkan event listener untuk memantau perubahan pada select
+    tipeSoalSelect.addEventListener('change', function () {
+        // Jika tipe soal adalah "deskripsi", sembunyikan opsiSection
+        if (this.value === 'deskripsi') {
+            opsiSection.style.display = 'none';
+        } else {
+            // Jika tipe soal adalah "opsi", tampilkan opsiSection
+            opsiSection.style.display = 'flex';
+        }
+    });
+
+    // Sembunyikan opsiSection saat halaman dimuat jika tipe soal awalnya adalah "deskripsi"
+    if (tipeSoalSelect.value === 'deskripsi') {
+        opsiSection.style.display = 'none';
+    }
+</script>
 
 <script>
     $(document).ready(function() {
