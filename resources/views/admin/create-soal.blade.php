@@ -168,6 +168,8 @@
     $(document).ready(function() {
         $('.summernote').summernote({
             height: 150,
+            codeviewFilter: true,
+            codeviewIframeFilter: true,
             toolbar: [
                 // [groupName, [list of button]]
                 ['style', ['bold', 'italic', 'underline', 'clear']],
@@ -208,6 +210,8 @@
             // Inisialisasi Summernote pada elemen terakhir
             opsiContainer.find('.opsi-input:last').summernote({
                 height: 150,
+                codeviewFilter: true,
+                codeviewIframeFilter: true,
                 toolbar: [
                     // [groupName, [list of button]]
                     ['style', ['bold', 'italic', 'underline', 'clear']],

@@ -117,6 +117,8 @@
         $(document).ready(function() {
             $('.summernote').summernote({
                 height: 150,
+                codeviewFilter: true,
+                codeviewIframeFilter: true,
                 toolbar: [
                     // [groupName, [list of button]]
                     ['style', ['bold', 'italic', 'underline', 'clear']],
