@@ -19,6 +19,12 @@
                                         <textarea name="pertanyaan" class="summernote" cols="30" rows="10"></textarea>
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Audio</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="audio-soal" accept="audio/*" class="">
+                                    </div>
+                                </div>
                             
                                 <div class="form-group row" >
                                     <label class="col-sm-2 col-form-label">Tipe Soal</label>
@@ -41,6 +47,12 @@
                                                     <div class="input-group-text">
                                                         <input type="radio" name="jawaban_benar[]" value="0">
                                                     </div>
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <label class="col-sm-2 col-form-label">Audio</label>
+                                                <div class="col-sm-10">
+                                                    <input type="file" name="audio-opsi" accept="audio/*" class="">
                                                 </div>
                                             </div>
                                         </div>
@@ -205,7 +217,13 @@
                                       '<input type="radio" name="jawaban_benar[]" value="' + newIndex + '">' +
                                   '</div>' +
                               '</div>' +
-                          '</div>';
+                          '</div>'+
+                          '<div class="form-group row">'+
+                                '<label class="col-sm-2 col-form-label">Audio</label>'+
+                                '<div class="col-sm-10">'+
+                                    '<input type="file" name="audio-opsi" accept="audio/*" class="">'+
+                                '</div>'+
+                            '</div>';
             opsiContainer.append(newForm);
             // Inisialisasi Summernote pada elemen terakhir
             opsiContainer.find('.opsi-input:last').summernote({
