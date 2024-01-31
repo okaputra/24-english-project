@@ -14,7 +14,7 @@ return new class extends Migration {
             $table->id();
             $table->longText("pertanyaan");
             $table->string("tipe");
-            $table->string("audio_file");
+            $table->string("audio_file")->nullable();
             $table->timestamps();
         });
     }

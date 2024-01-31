@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->longText("opsi");
             $table->boolean("is_jawaban_benar");
             $table->integer("id_soal");
-            $table->string("audio_file");
+            $table->string("audio_file")->nullable();
             $table->timestamps();
         });
     }
