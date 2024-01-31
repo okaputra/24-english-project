@@ -20,7 +20,7 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Audio</label>
+                                    <label class="col-sm-2 col-form-label">Audio (opsional)</label>
                                     <div class="col-sm-10">
                                         <input type="file" name="audio-soal" accept="audio/*" class="">
                                     </div>
@@ -50,7 +50,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-sm-2 col-form-label">Audio</label>
+                                                <label class="col-sm-2 col-form-label">Audio (opsional)</label>
                                                 <div class="col-sm-10">
                                                     <input type="file" name="audio-opsi" accept="audio/*" class="">
                                                 </div>
@@ -219,7 +219,7 @@
                               '</div>' +
                           '</div>'+
                           '<div class="form-group row">'+
-                                '<label class="col-sm-2 col-form-label">Audio</label>'+
+                                '<label class="col-sm-2 col-form-label">Audio(opsional)</label>'+
                                 '<div class="col-sm-10">'+
                                     '<input type="file" name="audio-opsi" accept="audio/*" class="">'+
                                 '</div>'+
