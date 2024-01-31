@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Mews\Purifier\Facades\Purifier;
 use App\Models\tb_soal as Soal;
 use App\Models\tb_opsi as Opsi;
 use App\Models\tb_paket as Paket;
@@ -19,13 +20,14 @@ class AdminContentController extends Controller
     {
         $paket = Paket::all();
         $id_sub_course = $id;
-        return view('admin.input-subcourse-content',[
+        return view('admin.input-subcourse-content', [
             'paket' => $paket,
             'id_sub_course' => $id_sub_course
         ]);
     }
 
-    public function PostSubCourseContent(Request $req, $id){
+    public function PostSubCourseContent(Request $req, $id)
+    {
         $req->validate([
             "nama_quiz" => 'required',
             "id_paket" => 'required',
@@ -72,17 +74,17 @@ class AdminContentController extends Controller
             "opsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
             'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
             'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
-        ]);        
+        ]);
 
         $content = $req->pertanyaan;
         $dom = new \DomDocument();
-        $dom->loadHtml($content, 9);
+        $dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $imageFile = $dom->getElementsByTagName('img');
 
         foreach ($imageFile as $item => $image) {
             // if(strpos($image->getAttribute('src'),'data:image/')===0){
             $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-            $image_name= "/soal-images/" . time() . $item . '.png';
+            $image_name = "/soal-images/" . time() . $item . '.png';
             $path = public_path() . $image_name;
             file_put_contents($path, $imgeData);
 
@@ -146,22 +148,22 @@ class AdminContentController extends Controller
             return redirect()->back()->with('error', "Soal not found!");
         }
         $dom = new \DOMDocument();
-        $dom->loadHTML($soal->pertanyaan, 9);
+        @$dom->loadHTML($soal->pertanyaan, 9);
         $images = $dom->getElementsByTagName('img');
 
-        foreach($images as $key => $img){
+        foreach ($images as $key => $img) {
             $src = $img->getAttribute('src');
             $path = Str::of($src)->after('/');
 
-            if(File::exists($path)){
+            if (File::exists($path)) {
                 File::delete($path);
             }
         }
         // Loop untuk gambar opsi
-        $opsi = $soal->opsi; // Gantilah ini dengan cara Anda mengakses data opsi pada model Soal
+        $opsi = $soal->opsi;
         foreach ($opsi as $opsi) {
             $domOpsi = new \DOMDocument();
-            $domOpsi->loadHTML($opsi->opsi, 9);
+            @$domOpsi->loadHTML($opsi->opsi, 9);
             $imagesOpsi = $domOpsi->getElementsByTagName('img');
 
             foreach ($imagesOpsi as $key => $img) {
@@ -198,59 +200,59 @@ class AdminContentController extends Controller
             'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
             'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
         ]);
-        
+
         $content = $req->pertanyaan;
         $dom = new \DomDocument();
-        $dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+        @$dom->loadHtml($content, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
         $imageFile = $dom->getElementsByTagName('img');
-        
+
         foreach ($imageFile as $item => $image) {
             if (strpos($image->getAttribute('src'), 'data:image/') === 0) {
                 $imageData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
                 $imageName = "/soal-images/" . time() . $item . '.png';
                 $path = public_path() . $imageName;
                 file_put_contents($path, $imageData);
-        
+
                 $image->removeAttribute('src');
                 $image->setAttribute('src', $imageName);
             }
         }
-        
+
         $content = $dom->saveHTML();
-        
+
         // Update soal
         $soal = Soal::find($id);
         $soal->update([
             'pertanyaan' => $content,
             'tipe' => $req->tipe,
         ]);
-        
+
         // Hapus opsi lama sebelum menambahkan yang baru
         $soal->opsi()->delete();
-        
+
         // Jika tipe soal adalah "opsi", simpan opsi baru
         if ($req->input('tipe') === 'opsi') {
             foreach ($req->input('opsi') as $key => $io) {
                 $isJawabanBenar = $req->input('jawaban_benar')[0] == $key;
-        
+
                 $dom = new \DomDocument();
-                $dom->loadHtml($io, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                @$dom->loadHtml($io, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
                 $imageFile = $dom->getElementsByTagName('img');
-        
+
                 foreach ($imageFile as $item => $image) {
                     if (strpos($image->getAttribute('src'), 'data:image/') === 0) {
                         $imageData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
                         $imageName = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
                         $path = public_path() . $imageName;
                         file_put_contents($path, $imageData);
-        
+
                         $image->removeAttribute('src');
                         $image->setAttribute('src', $imageName);
                     }
                 }
-        
+
                 $contentOpsi = $dom->saveHTML();
-        
+
                 $soal->opsi()->create([
                     'opsi' => $contentOpsi,
                     'is_jawaban_benar' => $isJawabanBenar,
@@ -258,7 +260,7 @@ class AdminContentController extends Controller
                 ]);
             }
         }
-        
+
         return redirect('/admin-create-soal')->with('success', "Update Successfully!");
     }
 
@@ -270,7 +272,7 @@ class AdminContentController extends Controller
         }
         // Dapatkan nama file gambar dari atribut 'opsi'
         $dom = new \DomDocument();
-        $dom->loadHtml($opsi->opsi, 9);
+        @$dom->loadHtml($opsi->opsi, 9);
         $imageFile = $dom->getElementsByTagName('img');
 
         foreach ($imageFile as $image) {
