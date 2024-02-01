@@ -11,7 +11,7 @@
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
-                            <form action="/admin-create-soal" method="POST">
+                            <form action="/admin-create-soal" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Pertanyaan</label>
@@ -127,7 +127,15 @@
                                     @foreach ($dataSoal as $ds)
                                     <tr>
                                         <td style="color: black">{{$no++}}</td>
-                                        <td style="color: black">{!!$ds['pertanyaan']!!}</td>
+                                        <td style="color: black">
+                                            {!!$ds['pertanyaan']!!} <br>
+                                            @if($ds['audio_file'])
+                                                <audio controls>
+                                                    <source src="{{ asset($ds['audio_file']) }}" type="audio/{{ pathinfo($ds['audio_file'], PATHINFO_EXTENSION) }}">
+                                                    Your browser does not support the audio element.
+                                                </audio>
+                                            @endif
+                                        </td>
                                         <td>
                                             <span style="color: black">
                                                 <a href="/admin-update-soal/{{$ds['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>

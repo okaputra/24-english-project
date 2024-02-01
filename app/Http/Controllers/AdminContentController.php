@@ -74,6 +74,12 @@ class AdminContentController extends Controller
             "opsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
             'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
             'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
+        
+            // Validasi untuk file audio pertanyaan
+            "audio-soal" => $req->input('tipe') === 'deskripsi' ? 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac' : 'required|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
+        
+            // Validasi untuk file audio opsi (menggunakan multiple karena dapat ada lebih dari satu file)
+            "audio-opsi.*" => 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
         ]);
 
         $content = $req->pertanyaan;
@@ -94,8 +100,19 @@ class AdminContentController extends Controller
         }
         $content = $dom->saveHTML();
 
-        // Simpan soal dengan tipe "deskripsi"
+        // Simpan soal dengan tipe "deskripsi" dan file audio pertanyaan
         if ($req->input('tipe') === 'deskripsi') {
+            if ($req->hasFile('audio-soal')) {
+                $audio_extension = $req->file('audio-soal')->getClientOriginalExtension();
+                $audio_name = time() . '.' . $audio_extension;
+                $audioSoalPath = $req->file('audio-soal')->storeAs('public/audio-soal', $audio_name);
+                $soal = Soal::create([
+                    'pertanyaan' => $content,
+                    'tipe' => 'deskripsi',
+                    'audio_file' => $audioSoalPath,
+                ]);
+                return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
+            }
             $soal = Soal::create([
                 'pertanyaan' => $content,
                 'tipe' => 'deskripsi',
@@ -107,7 +124,21 @@ class AdminContentController extends Controller
         $soal = Soal::create([
             'pertanyaan' => $content,
             'tipe' => 'opsi',
+            'audio_file' => $publicPath,
         ]);
+
+        // Simpan opsi dan file audio opsi
+        if ($req->hasFile('audio-opsi')) {
+            foreach ($req->file('audio-opsi') as $key => $audioOpsi) {
+                $audio_name = "/audio-opsi/" . time();
+                $audio_opsi_path = public_path() . $audio_name;
+                $audioOpsiPath = $audioOpsi->store($audio_opsi_path);
+                Opsi::create([
+                    'audio_path' => $audioOpsiPath,
+                    'id_soal' => $soal->id,
+                ]);
+            }
+        }
 
         // Simpan opsi
         foreach ($req->input('opsi') as $key => $io) {

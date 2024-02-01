@@ -11,7 +11,7 @@
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
-                            <form action="/admin-update-soal/{{$soal['id']}}" method="POST">
+                            <form action="/admin-update-soal/{{$soal['id']}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Tipe soal ini</label>
