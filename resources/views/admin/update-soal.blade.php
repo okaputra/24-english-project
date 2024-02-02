@@ -24,6 +24,12 @@
                                     <label class="col-sm-2 col-form-label">Pertanyaan</label>
                                     <div class="col-sm-10">
                                         <textarea name="pertanyaan" class="summernote" id="" cols="30" rows="10">{!!$soal['pertanyaan']!!}</textarea>
+                                        @if($soal['audio_file'])
+                                            <audio controls preload="none">
+                                                <source src="{{ asset('audio-soal/' . $soal['audio_file'] . '/' . $soal['audio_file'])}}" type="audio/{{ pathinfo($soal['audio_file'], PATHINFO_EXTENSION) }}">
+                                                Your browser does not support the audio element.
+                                            </audio>
+                                        @endif
                                     </div>
                                 </div>
 
@@ -52,7 +58,14 @@
                                                             </div>
                                                         </div>
                                                         <a href="/admin-delete-opsi/{{$o['id']}}" type="button" class="btn btn-danger remove-opsi" style="margin-left:10px">X</a>
+                                                        @if($o['audio_file'])
+                                                            <audio controls preload="none">
+                                                                <source src="{{ asset('audio-opsi/' . $o['audio_file'] . '/' . $o['audio_file'])}}" type="audio/{{ pathinfo($o['audio_file'], PATHINFO_EXTENSION) }}">
+                                                                Your browser does not support the audio element.
+                                                            </audio>
+                                                        @endif
                                                     </div>
+                                                    <br>
                                                 @endforeach
                                             @endif
                                         </div>
