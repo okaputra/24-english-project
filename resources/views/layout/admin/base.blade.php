@@ -13,9 +13,6 @@
     <link href="{{asset('admin/vendor/jqvmap/css/jqvmap.min.css')}}" rel="stylesheet">
     <link href="{{asset('admin/css/style.css')}}" rel="stylesheet">
 
-    {{-- Audio CSS Summernote --}}
-    <link href="{{asset('admin/css/summernote-audio.css')}}" rel="stylesheet">
-
     <link href="{{asset('admin/vendor/jquery-steps/css/jquery.steps.css')}}" rel="stylesheet">
 
     <!-- Datatable -->
@@ -132,9 +129,6 @@
     <script src="{{asset('admin/vendor/summernote/js/summernote.min.js')}}"></script>
     <!-- Summernote init -->
     <script src="{{asset('admin/js/plugins-init/summernote-init.js')}}"></script>
-
-    {{-- Summernote Audio --}}
-    <script src="{{asset('admin/js/summernote-audio.js')}}"></script>
 
     <script src="{{asset('admin/js/dashboard/dashboard-1.js')}}"></script>
 

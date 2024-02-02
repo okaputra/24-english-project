@@ -22,7 +22,7 @@
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Audio (opsional)</label>
                                     <div class="col-sm-10">
-                                        <input type="file" name="audio-soal" accept="audio/*" class="">
+                                        <input type="file" name="audio_soal" accept="audio/*" class="">
                                     </div>
                                 </div>
                             
@@ -52,7 +52,7 @@
                                             <div class="form-group row">
                                                 <label class="col-sm-2 col-form-label">Audio (opsional)</label>
                                                 <div class="col-sm-10">
-                                                    <input type="file" name="audio-opsi" accept="audio/*" class="">
+                                                    <input type="file" name="audio_opsi[]" accept="audio/*" class="">
                                                 </div>
                                             </div>
                                         </div>
@@ -128,10 +128,10 @@
                                     <tr>
                                         <td style="color: black">{{$no++}}</td>
                                         <td style="color: black">
-                                            {!!$ds['pertanyaan']!!} <br>
+                                            {!!$ds['pertanyaan']!!}
                                             @if($ds['audio_file'])
-                                                <audio controls>
-                                                    <source src="{{ asset($ds['audio_file']) }}" type="audio/{{ pathinfo($ds['audio_file'], PATHINFO_EXTENSION) }}">
+                                                <audio controls preload="none">
+                                                    <source src="{{ asset('audio-soal/' . $ds['audio_file'] . '/' . $ds['audio_file'])}}" type="audio/{{ pathinfo($ds['audio_file'], PATHINFO_EXTENSION) }}">
                                                     Your browser does not support the audio element.
                                                 </audio>
                                             @endif
@@ -197,7 +197,7 @@
                 ['fontsize', ['fontsize']],
                 ['color', ['color']],
                 ['para', ['ul', 'ol', 'paragraph']],
-                ['insert', ['link', 'picture', 'audio']],
+                ['insert', ['link', 'picture']],
                 ['height', ['height']]
             ],
         });
@@ -219,7 +219,7 @@
             // Tambahkan formulir input baru beserta checkbox
             var newIndex = opsiContainer.find('.opsi-input').length;
             var newForm = '<div class="input-group" style="margin-bottom: 10px;">' +
-                              '<textarea name="opsi[]" class="summernote opsi-input" id="" cols="30" rows="10"></textarea>' +
+                              '<textarea name="opsi['+ newIndex +']" class="summernote opsi-input" id="" cols="30" rows="10"></textarea>' +
                               '<div class="input-group-prepend">' +
                                   '<div class="input-group-text">' +
                                       '<input type="radio" name="jawaban_benar[]" value="' + newIndex + '">' +
@@ -229,7 +229,7 @@
                           '<div class="form-group row">'+
                                 '<label class="col-sm-2 col-form-label">Audio(opsional)</label>'+
                                 '<div class="col-sm-10">'+
-                                    '<input type="file" name="audio-opsi" accept="audio/*" class="">'+
+                                    '<input type="file" name="audio_opsi['+ newIndex +']" accept="audio/*" class="">'+
                                 '</div>'+
                             '</div>';
             opsiContainer.append(newForm);
@@ -245,7 +245,7 @@
                     ['fontsize', ['fontsize']],
                     ['color', ['color']],
                     ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture', 'audio']],
+                    ['insert', ['link', 'picture']],
                     ['height', ['height']]
                 ],
                 callbacks: {

@@ -74,12 +74,8 @@ class AdminContentController extends Controller
             "opsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
             'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
             'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
-        
-            // Validasi untuk file audio pertanyaan
-            "audio-soal" => $req->input('tipe') === 'deskripsi' ? 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac' : 'required|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
-        
-            // Validasi untuk file audio opsi (menggunakan multiple karena dapat ada lebih dari satu file)
-            "audio-opsi.*" => 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
+            "audio_soal" => 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
+            "audio_opsi.*" => 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
         ]);
 
         $content = $req->pertanyaan;
@@ -100,73 +96,108 @@ class AdminContentController extends Controller
         }
         $content = $dom->saveHTML();
 
-        // Simpan soal dengan tipe "deskripsi" dan file audio pertanyaan
+        // Simpan soal dengan tipe deskripsi dan file audio pertanyaan
         if ($req->input('tipe') === 'deskripsi') {
-            if ($req->hasFile('audio-soal')) {
-                $audio_extension = $req->file('audio-soal')->getClientOriginalExtension();
+            if ($req->hasFile('audio_soal')) {
+                $audio_file = $req->file('audio_soal');
+                $audio_extension = $audio_file->getClientOriginalExtension();
                 $audio_name = time() . '.' . $audio_extension;
-                $audioSoalPath = $req->file('audio-soal')->storeAs('public/audio-soal', $audio_name);
+                $audioSoalPath = public_path('audio-soal/' . $audio_name);
+                $audio_file->move($audioSoalPath, $audio_name);
                 $soal = Soal::create([
                     'pertanyaan' => $content,
                     'tipe' => 'deskripsi',
-                    'audio_file' => $audioSoalPath,
+                    'audio_file' => $audio_name,
                 ]);
                 return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
             }
-            $soal = Soal::create([
-                'pertanyaan' => $content,
-                'tipe' => 'deskripsi',
-            ]);
+            // simpan tanpa audio
+            if (!$req->hasFile('audio_soal')) {
+                $soal = Soal::create([
+                    'pertanyaan' => $content,
+                    'tipe' => 'deskripsi',
+                ]);
+            }
 
             return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
         }
 
-        $soal = Soal::create([
-            'pertanyaan' => $content,
-            'tipe' => 'opsi',
-            'audio_file' => $publicPath,
-        ]);
-
-        // Simpan opsi dan file audio opsi
-        if ($req->hasFile('audio-opsi')) {
-            foreach ($req->file('audio-opsi') as $key => $audioOpsi) {
-                $audio_name = "/audio-opsi/" . time();
-                $audio_opsi_path = public_path() . $audio_name;
-                $audioOpsiPath = $audioOpsi->store($audio_opsi_path);
-                Opsi::create([
-                    'audio_path' => $audioOpsiPath,
-                    'id_soal' => $soal->id,
+        if ($req->input('tipe') === 'opsi') {
+            if ($req->hasFile('audio_soal')) {
+                $audio_file = $req->file('audio_soal');
+                $audio_extension = $audio_file->getClientOriginalExtension();
+                $audio_name = time() . '.' . $audio_extension;
+                $audioSoalPath = public_path('audio-soal/' . $audio_name);
+                $audio_file->move($audioSoalPath, $audio_name);
+                // simpan dengan audio
+                $soal = Soal::create([
+                    'pertanyaan' => $content,
+                    'tipe' => 'opsi',
+                    'audio_file' => $audio_name,
+                ]);
+            }
+            // simpan tanpa audio
+            if (!$req->hasFile('audio_soal')) {
+                $soal = Soal::create([
+                    'pertanyaan' => $content,
+                    'tipe' => 'opsi',
                 ]);
             }
         }
 
+        // Inisialisasi array untuk menyimpan nama file audio
+        $audio_names = [];
+
+        // Simpan opsi dan file audio opsi
+        if ($req->hasFile('audio_opsi')) {
+            $audio_files = $req->file('audio_opsi');
+
+            foreach ($audio_files as $audioOpsi) {
+                if ($audioOpsi->isValid()) {
+                    $audio_extension = $audioOpsi->getClientOriginalExtension();
+                    $audio_name = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
+                    $audioOpsiPath = public_path('audio-opsi/' . $audio_name);
+                    $audioOpsi->move($audioOpsiPath, $audio_name);
+
+                    // Simpan nama file audio ke dalam array bersama dengan index opsi
+                    $audio_names[] = [
+                        'index' => count($audio_names),
+                        'name' => $audio_name,
+                    ];
+                }
+            }
+        }
         // Simpan opsi
         foreach ($req->input('opsi') as $key => $io) {
-            // Dapatkan bidang atau elemen terkait lainnya untuk opsi ini
             $isJawabanBenar = $req->has('jawaban_benar') && in_array($key, $req->input('jawaban_benar'));
 
             $dom = new \DomDocument();
-            $dom->loadHtml($io, 9);
+            $dom->loadHtml($io, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
             $imageFile = $dom->getElementsByTagName('img');
 
             foreach ($imageFile as $item => $image) {
                 $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-
-                // Memperbaiki pembuatan nama file dengan menambahkan ID opsi ke nama file
                 $image_name = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
                 $path = public_path() . $image_name;
                 file_put_contents($path, $imgeData);
-
                 $image->removeAttribute('src');
                 $image->setAttribute('src', $image_name);
             }
             $contentOpsi = $dom->saveHTML();
+            /// Mengecek apakah ada file audio yang sesuai dengan opsi saat ini
+            $audio_name = null;
 
-            // Simpan $contentOpsi dan bidang lain terkait ke database
+            foreach ($audio_names as $audio) {
+                if ($audio['index'] == $key) {
+                    $audio_name = $audio['name'];
+                    break;
+                }
+            }
             Opsi::create([
                 'opsi' => $contentOpsi,
-                'is_jawaban_benar' => $isJawabanBenar,
+                'audio_file' => $audio_name,
                 'id_soal' => $soal->id,
+                'is_jawaban_benar' => $isJawabanBenar,
             ]);
         }
         return redirect('/admin-create-soal')->with('success', "Submitted Successfully!");
