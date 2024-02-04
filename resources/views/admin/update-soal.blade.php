@@ -29,7 +29,15 @@
                                                 <source src="{{ asset('audio-soal/' . $soal['audio_file'] . '/' . $soal['audio_file'])}}" type="audio/{{ pathinfo($soal['audio_file'], PATHINFO_EXTENSION) }}">
                                                 Your browser does not support the audio element.
                                             </audio>
+                                            <a href="/admin-delete-audio-soal/{{$soal['id']}}" type="button" class="btn btn-danger remove-audio-soal" style="margin-left:10px; margin-top:-46px;">X</a>
                                         @endif
+                                    </div>
+                                </div>
+
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Audio (opsional)</label>
+                                    <div class="col-sm-10">
+                                        <input type="file" name="audio_soal" accept="audio/*" class="">
                                     </div>
                                 </div>
 
@@ -59,11 +67,19 @@
                                                         </div>
                                                         <a href="/admin-delete-opsi/{{$o['id']}}" type="button" class="btn btn-danger remove-opsi" style="margin-left:10px">X</a>
                                                         @if($o['audio_file'])
-                                                            <audio controls preload="none">
+                                                            <audio controls preload="none" data-opsi-id="{{ $key }}" data-audio-opsi-id="{{ $o['id'] }}">
                                                                 <source src="{{ asset('audio-opsi/' . $o['audio_file'] . '/' . $o['audio_file'])}}" type="audio/{{ pathinfo($o['audio_file'], PATHINFO_EXTENSION) }}">
                                                                 Your browser does not support the audio element.
                                                             </audio>
+                                                            <a href="/admin-delete-audio-opsi/{{$o['id']}}" type="button" class="btn btn-danger remove-audio-opsi" style="margin-left:10px; margin-top:20px;">X</a>
                                                         @endif
+                                                    </div>
+                                                    <div class="form-group row">
+                                                        <label class="col-sm-2 col-form-label">Audio (opsional)</label>
+                                                        <div class="col-sm-10">
+                                                            <input type="file" name="audio_opsi[]" accept="audio/*" class="" data-audio-opsi-id="{{ $o['id'] }}">
+                                                            <input type="hidden" name="audio_opsi_id[{{ $key }}]" value="{{ $key }}">
+                                                        </div>
                                                     </div>
                                                     <br>
                                                 @endforeach
@@ -127,24 +143,6 @@
         textareaOpsi.cols = '30';
         textareaOpsi.rows = '10';
 
-        $(document).ready(function() {
-            $('.summernote').summernote({
-                height: 150,
-                codeviewFilter: true,
-                codeviewIframeFilter: true,
-                toolbar: [
-                    // [groupName, [list of button]]
-                    ['style', ['bold', 'italic', 'underline', 'clear']],
-                    ['font', ['strikethrough', 'superscript', 'subscript']],
-                    ['fontsize', ['fontsize']],
-                    ['color', ['color']],
-                    ['para', ['ul', 'ol', 'paragraph']],
-                    ['insert', ['link', 'picture']],
-                    ['height', ['height']]
-                ],
-            });
-        });
-
         const divInputGroupPrepend = document.createElement('div');
         divInputGroupPrepend.className = 'input-group-prepend';
 
@@ -155,13 +153,52 @@
         inputRadio.type = 'radio';
         inputRadio.name = 'jawaban_benar[]';
         inputRadio.value = '0';
-        
+
         divInputGroupText.appendChild(inputRadio);
         divInputGroupPrepend.appendChild(divInputGroupText);
         divInputGroup.appendChild(textareaOpsi);
         divInputGroup.appendChild(divInputGroupPrepend);
 
+        // Tambahkan input file audio
+        const audioFormGroup = document.createElement('div');
+        audioFormGroup.className = 'form-group row';
+
+        const labelAudio = document.createElement('label');
+        labelAudio.className = 'col-sm-2 col-form-label';
+        labelAudio.textContent = 'Audio (opsional)';
+
+        const divAudioCol = document.createElement('div');
+        divAudioCol.className = 'col-sm-10';
+
+        const inputAudio = document.createElement('input');
+        inputAudio.type = 'file';
+        inputAudio.name = 'audio_opsi[]';
+        inputAudio.accept = 'audio/*';
+        inputAudio.className = '';
+
+        divAudioCol.appendChild(inputAudio);
+        audioFormGroup.appendChild(labelAudio);
+        audioFormGroup.appendChild(divAudioCol);
+
+        // Tambahkan ke kontainer
         opsiContainer.appendChild(divInputGroup);
+        opsiContainer.appendChild(audioFormGroup);
+
+        // Inisialisasi Summernote pada elemen terakhir
+        $('.summernote').summernote({
+            height: 150,
+            codeviewFilter: true,
+            codeviewIframeFilter: true,
+            toolbar: [
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['insert', ['link', 'picture']],
+                ['height', ['height']]
+            ],
+        });
 
         // Hapus event listener dari tombol tambah untuk menghindari penambahan berulang
         addButton.removeEventListener('click', tambahFormInputOpsi);
@@ -207,7 +244,14 @@
                                       '<input type="radio" name="jawaban_benar[]" value="' + newIndex + '">' +
                                   '</div>' +
                               '</div>' +
-                          '</div>';
+                          '</div>'+
+                          '<div class="form-group row">'+
+                                '<label class="col-sm-2 col-form-label">Audio(opsional)</label>'+
+                                '<div class="col-sm-10">'+
+                                    '<input type="file" name="audio_opsi['+ newIndex +']" accept="audio/*" class="">'+
+                                    '<input type="hidden" name="audio_opsi_id[]">'+
+                                '</div>'+
+                            '</div>';
             opsiContainer.append(newForm);
               // Inisialisasi Summernote pada elemen terakhir
               opsiContainer.find('.opsi-input:last').summernote({
@@ -240,6 +284,68 @@
         Swal.fire({
             title: 'Are you sure?',
             text: "This Opsi will be Deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#09bf25',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete!',
+            width: '600px',
+            height: '20px'
+            }).then((result) => {
+            if (result.value) {
+                document.location.href = delButton;
+            }else{
+                Swal.fire({
+                title: 'Canceled!',
+                icon: 'error',
+                timer: 1300,
+                showConfirmButton: false, 
+            })
+            }
+        })
+        });
+    });
+  </script>
+
+<script>
+    $(document).ready(function() {
+        $('.remove-audio-soal').on('click',function(e){
+        e.preventDefault();
+        const delButton = $(this).attr('href');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This Audio will be Deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#09bf25',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete!',
+            width: '600px',
+            height: '20px'
+            }).then((result) => {
+            if (result.value) {
+                document.location.href = delButton;
+            }else{
+                Swal.fire({
+                title: 'Canceled!',
+                icon: 'error',
+                timer: 1300,
+                showConfirmButton: false, 
+            })
+            }
+        })
+        });
+    });
+  </script>
+
+<script>
+    $(document).ready(function() {
+        $('.remove-audio-opsi').on('click',function(e){
+        e.preventDefault();
+        const delButton = $(this).attr('href');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This Audio Opsi will be Deleted!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#09bf25',

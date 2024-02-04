@@ -64,6 +64,8 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     Route::get('/admin-create-soal', 'App\Http\Controllers\AdminContentController@CreateSoal');
     Route::get('/admin-delete-soal/{id}', 'App\Http\Controllers\AdminContentController@DeleteSoal');
     Route::get('/admin-delete-opsi/{id}', 'App\Http\Controllers\AdminContentController@DeleteOpsi');
+    Route::get('/admin-delete-audio-soal/{id}', 'App\Http\Controllers\AdminContentController@DeleteAudioSoal');
+    Route::get('/admin-delete-audio-opsi/{id}', 'App\Http\Controllers\AdminContentController@DeleteAudioOpsi');
     Route::get('/admin-update-soal/{id}', 'App\Http\Controllers\AdminContentController@UpdateSoal');
     Route::post('/admin-update-soal/{id}', 'App\Http\Controllers\AdminContentController@PostUpdateSoal');
     Route::post('/admin-create-soal', 'App\Http\Controllers\AdminContentController@PostCreateSoal');
