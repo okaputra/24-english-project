@@ -301,8 +301,8 @@ class AdminContentController extends Controller
         $content = $dom->saveHTML();
         $soal = Soal::find($id);
 
-        // Simpan soal dengan tipe deskripsi dan file audio pertanyaan atau opsi
-        if ($req->input('tipe') === 'deskripsi' || $req->input('tipe') === 'opsi') {
+        // Simpan soal dengan tipe deskripsi dan file audio pertanyaan
+        if ($req->input('tipe') === 'deskripsi') {
             $audio_name_soal = null;
             // Cek apakah ada penggantian audio soal
             if ($req->hasFile('audio_soal')) {
@@ -324,135 +324,156 @@ class AdminContentController extends Controller
             ]);
         }
 
-        // Simpan opsi lama
-        $old_opsi = $soal->opsi;
-        // dd($old_opsi);
-
-        $jumlah_opsi = count($req->input('opsi'));
-        // Inisialisasi array untuk menyimpan nama file audio
-        $audio_names = [];
-
-        // Simpan opsi dan file audio opsi
-        if ($req->hasFile('audio_opsi')) {
-            $audio_files = $req->file('audio_opsi');
-
-            foreach ($old_opsi as $key => $opsi) {
-                // Cek apakah ada file audio yang sesuai dengan opsi saat ini
-                $audio_name_opsi = null;
-
-                // Cek apakah ada penggantian audio opsi
-                if ($key < $jumlah_opsi && $req->hasFile('audio_opsi.'.$key)) {
-                    // Audio file baru diunggah, gunakan yang baru
-                    $audio_file = $audio_files[$key];
-                    $audio_extension = $audio_file->getClientOriginalExtension();
-                    $audio_name_opsi = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
-                    $audioOpsiPath = public_path('audio-opsi/' . $audio_name_opsi);
-                    $audio_file->move($audioOpsiPath, $audio_name_opsi);
-                } elseif (isset($opsi->audio_file)) {
-                    // Gunakan audio opsi yang sudah ada jika tidak ada penggantian
-                    $audio_name_opsi = $opsi->audio_file;
-                }
-
-                // Simpan nama file audio ke dalam array bersama dengan index opsi
-                $audio_names[] = [
-                    'index' => $key,
-                    'name' => $audio_name_opsi,
-                ];
-            }
-        }
-
-        // Update atau buat opsi
-        foreach ($old_opsi as $key => $existingOpsi) {
-            $isJawabanBenar = $req->input('jawaban_benar')[0] == $key;
-
-            // Temukan opsi yang cocok pada data yang dikirimkan
-            $submittedOpsi = $req->input('opsi.' . $key);
-            $submittedAudioId = $req->input('audio_opsi_id.' . $key);
-
-            $dom = new \DomDocument();
-            @$dom->loadHtml($submittedOpsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
-            $imageFile = $dom->getElementsByTagName('img');
-
-            foreach ($imageFile as $item => $image) {
-                if (strpos($image->getAttribute('src'), 'data:image/') === 0) {
-                    $imageData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-                    $imageName = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
-                    $path = public_path() . $imageName;
-                    file_put_contents($path, $imageData);
-
-                    $image->removeAttribute('src');
-                    $image->setAttribute('src', $imageName);
-                }
+        // Simpan soal dengan tipe opsi, cek audio pada soal dan cek juga audio beserta konten pada opsi
+        if ($req->input('tipe') === 'opsi') {
+            $audio_name_soal = null;
+            // Cek apakah ada penggantian audio soal
+            if ($req->hasFile('audio_soal')) {
+                $audio_file_soal = $req->file('audio_soal');
+                $audio_extension_soal = $audio_file_soal->getClientOriginalExtension();
+                $audio_name_soal = time() . '.' . $audio_extension_soal;
+                $audioSoalPath = public_path('audio-soal/' . $audio_name_soal);
+                $audio_file_soal->move($audioSoalPath, $audio_name_soal);
+            } elseif ($soal->audio_file) {
+                // Gunakan audio yang sudah ada jika tidak ada penggantian
+                $audio_name_soal = $soal->audio_file;
             }
 
-            $contentOpsi = $dom->saveHTML();
+            // Update soal
+            $soal->update([
+                'pertanyaan' => $content,
+                'tipe' => $req->tipe,
+                'audio_file' => $audio_name_soal,
+            ]);
 
-            // Cek apakah ada penggantian audio opsi
-            $audio_name_opsi = null;
+            // Simpan opsi lama
+            $old_opsi = $soal->opsi;
+            // dd($old_opsi);
+
+            $jumlah_opsi = count($req->input('opsi'));
+            // Inisialisasi array untuk menyimpan nama file audio
+            $audio_names = [];
+
+            // Simpan opsi dan file audio opsi
             if ($req->hasFile('audio_opsi')) {
-                foreach ($audio_names as $audio) {
-                    if ($audio['index'] == $submittedAudioId) {
-                        $audio_name_opsi = $audio['name'];
-                        break;
+                $audio_files = $req->file('audio_opsi');
+
+                foreach ($old_opsi as $key => $opsi) {
+                    // Cek apakah ada file audio yang sesuai dengan opsi saat ini
+                    $audio_name_opsi = null;
+
+                    // Cek apakah ada penggantian audio opsi
+                    if ($key < $jumlah_opsi && $req->hasFile('audio_opsi.'.$key)) {
+                        // Audio file baru diunggah, gunakan yang baru
+                        $audio_file = $audio_files[$key];
+                        $audio_extension = $audio_file->getClientOriginalExtension();
+                        $audio_name_opsi = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
+                        $audioOpsiPath = public_path('audio-opsi/' . $audio_name_opsi);
+                        $audio_file->move($audioOpsiPath, $audio_name_opsi);
+                    } elseif (isset($opsi->audio_file)) {
+                        // Gunakan audio opsi yang sudah ada jika tidak ada penggantian
+                        $audio_name_opsi = $opsi->audio_file;
                     }
+
+                    // Simpan nama file audio ke dalam array bersama dengan index opsi
+                    $audio_names[] = [
+                        'index' => $key,
+                        'name' => $audio_name_opsi,
+                    ];
                 }
-            } elseif ($existingOpsi->audio_file) {
-                // Gunakan audio opsi yang sudah ada jika tidak ada penggantian
-                $audio_name_opsi = $existingOpsi->audio_file;
             }
 
             // Update atau buat opsi
-            if ($submittedOpsi) {
-                $existingOpsi->update([
-                    'opsi' => $contentOpsi,
-                    'audio_file' => $audio_name_opsi,
-                    'is_jawaban_benar' => $isJawabanBenar,
-                ]);
-            } else {
-                // Jika tidak ada opsi yang di-submit, mungkin terjadi kesalahan
-                return redirect('/admin-create-soal')->with('error', "Error: Opsi tidak ditemukan.");
-            }
-        }
+            foreach ($old_opsi as $key => $existingOpsi) {
+                $isJawabanBenar = $req->input('jawaban_benar')[0] == $key;
 
-        // Proses penambahan opsi baru
-        for ($i = count($old_opsi); $i < $jumlah_opsi; $i++) {
-            $isJawabanBenar = $req->has('jawaban_benar') && in_array($key, $req->input('jawaban_benar'));
-            $newOpsi = $req->input('opsi.' . $i);
+                // Temukan opsi yang cocok pada data yang dikirimkan
+                $submittedOpsi = $req->input('opsi.' . $key);
+                $submittedAudioId = $req->input('audio_opsi_id.' . $key);
 
-            if ($newOpsi) {
                 $dom = new \DomDocument();
-                @$dom->loadHtml($newOpsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                @$dom->loadHtml($submittedOpsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
                 $imageFile = $dom->getElementsByTagName('img');
 
                 foreach ($imageFile as $item => $image) {
-                    $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-                    $image_name = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
-                    $path = public_path() . $image_name;
-                    file_put_contents($path, $imgeData);
-                    $image->removeAttribute('src');
-                    $image->setAttribute('src', $image_name);
-                }
-                $contentOpsi = $dom->saveHTML();
-                /// Mengecek apakah ada file audio yang sesuai dengan opsi saat ini
-                $audio_name = null;
+                    if (strpos($image->getAttribute('src'), 'data:image/') === 0) {
+                        $imageData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+                        $imageName = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
+                        $path = public_path() . $imageName;
+                        file_put_contents($path, $imageData);
 
-                foreach ($audio_names as $audio) {
-                    if ($audio['index'] == $key) {
-                        $audio_name = $audio['name'];
-                        break;
+                        $image->removeAttribute('src');
+                        $image->setAttribute('src', $imageName);
                     }
                 }
-                Opsi::create([
-                    'opsi' => $contentOpsi,
-                    'audio_file' => $audio_name,
-                    'id_soal' => $soal->id,
-                    'is_jawaban_benar' => $isJawabanBenar,
-                ]);
+
+                $contentOpsi = $dom->saveHTML();
+
+                // Cek apakah ada penggantian audio opsi
+                $audio_name_opsi = null;
+                if ($req->hasFile('audio_opsi')) {
+                    foreach ($audio_names as $audio) {
+                        if ($audio['index'] == $submittedAudioId) {
+                            $audio_name_opsi = $audio['name'];
+                            break;
+                        }
+                    }
+                } elseif ($existingOpsi->audio_file) {
+                    // Gunakan audio opsi yang sudah ada jika tidak ada penggantian
+                    $audio_name_opsi = $existingOpsi->audio_file;
+                }
+
+                // Update atau buat opsi
+                if ($submittedOpsi) {
+                    $existingOpsi->update([
+                        'opsi' => $contentOpsi,
+                        'audio_file' => $audio_name_opsi,
+                        'is_jawaban_benar' => $isJawabanBenar,
+                    ]);
+                } else {
+                    // Jika tidak ada opsi yang di-submit, mungkin terjadi kesalahan
+                    return redirect('/admin-create-soal')->with('error', "Opsi tidak ditemukan.");
+                }
+            }
+
+            // Proses penambahan opsi baru
+            for ($i = count($old_opsi); $i < $jumlah_opsi; $i++) {
+                $isJawabanBenar = $req->has('jawaban_benar') && in_array($key, $req->input('jawaban_benar'));
+                $newOpsi = $req->input('opsi.' . $i);
+
+                if ($newOpsi) {
+                    $dom = new \DomDocument();
+                    @$dom->loadHtml($newOpsi, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+                    $imageFile = $dom->getElementsByTagName('img');
+
+                    foreach ($imageFile as $item => $image) {
+                        $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+                        $image_name = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
+                        $path = public_path() . $image_name;
+                        file_put_contents($path, $imgeData);
+                        $image->removeAttribute('src');
+                        $image->setAttribute('src', $image_name);
+                    }
+                    $contentOpsi = $dom->saveHTML();
+                    /// Mengecek apakah ada file audio yang sesuai dengan opsi saat ini
+                    $audio_name = null;
+
+                    foreach ($audio_names as $audio) {
+                        if ($audio['index'] == $key) {
+                            $audio_name = $audio['name'];
+                            break;
+                        }
+                    }
+                    Opsi::create([
+                        'opsi' => $contentOpsi,
+                        'audio_file' => $audio_name,
+                        'id_soal' => $soal->id,
+                        'is_jawaban_benar' => $isJawabanBenar,
+                    ]);
+                }
             }
         }
-
         return redirect('/admin-create-soal')->with('success', "Berhasil Diperbarui!");
-
     }
 
     public function DeleteOpsi($id)
