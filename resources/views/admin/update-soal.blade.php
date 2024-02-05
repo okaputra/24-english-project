@@ -14,6 +14,12 @@
                             <form action="/admin-update-soal/{{$soal['id']}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Tipe soal ini</label>
+                                    <div class="col-sm-10">
+                                        <h5>{{$soal['tipe']}}</h5>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Pertanyaan</label>
                                     <div class="col-sm-10">
                                         <textarea name="pertanyaan" class="summernote" id="" cols="30" rows="10">{!!$soal['pertanyaan']!!}</textarea>
@@ -35,9 +41,9 @@
                                 </div>
 
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Tipe Soal</label>
+                                    {{-- <label class="col-sm-2 col-form-label">Tipe Soal</label> --}}
                                     <div class="col-sm-10">
-                                        <input type="text" name="tipe" class="form-control" value="{{$soal['tipe']}}" readonly>
+                                        <input type="hidden" name="tipe" class="form-control" value="{{$soal['tipe']}}" readonly>
                                     </div>
                                 </div>
 
