@@ -82,6 +82,9 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     // SUB COURSE CONTENT
     Route::get('/admin-input-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@AddNewSubCourseContent');
     Route::post('/admin-input-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@PostSubCourseContent');
+    Route::get('/admin-update-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@UpdateSubCourseContent');
+    Route::post('/admin-update-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@PostUpdateSubCourseContent');
+    Route::get('/admin-delete-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@DeleteSubCourseContent');
 
 });
 

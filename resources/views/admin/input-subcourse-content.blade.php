@@ -55,9 +55,15 @@
                                     </div>
                                 </fieldset>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Video</label>
+                                    <label class="col-sm-2 col-form-label">Learning Video</label>
                                     <div class="col-sm-10">
                                         <input class="form-control" name="video" accept="video/mp4" type="file" id="formFile">
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Video Thumbnail</label>
+                                    <div class="col-sm-10">
+                                        <input class="form-control" name="video_thumbnail" accept="image/png, image/gif, image/jpeg" type="file" id="formFile">
                                     </div>
                                 </div>
                                 <div class="form-group row">
@@ -71,6 +77,58 @@
                 </div>
             </div>
         </div>
+
+        {{-- Datatable --}}
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4 class="card-title">Daftar Category/Quiz Pada Sub Course Ini</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="example" class="display" style="min-width: 845px">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Category Name</th>
+                                        <th>Duration</th>
+                                        <th>Video</th>
+                                        <th>Option</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
+                                        $no=1;
+                                    @endphp
+                                    @foreach ($quiz as $q)
+                                    <tr>
+                                        <td style="color: black">{{$no++}}</td>
+                                        <td style="color: black">{{$q['nama_quiz']}}</td>
+                                        <td style="color: black">{{$q['durasi']}} Minutes</td>
+                                        <td style="color: black">
+                                            <video width="320" height="240" controls poster="{{asset('/images/video-thumbnail/'. $q['video_thumbnail'] .'/'.$q['video_thumbnail'])}}">
+                                                <source src="{{ asset('videos/quiz-video/' . $q['video_path'] . '/' . $q['video_path'])}}" type="video/{{ pathinfo($q['video_path'], PATHINFO_EXTENSION) }}" type="video/mp4">
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        </td>
+                                        <td>
+                                            <span style="color: black">
+                                                <a href="/admin-update-subcourse-content/{{$q['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
+                                                <a href="/admin-delete-subcourse-content/{{$q['id']}}" type="button" class="mr-4 delSub"><i class="fa fa-close color-danger"></i></a>
+                                            </span>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{-- End --}}
+
     </div>
 </div>
 @endsection

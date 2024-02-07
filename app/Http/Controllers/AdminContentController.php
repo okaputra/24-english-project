@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Mews\Purifier\Facades\Purifier;
 use App\Models\tb_soal as Soal;
 use App\Models\tb_opsi as Opsi;
 use App\Models\tb_paket as Paket;
@@ -20,9 +19,11 @@ class AdminContentController extends Controller
     {
         $paket = Paket::all();
         $id_sub_course = $id;
+        $quiz = Quiz::where('id_sub_course', $id_sub_course)->get();
         return view('admin.input-subcourse-content', [
             'paket' => $paket,
-            'id_sub_course' => $id_sub_course
+            'id_sub_course' => $id_sub_course,
+            'quiz' => $quiz
         ]);
     }
 
@@ -33,7 +34,8 @@ class AdminContentController extends Controller
             "id_paket" => 'required',
             "durasi" => 'required',
             "is_berbayar" => 'required',
-            "video" => 'required|file|mimetypes:video/mp4'
+            "video" => 'required|file|mimetypes:video/mp4',
+            "video_thumbnail" => 'required|image|max:2048|mimes:jpg,jpeg,png'
         ]);
 
         if (!$req->hasFile('video')) {
@@ -44,16 +46,42 @@ class AdminContentController extends Controller
         $path = public_path() . '/videos/quiz-video/' . $filename;
         if (!File::isDirectory($path))
             File::makeDirectory($path, 0755, true);
-        $quiz = Quiz::create([
+
+        if (!$req->hasFile('video_thumbnail')) {
+            return redirect()->back()->with('error', "File Not Found!");
+        }
+        $videoThumbnail = $req->file('video_thumbnail');
+        $Thumbnailfilename = date('YmdHis') . "." . $videoThumbnail->getClientOriginalExtension();
+        $pathThumbnailVideo = public_path() . '/images/video-thumbnail/' . $Thumbnailfilename;
+        if (!File::isDirectory($pathThumbnailVideo))
+            File::makeDirectory($pathThumbnailVideo, 0755, true);
+        Quiz::create([
             'nama_quiz' => $req->nama_quiz,
             'id_paket' => $req->id_paket,
             'id_sub_course' => $id,
             'durasi' => $req->durasi,
             'is_berbayar' => $req->is_berbayar,
-            'video' => $filename,
+            'video_path' => $filename,
+            'video_thumbnail' => $Thumbnailfilename,
         ]);
         $video_quiz->move($path, $filename);
+        $videoThumbnail->move($pathThumbnailVideo, $Thumbnailfilename);
         return redirect()->back()->with('success', "Quiz Submitted Succesfully!");
+    }
+
+    public function UpdateSubCourseContent($id)
+    {
+        return "Coming Soon";
+    }
+
+    public function PostUpdateSubCourseContent(Request $req, $id)
+    {
+        return "Coming Soon";
+    }
+
+    public function DeleteSubCourseContent($id)
+    {
+        return "Coming Soon";
     }
 
 
@@ -244,7 +272,7 @@ class AdminContentController extends Controller
             }
         }
 
-        if($soal['tipe'] == 'opsi'){
+        if ($soal['tipe'] == 'opsi') {
             if ($opsi->audio_file) {
                 $audioPath = public_path('audio-opsi/' . $opsi->audio_file . '/' . $opsi->audio_file);
                 if (File::exists($audioPath)) {
@@ -363,7 +391,7 @@ class AdminContentController extends Controller
                     $audio_name_opsi = null;
 
                     // Cek apakah ada penggantian audio opsi
-                    if ($key < $jumlah_opsi && $req->hasFile('audio_opsi.'.$key)) {
+                    if ($key < $jumlah_opsi && $req->hasFile('audio_opsi.' . $key)) {
                         // Audio file baru diunggah, gunakan yang baru
                         $audio_file = $audio_files[$key];
                         $audio_extension = $audio_file->getClientOriginalExtension();
@@ -506,7 +534,8 @@ class AdminContentController extends Controller
         return redirect()->back()->with('success', "Opsi deleted successfully!");
     }
 
-    public function DeleteAudioSoal($id){
+    public function DeleteAudioSoal($id)
+    {
         $soal = Soal::find($id);
         if ($soal->audio_file) {
             $audioPath = public_path('audio-soal/' . $soal->audio_file . '/' . $soal->audio_file);
@@ -520,7 +549,8 @@ class AdminContentController extends Controller
         return redirect()->back()->with('success', "Audio Soal deleted successfully!");
     }
 
-    public function DeleteAudioOpsi($id){
+    public function DeleteAudioOpsi($id)
+    {
         $opsi = Opsi::find($id);
         if ($opsi->audio_file) {
             $audioPath = public_path('audio-opsi/' . $opsi->audio_file . '/' . $opsi->audio_file);
@@ -572,7 +602,8 @@ class AdminContentController extends Controller
         $soal_terpilih = PaketTerpilih::where('id_paket', $id)->get();
         // Ambil data soal terpilih sebagai array
         $soal_terpilih_ids = $soal_terpilih->pluck('id_soal')->toArray();
-        $soal_all = Soal::all();
+        // Ambil dan tampilkan hanya soal yang belum terpilih
+        $soal_all = Soal::whereNotIn('id', $soal_terpilih_ids)->get();
         // Ambil semua soal terkait
         $soal = Soal::whereIn('id', $soal_terpilih_ids)->get();
         return view('admin.update-paket', [

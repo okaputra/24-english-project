@@ -32,7 +32,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>No</th>
-                                                                <th>Soal</th>
+                                                                <th>Pertanyaan</th>
                                                                 <th>Select</th>
                                                             </tr>
                                                         </thead>
@@ -43,7 +43,15 @@
                                                             @foreach ($soal as $s)
                                                                 <tr>
                                                                     <td style="color: black">{{ $no++ }}</td>
-                                                                    <td style="color: black">{!! $s['pertanyaan'] !!}</td>
+                                                                    <td style="color: black">
+                                                                        {!! $s['pertanyaan'] !!}
+                                                                        @if($s['audio_file'])
+                                                                            <audio controls preload="none">
+                                                                                <source src="{{ asset('audio-soal/' . $s['audio_file'] . '/' . $s['audio_file'])}}" type="audio/{{ pathinfo($s['audio_file'], PATHINFO_EXTENSION) }}">
+                                                                                Your browser does not support the audio element.
+                                                                            </audio>
+                                                                        @endif
+                                                                    </td>
                                                                     <td>
                                                                         <span style="color: blue">
                                                                             <div class="input-group-prepend">
@@ -76,7 +84,7 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>No</th>
-                                                                <th>Soal</th>
+                                                                <th>Pertanyaan</th>
                                                                 <th>Select</th>
                                                             </tr>
                                                         </thead>
@@ -87,7 +95,15 @@
                                                             @foreach ($soal_all as $s)
                                                                 <tr>
                                                                     <td style="color: black">{{ $no++ }}</td>
-                                                                    <td style="color: black">{!! $s['pertanyaan'] !!}</td>
+                                                                    <td style="color: black">
+                                                                        {!! $s['pertanyaan'] !!}
+                                                                        @if($s['audio_file'])
+                                                                            <audio controls preload="none">
+                                                                                <source src="{{ asset('audio-soal/' . $s['audio_file'] . '/' . $s['audio_file'])}}" type="audio/{{ pathinfo($s['audio_file'], PATHINFO_EXTENSION) }}">
+                                                                                Your browser does not support the audio element.
+                                                                            </audio>
+                                                                        @endif
+                                                                    </td>
                                                                     <td>
                                                                         <span style="color: blue">
                                                                             <div class="input-group-prepend">
