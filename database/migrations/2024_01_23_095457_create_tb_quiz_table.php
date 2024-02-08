@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->integer("durasi");
             $table->integer("id_sub_course");
             $table->integer("id_paket");
+            $table->boolean("is_berbayar")->default(1);
             $table->timestamps();
         });
     }

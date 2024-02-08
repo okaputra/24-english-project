@@ -180,50 +180,59 @@ class AdminContentController extends Controller
         if ($req->hasFile('audio_opsi')) {
             $audio_files = $req->file('audio_opsi');
 
-            foreach ($audio_files as $audioOpsi) {
-                if ($audioOpsi->isValid()) {
-                    $audio_extension = $audioOpsi->getClientOriginalExtension();
-                    $audio_name = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
-                    $audioOpsiPath = public_path('audio-opsi/' . $audio_name);
-                    $audioOpsi->move($audioOpsiPath, $audio_name);
+            foreach ($req->input('opsi') as $key => $io) {
+                // Cek apakah ada file audio yang sesuai dengan opsi saat ini
+                $audio_name_opsi = null;
 
-                    // Simpan nama file audio ke dalam array bersama dengan index opsi
-                    $audio_names[] = [
-                        'index' => count($audio_names),
-                        'name' => $audio_name,
-                    ];
+                // Cek apakah ada pengunggahan file audio untuk opsi ini
+                if ($req->hasFile('audio_opsi.'.$key)) {
+                    $audio_file = $audio_files[$key];
+                    $audio_extension = $audio_file->getClientOriginalExtension();
+                    $audio_name_opsi = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
+                    $audioOpsiPath = public_path('audio-opsi/' . $audio_name_opsi);
+                    $audio_file->move($audioOpsiPath, $audio_name_opsi);
                 }
+
+                // Simpan nama file audio ke dalam array bersama dengan index opsi
+                $audio_names[$key] = [
+                    'name' => $audio_name_opsi,
+                ];
             }
         }
-        // Simpan opsi
+
+        // Simpan opsi baru
         foreach ($req->input('opsi') as $key => $io) {
             $isJawabanBenar = $req->has('jawaban_benar') && in_array($key, $req->input('jawaban_benar'));
 
+            // Lakukan pengolahan teks opsi
             $dom = new \DomDocument();
             $dom->loadHtml($io, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
             $imageFile = $dom->getElementsByTagName('img');
 
             foreach ($imageFile as $item => $image) {
-                $imgeData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
-                $image_name = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
-                $path = public_path() . $image_name;
-                file_put_contents($path, $imgeData);
-                $image->removeAttribute('src');
-                $image->setAttribute('src', $image_name);
-            }
-            $contentOpsi = $dom->saveHTML();
-            /// Mengecek apakah ada file audio yang sesuai dengan opsi saat ini
-            $audio_name = null;
+                if (strpos($image->getAttribute('src'), 'data:image/') === 0) {
+                    $imageData = base64_decode(explode(',', explode(';', $image->getAttribute('src'))[1])[1]);
+                    $imageName = "/soal-images-opsi/" . time() . '_opsi_' . $key . '_' . $item . '.png';
+                    $path = public_path() . $imageName;
+                    file_put_contents($path, $imageData);
 
-            foreach ($audio_names as $audio) {
-                if ($audio['index'] == $key) {
-                    $audio_name = $audio['name'];
-                    break;
+                    $image->removeAttribute('src');
+                    $image->setAttribute('src', $imageName);
                 }
             }
+
+            $contentOpsi = $dom->saveHTML();
+
+            // Tentukan nama file audio untuk opsi saat ini
+            $audio_name_opsi = null;
+            if (isset($audio_names[$key])) {
+                $audio_name_opsi = $audio_names[$key]['name'];
+            }
+
+            // Simpan opsi baru ke database
             Opsi::create([
                 'opsi' => $contentOpsi,
-                'audio_file' => $audio_name,
+                'audio_file' => $audio_name_opsi,
                 'id_soal' => $soal->id,
                 'is_jawaban_benar' => $isJawabanBenar,
             ]);

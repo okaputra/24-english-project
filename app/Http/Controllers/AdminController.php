@@ -32,7 +32,6 @@ class AdminController extends Controller
         $req->validate([
             "course_name" => 'required',
             "description" => 'required',
-            "pricing" => 'required',
             "components.*" => 'required',
             "thumbnail" => 'required|image|max:2048|mimes:jpg,jpeg,png'
         ]);
@@ -49,7 +48,6 @@ class AdminController extends Controller
         $course = Course::create([
             'course_name' => $req->course_name,
             'description' => $req->description,
-            'pricing' => $req->pricing,
             'components' => $combinedInput,
             'thumbnail' => $filename,
         ]);
@@ -124,9 +122,15 @@ class AdminController extends Controller
 
     public function PostUpdateSubCourse(Request $req, $id, $id_course)
     {
+        $req->validate([
+            "sub_course" => 'required',
+            "pricing" => 'required',
+        ]);
+
         $sub_course = Sub::find($id);
         $sub_course->update([
             'sub_course' => $req->sub_course,
+            'pricing' => $req->pricing,
         ]);
 
         $course = Course::find($id_course);
@@ -201,7 +205,6 @@ class AdminController extends Controller
         $course->update([
             'course_name' => $req->course_name,
             'description' => $req->description,
-            'pricing' => $req->pricing,
             // 'components' => $combinedInput
         ]);
 

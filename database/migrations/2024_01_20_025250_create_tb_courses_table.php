@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->string("course_name",100);
             $table->longText("description");
-            $table->string('pricing');
             $table->string('components');
             $table->string("thumbnail");
             $table->integer("rating")->nullable();

@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string("sub_course",100);
             $table->integer("id_course");
             $table->boolean("is_berbayar")->default(1);
+            $table->string('pricing')->nullable();
             $table->timestamps();
         });
     }

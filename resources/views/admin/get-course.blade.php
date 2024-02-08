@@ -18,7 +18,6 @@
                         <p class="card-text">{{Str::limit($c['description'], 120, '...')}}</p>
                     </div>
                     <div class="card-footer">
-                        <p class="card-text d-inline">Rp {{number_format($c['pricing'])}}</p>
                         <a href="/admin-detail-course/{{$c['id']}}" class="card-link btn btn-outline-primary float-right">Detail</a>
                         <a href="/admin-delete-course/{{$c['id']}}" class="card-link btn btn-danger float-right delCourse" style="margin-right: 10px;">Delete</a>
                     </div>

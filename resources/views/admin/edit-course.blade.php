@@ -26,12 +26,6 @@
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Price</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="pricing" value="{{$detail['pricing']}}">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Old Thumbnail</label>
                                     <div class="col-sm-10">
                                         <img class="img-fluid" style="width: 150px" src="{{asset('/images/course-thumbnail/'. $detail['thumbnail'] .'/'.$detail['thumbnail'])}}" alt="Card image cap">

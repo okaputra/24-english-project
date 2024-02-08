@@ -19,6 +19,12 @@
                                         <input type="text" class="form-control" name="sub_course" value="{{$detail['sub_course']}}">
                                     </div>
                                 </div>
+                                 <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label">Price</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" name="pricing" value="{{$detail['pricing']}}">
+                                    </div>
+                                </div>
                                 <div class="form-group row">
                                     <div class="col-sm-10">
                                         <button type="submit" class="btn btn-primary">Update Sub Course</button>

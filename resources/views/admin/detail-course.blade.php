@@ -16,7 +16,6 @@
                         <p class="card-text">{{$detail['description']}}</p>
                     </div>
                     <div class="card-footer">
-                        <p class="card-text d-inline">Rp {{number_format($detail['pricing'])}}</p>
                         <a href="/admin-edit-course/{{$detail['id']}}" class="card-link btn btn-outline-primary float-right">EDIT</a>
                     </div>
                 </div>
@@ -37,6 +36,7 @@
                                     <tr>
                                         <th scope="col" style="color: black">No</th>
                                         <th scope="col" style="color: black">Sub Course Name</th>
+                                        <th scope="col" style="color: black">Price</th>
                                         <th scope="col" style="color: black">Action</th>
                                     </tr>
                                 </thead>
@@ -48,6 +48,8 @@
                                         <tr>
                                             <td style="color: black">{{$no++}}</td>
                                             <td style="color: black">{{$sc['sub_course']}}</td>
+                                            <td style="color: black">Rp {{number_format($sc['pricing'])}}</td>
+                                            
                                             <td>
                                                 <span style="color: black">
                                                     <a href="/admin-input-subcourse-content/{{$sc['id']}}" class="mr-4" data-toggle="tooltip" data-placement="top" title="Input"><i class="fa fa-file color-muted"></i> </a>
