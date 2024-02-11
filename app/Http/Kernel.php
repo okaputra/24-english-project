@@ -43,6 +43,12 @@ class Kernel extends HttpKernel
         'checkLoginAdmin'=>[
             Middleware\CheckLoginAdmin::class,
         ],
+        'checkSessionExpired'=>[
+            Middleware\checkSessionExpired::class,
+        ],
+        'checkUserPurchase'=>[
+            Middleware\CheckUserPurchase::class,
+        ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,

@@ -36,11 +36,13 @@ Route::get('/logout-admin', 'App\Http\Controllers\AuthController@LogoutAdmin');
 Route::get('/', 'App\Http\Controllers\MainController@index');
 Route::get('/our-courses', 'App\Http\Controllers\MainController@courses');
 Route::get('/detail-course/{id}', 'App\Http\Controllers\MainController@detailCourses');
+Route::get('/detail-subcourse/{id}', 'App\Http\Controllers\MainController@detailSubCourse');
+Route::get('/about', 'App\Http\Controllers\MainController@about');
 
 
 // MIDDLEWARE CHECKING USER
 Route::middleware(['checkLogin'])->group(function () {
-    Route::get('/about', 'App\Http\Controllers\MainController@about');
+    Route::get('/user-get-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkUserPurchase');
 });
 
 

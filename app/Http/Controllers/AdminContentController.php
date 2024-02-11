@@ -71,17 +71,72 @@ class AdminContentController extends Controller
 
     public function UpdateSubCourseContent($id)
     {
-        return "Coming Soon";
+        $quiz = Quiz::find($id);
+        $paket = Paket::all();
+        $paket_terpilih = Paket::where('id', $quiz->id_paket)->first();
+        return view('admin.update-subcourse-content',[
+            'quiz' => $quiz,
+            'paket' => $paket,
+            'paket_terpilih' => $paket_terpilih,
+        ]);
     }
 
     public function PostUpdateSubCourseContent(Request $req, $id)
     {
-        return "Coming Soon";
+        $req->validate([
+            "nama_quiz" => 'required',
+            "id_paket" => 'required',
+            "durasi" => 'required',
+            "is_berbayar" => 'required',
+        ]);
+
+        $quiz = Quiz::find($id);
+
+        if ($req->file('video')) {
+            $video_quiz = $req->file('video');
+            $filename = date('YmdHis') . "." . $video_quiz->getClientOriginalExtension();
+            $path = public_path() . '/videos/quiz-video/' . $filename;
+            $video_quiz->move($path, $filename);
+            $quiz->update([
+                'video_path' => $filename,
+            ]);
+        }
+
+        if ($req->file('video_thumbnail')) {
+            $videoThumbnail = $req->file('video_thumbnail');
+            $Thumbnailfilename = date('YmdHis') . "." . $videoThumbnail->getClientOriginalExtension();
+            $pathThumbnailVideo = public_path() . '/images/video-thumbnail/' . $Thumbnailfilename;
+            $videoThumbnail->move($pathThumbnailVideo, $Thumbnailfilename);
+            $quiz->update([
+                'video_thumbnail' => $Thumbnailfilename,
+            ]);
+        }
+
+        $quiz->update([
+            'nama_quiz' => $req->nama_quiz,
+            'id_paket' => $req->id_paket,
+            'durasi' => $req->durasi,
+            'is_berbayar' => $req->is_berbayar,
+        ]);
+
+        return redirect("/admin-input-subcourse-content/$quiz->id_sub_course")->with('success', "Quiz Updated Succesfully!");
     }
 
     public function DeleteSubCourseContent($id)
     {
-        return "Coming Soon";
+        $quiz = Quiz::find($id);
+        $videoPath = public_path('/videos/quiz-video/' . $quiz->video_path . '/' . $quiz->video_path);
+        $videoThumbnailPath = public_path('/images/video-thumbnail/' . $quiz->video_thumbnail . '/' . $quiz->video_thumbnail);
+        if (File::exists($videoPath)) {
+            File::delete($videoPath);
+        }
+        if (File::exists($videoThumbnailPath)) {
+            File::delete($videoThumbnailPath);
+        }
+
+        $quiz->delete();
+        return redirect()->back()->with('success', "Quiz Deleted Succesfully!");
+
     }
 
 

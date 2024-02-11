@@ -115,7 +115,7 @@
                                         <td>
                                             <span style="color: black">
                                                 <a href="/admin-update-subcourse-content/{{$q['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
-                                                <a href="/admin-delete-subcourse-content/{{$q['id']}}" type="button" class="mr-4 delSub"><i class="fa fa-close color-danger"></i></a>
+                                                <a href="/admin-delete-subcourse-content/{{$q['id']}}" type="button" class="mr-4 delContentSub"><i class="fa fa-close color-danger"></i></a>
                                             </span>
                                         </td>
                                     </tr>
@@ -131,4 +131,36 @@
 
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('.delContentSub').on('click',function(e){
+        e.preventDefault();
+        const delButton = $(this).attr('href');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "This Quiz/Category will be Deleted!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#09bf25',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Delete!',
+            width: '600px',
+            height: '20px'
+            }).then((result) => {
+            if (result.value) {
+                document.location.href = delButton;
+            }else{
+                Swal.fire({
+                title: 'Canceled!',
+                icon: 'error',
+                timer: 1300,
+                showConfirmButton: false, 
+            })
+            }
+        })
+        });
+    });
+  </script>
+
 @endsection

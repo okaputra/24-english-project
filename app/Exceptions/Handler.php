@@ -4,6 +4,7 @@ namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
+use Session;
 
 class Handler extends ExceptionHandler
 {
@@ -32,6 +33,7 @@ class Handler extends ExceptionHandler
     {
         if ($exception instanceof TokenMismatchException) {
             // Redirect ke halaman login jika terjadi TokenMismatchException
+            Session::flush();
             return redirect('/login-user')->with('error', 'Sesi Anda telah berakhir. Silakan login kembali.');
         }
 

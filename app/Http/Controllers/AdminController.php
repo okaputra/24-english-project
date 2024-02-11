@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\tb_courses as Course;
 use App\Models\tb_sub_courses as Sub;
+use App\Models\tb_users as User;
+use App\Models\tb_user_purchase as UserPurchase;
 use Illuminate\Http\Request;
 use File;
 
@@ -11,7 +13,14 @@ class AdminController extends Controller
 {
     public function index()
     {
-        return view('admin.dashboard');
+        $countCourse = Course::all()->count();
+        $countUser = User::all()->count();
+        $countUserPurchase = UserPurchase::all()->count();
+        return view('admin.dashboard',[
+            'countCourse' => $countCourse,
+            'countUser' => $countUser,
+            'countUserPurchase' => $countUserPurchase,
+        ]);
     }
 
     public function indexCourse()
@@ -143,7 +152,7 @@ class AdminController extends Controller
 
         // Update nilai components pada model Course
         $course->update(['components' => $combinedInput]);
-        return redirect()->back()->with('success', "Sub Course Updated Succesfully!");
+        return redirect("/admin-detail-course/$id_course")->with('success', "Sub Course Updated Succesfully!");
 
     }
 
@@ -182,7 +191,7 @@ class AdminController extends Controller
 
         // Update nilai components pada model Course
         $course->update(['components' => $combinedInput]);
-        return redirect()->back()->with('success', "Sub Course Added Succesfully!");
+        return redirect("/admin-detail-course/$id")->with('success', "Sub Course Added Succesfully!");
     }
 
     public function PostUpdateCourse(Request $req, $id)
@@ -208,6 +217,6 @@ class AdminController extends Controller
             // 'components' => $combinedInput
         ]);
 
-        return redirect()->back()->with('success', "Course Updated Succesfully!");
+        return redirect("/admin-detail-course/$id")->with('success', "Course Updated Succesfully!");
     }
 }
