@@ -43,6 +43,7 @@ Route::get('/about', 'App\Http\Controllers\MainController@about');
 // MIDDLEWARE CHECKING USER
 Route::middleware(['checkLogin'])->group(function () {
     Route::get('/user-get-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkUserPurchase');
+    Route::post('/user-rate-subcourse-material/{id_sub_course}', 'App\Http\Controllers\MainController@rateSubCourseContent')->middleware('checkUserPurchase');
 });
 
 

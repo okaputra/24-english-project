@@ -3,28 +3,32 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use willvincent\Rateable\Rateable;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tb_courses as Course;
 use App\Models\tb_quiz as Quiz;
+use App\Models\tb_ratings as Rating;
 
 class tb_sub_courses extends Model
 {
     use HasFactory;
-    protected $table='tb_sub_courses';
+    use Rateable;
+    protected $table = 'tb_sub_courses';
 
     protected $guarded = ['id'];
 
-    public static function getSubCourseByIdCourse($idCourse){
-        $data = self::where("id_course",$idCourse)->get();
-        if($data){
-            return (object)[
-                "success"=>true,
-                "data"=>$data
+    public static function getSubCourseByIdCourse($idCourse)
+    {
+        $data = self::where("id_course", $idCourse)->get();
+        if ($data) {
+            return (object) [
+                "success" => true,
+                "data" => $data
             ];
         }
-        return (object)[
-            "success"=>false,
-            "message"=>"Gagal menemukan sub course"
+        return (object) [
+            "success" => false,
+            "message" => "Gagal menemukan sub course"
         ];
     }
 
@@ -33,8 +37,13 @@ class tb_sub_courses extends Model
         return $this->belongsTo(Course::class, 'id_course');
     }
 
-    public function Quiz(){
+    public function Quiz()
+    {
         return $this->hasMany(Quiz::class, 'id_sub_course');
+    }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'id_sub_course');
     }
 
     protected static function boot()

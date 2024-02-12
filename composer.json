@@ -11,7 +11,8 @@
         "laravel/sanctum": "^3.3",
         "laravel/tinker": "^2.8",
         "mews/purifier": "^3.4",
-        "realrashid/sweet-alert": "^7.1"
+        "realrashid/sweet-alert": "^7.1",
+        "willvincent/laravel-rateable": "^3.2"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",

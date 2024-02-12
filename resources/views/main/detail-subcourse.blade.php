@@ -1,74 +1,5 @@
 @extends('layout.master-main')
 @section('content')
-
-<style>
-  .rating {
-  display: inline-block;
-  position: relative;
-  height: 50px;
-  line-height: 50px;
-  font-size: 50px;
-}
-
-.rating label {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  cursor: pointer;
-}
-
-.rating label:last-child {
-  position: static;
-}
-
-.rating label:nth-child(1) {
-  z-index: 5;
-}
-
-.rating label:nth-child(2) {
-  z-index: 4;
-}
-
-.rating label:nth-child(3) {
-  z-index: 3;
-}
-
-.rating label:nth-child(4) {
-  z-index: 2;
-}
-
-.rating label:nth-child(5) {
-  z-index: 1;
-}
-
-.rating label input {
-  position: absolute;
-  top: 0;
-  left: 0;
-  opacity: 0;
-}
-
-.rating label .icon {
-  float: left;
-  color: transparent;
-}
-
-.rating label:last-child .icon {
-  color: grey;
-}
-
-.rating:not(:hover) label input:checked ~ .icon,
-.rating:hover label:hover input ~ .icon {
-  color: yellow;
-}
-
-.rating label input:focus:not(:checked) ~ .icon:last-child {
-  color: grey;
-  text-shadow: 0 0 5px yellow;
-}
-</style>
-
 <!-- Page Header Start -->
 <div class="container-fluid page-header py-6 my-6 mt-0 wow">
     <div class="container text-center">
@@ -109,8 +40,9 @@
                               <div class="card-body">
                                 <h5 class="card-title">Rp {{number_format($subCourse['pricing'])}}</h5>
                                 <p class="card-text">Enrolled &emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-person"></i> {{$userPaidThisSubCourse}}</p>
-                                <p class="card-text">Last Update &emsp;&nbsp;: <i class="bi bi-calendar-check"></i> {{$subCourse['updated_at']->diffForHumans()}}</p>
-                                <p class="card-text">Rating &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-star"></i> 7/10</p>
+                                <p class="card-text">Published On &emsp;: <i class="bi bi-calendar-check"></i> {{$subCourse['created_at']->diffForHumans()}}</p>
+                                <p class="card-text">Rating &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-star"></i> {{ number_format( $subCourse->averageRating, 1) }}</p>
+                                <p class="card-text">Review &emsp;&emsp;&emsp;&emsp;: <i class="bi bi-people"></i> {{$subCourse['number_of_review']}} Reviews</p>
                                 <p class="card-text">Certificate &emsp;&emsp;&nbsp;: <i class="bi bi-patch-check"></i></p>
                                 @if(!$userPurchase)
                                   <a href="#" class="btn btn-primary">Buy Course</a>
@@ -144,48 +76,23 @@
                   <p class="card-text">No Material Published Yet!</p>
                 @endforelse
             </div>
-            <p class="card-text" style="margin-bottom: -32px"><i class="bi bi-star"></i> 100 Reviews</p>
-            <form class="rating" style="padding-left: calc(var(--bs-gutter-x) / 2)">
-              <label>
-                <input type="radio" name="stars" value="1" />
-                <span class="icon">★</span>
-              </label>
-              <label>
-                <input type="radio" name="stars" value="2" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-              </label>
-              <label>
-                <input type="radio" name="stars" value="3" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>   
-              </label>
-              <label>
-                <input type="radio" name="stars" value="4" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-              </label>
-              <label>
-                <input type="radio" name="stars" value="5" />
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-                <span class="icon">★</span>
-              </label>
+            <p class="card-text" style="margin-bottom: -32px"><i class="bi bi-star"></i>  {{ number_format( $subCourse->averageRating, 1) }}</p>
+            <form class="rating" method="POST" action="/user-rate-subcourse-material/{{$subCourse['id']}}" >
+              @csrf
+              <input type="text" name="rate" class="kv-fa rating-loading" value="{{$subCourse->averageRating}}" data-size="sm">
+              <br>
+              <button type="submit" style="border-radius: 20px" class="btn btn-primary">Review</button>
             </form>
         </div>
     </div>
 </div>
 <!-- Courses End -->
 
-<script>
-  $(':radio').change(function() {
-    console.log('New star rating: ' + this.value);
-  });
+<script type="text/javascript">
+  $('.kv-fa').rating({
+            filledStar: '<i class="fa fa-star"></i>',
+            emptyStar: '<i class="fa fa-star-o"></i>'
+        });
 </script>
 
 @endsection
