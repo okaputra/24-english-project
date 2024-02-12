@@ -18,8 +18,8 @@ class CreateRatingsTable extends Migration
             $table->text('comment')->nullable();
             $table->morphs('rateable');
             $table->bigInteger('user_id')->unsigned();
-            $table->index('rateable_id');
-            $table->index('rateable_type');
+            $table->index('rateable_id')->nullable();
+            $table->index('rateable_type')->nullable();
             $table->foreign('user_id')->references('id')->on('tb_users');
             $table->integer('id_sub_course');
         });
