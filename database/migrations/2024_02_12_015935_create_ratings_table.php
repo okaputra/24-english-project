@@ -9,6 +9,8 @@ class CreateRatingsTable extends Migration
     /**
      * Run the migrations.
      */
+
+    //  set manually field 'rateable_id' and 'rateable_type' into nullable on your database
     public function up()
     {
         Schema::create('ratings', function (Blueprint $table) {
@@ -18,8 +20,8 @@ class CreateRatingsTable extends Migration
             $table->text('comment')->nullable();
             $table->morphs('rateable');
             $table->bigInteger('user_id')->unsigned();
-            $table->index('rateable_id')->nullable();
-            $table->index('rateable_type')->nullable();
+            $table->index('rateable_id');
+            $table->index('rateable_type');
             $table->foreign('user_id')->references('id')->on('tb_users');
             $table->integer('id_sub_course');
         });
