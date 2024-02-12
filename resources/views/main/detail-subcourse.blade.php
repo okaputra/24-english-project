@@ -90,9 +90,9 @@
 
 <script type="text/javascript">
   $('.kv-fa').rating({
-            filledStar: '<i class="fa fa-star"></i>',
-            emptyStar: '<i class="fa fa-star-o"></i>'
-        });
+      filledStar: '<i class="fa fa-star"></i>',
+      emptyStar: '<i class="fa fa-star-o"></i>'
+  });
 </script>
 
 @endsection
