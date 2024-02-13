@@ -45,7 +45,7 @@
                                 <p class="card-text">Review &emsp;&emsp;&emsp;&emsp;: <i class="bi bi-people"></i> {{$subCourse['number_of_review']}} Reviews</p>
                                 <p class="card-text">Certificate &emsp;&emsp;&nbsp;: <i class="bi bi-patch-check"></i></p>
                                 @if(!$userPurchase)
-                                  <a href="#" class="btn btn-primary">Buy Course</a>
+                                  <a href="/user-buy-subcourse/{{$subCourse['id']}}" class="btn btn-primary"><i class="bi bi-cart"></i> Buy Course</a>
                                 @endif
                                 <a href="#" class="btn btn-primary"><i class="bi bi-patch-check"></i> Get Certificate</a>
                               </div>

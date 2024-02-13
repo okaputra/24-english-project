@@ -39,6 +39,13 @@
     <link rel="stylesheet" href="{{asset('rating/css/star-rating.css')}}" media="all" type="text/css"/>
     <script src="{{asset('rating/js/star-rating.js')}}" type="text/javascript"></script>
 
+    {{-- Midtrans --}}
+    <!-- replace SET_YOUR_CLIENT_KEY_HERE with your client key -->
+    <script type="text/javascript"
+    src="https://app.sandbox.midtrans.com/snap/snap.js"
+    data-client-key="{{config('midtrans.midtrans_client_key')}}"></script>
+    <!-- Note: replace with src="https://app.midtrans.com/snap/snap.js" for Production environment -->
+
         @yield('head')
 </head>
 

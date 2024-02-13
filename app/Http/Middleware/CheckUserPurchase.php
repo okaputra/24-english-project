@@ -22,9 +22,9 @@ class CheckUserPurchase
 
         // Cek apakah user memiliki pembelian untuk sub course yang diminta
         $userPurchase = UserPurchase::where('id_user', $userId)
-                                    ->where('id_sub_terbayar', $subCourseId)
-                                    ->where('is_sudah_bayar', 1)
-                                    ->first();
+            ->where('id_sub_terbayar', $subCourseId)
+            ->where('is_sudah_bayar', 'Paid')
+            ->first();
 
         if (!$userPurchase) {
             return redirect()->back()->with('error', 'Anda tidak memiliki akses ke materi pada sub course ini. Harap Menyelesaikan Pembayaran!');

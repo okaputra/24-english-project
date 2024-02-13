@@ -8,6 +8,7 @@ use App\Models\tb_quiz as Quiz;
 use App\Models\tb_user_purchase as UserPurchase;
 use App\Models\tb_paket_terpilih as PaketTerpilih;
 use App\Models\tb_paket as Paket;
+use App\Models\tb_users as User;
 use Session;
 
 use Illuminate\Http\Request;
@@ -43,11 +44,11 @@ class MainController extends Controller
         $userId = Session::get('id');
         $userPurchase = UserPurchase::where('id_user', $userId)
             ->where('id_sub_terbayar', $id)
-            ->where('is_sudah_bayar', 1)
+            ->where('is_sudah_bayar', 'Paid')
             ->first();
         $subCourse = Sub::find($id);
         $quiz = $subCourse->Quiz;
-        $userPaidThisSubCourse = UserPurchase::where('id_sub_terbayar', $id)->count();
+        $userPaidThisSubCourse = UserPurchase::where('id_sub_terbayar', $id)->where('is_sudah_bayar', 'Paid')->count();
         return view('main.detail-subcourse', [
             'subCourse' => $subCourse,
             'quiz' => $quiz,
@@ -80,4 +81,89 @@ class MainController extends Controller
         $subCourse->ratings()->save($rating);
         return redirect()->back()->with('success', 'Rating Send Successfully!');
     }
+    public function buySubCourse(Request $request, $id_sub_course)
+    {
+        $detailSub = Sub::find($id_sub_course);
+        $dataUser = User::find(Session::get('id'));
+        return view('main.checkout-subcourse', [
+            'detailSub' => $detailSub,
+            'dataUser' => $dataUser
+        ]);
+    }
+    public function confirmSubCourse(Request $request, $id_sub_course)
+    {
+        $request->validate([
+            'sub_course' => 'required',
+            'pricing' => 'required',
+            'id_user' => 'required',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'email' => 'required',
+        ]);
+        $makeInvoice = UserPurchase::create([
+            'id_user' => $request->id_user,
+            'id_sub_terbayar' => $id_sub_course,
+            'is_sudah_bayar' => 'Unpaid',
+        ]);
+        if (!$makeInvoice) {
+            return redirect()->back()->with('error', 'Gagal Membuat Invoice');
+        }
+        $detailSub = Sub::find($id_sub_course);
+        $dataUser = User::find(Session::get('id'));
+
+        // Set your Merchant Server Key
+        \Midtrans\Config::$serverKey = config('midtrans.midtrans_server_key');
+        // Set to Development/Sandbox Environment (default). Set to true for Production Environment (accept real transaction).
+        \Midtrans\Config::$isProduction = false;
+        // Set sanitization on (default)
+        \Midtrans\Config::$isSanitized = true;
+        // Set 3DS transaction for credit card to true
+        \Midtrans\Config::$is3ds = true;
+
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => $makeInvoice->id,
+                'sub_course' => $detailSub->sub_course,
+                'gross_amount' => (int) ($detailSub['pricing']),
+            ),
+            'customer_details' => array(
+                'first_name' => $dataUser->first_name,
+                'last_name' => $dataUser->last_name,
+                'email' => $dataUser->email,
+            ),
+        );
+
+        $snapToken = \Midtrans\Snap::getSnapToken($params);
+        return view('main.invoice-subcourse', [
+            'detailSub' => $detailSub,
+            'makeInvoice' => $makeInvoice,
+            'dataUser' => $dataUser,
+            'snapToken' => $snapToken,
+        ])->with('success', '1 Langkah Lagi, Tekan Pay Now untuk melakukan pembayaran!');
+    }
+
+    public function Invoice($id_sub_course, $order_id)
+    {
+        $sub = Sub::find($id_sub_course);
+        $order = UserPurchase::find($order_id);
+        $order->update(['is_sudah_bayar' => 'Paid']);
+        return view('main.printed-invoice', [
+            'sub' => $sub
+        ]);
+    }
+
+
+    // INI FUNGSI DENGAN WEB HOOK ===================================================================================
+    // SYARAT: WEB HARUS ONLINE SEHINGGA MIDTRANS BISA MENGIRIMKAN STATUS KE SINI. ROUTE->BACA PADA ROUTE
+    // public function paySubCourse(Request $request, $id_sub_course)
+    // {
+    //     $serverKey = config('midtrans.midtrans_server_key');
+    //     $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+    //     if ($hashed == $request->signature_key) {
+    //         if ($request->transaction_status == 'capture') {
+    //             $order = UserPurchase::find($request->order_id);
+    //             $order->update(['is_sudah_bayar', 'Paid']);
+    //         }
+    //     }
+    // }
 }
