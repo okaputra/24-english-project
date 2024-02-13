@@ -30,7 +30,17 @@
                     <div class="stat-widget-two card-body">
                         <div class="stat-content">
                             <div class="stat-text">COMPLETED USERS PAYMENT</div>
-                            <div class="stat-digit"> <i class="fa fa-check"></i>{{$countUserPurchase}}</div>
+                            <div class="stat-digit"> <i class="fa fa-university"></i>{{$countUserPurchase}}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-sm-6">
+                <div class="card">
+                    <div class="stat-widget-two card-body">
+                        <div class="stat-content">
+                            <div class="stat-text">PENDING USERS PAYMENT</div>
+                            <div class="stat-digit"> <i class="fa fa-exclamation"></i>{{$countUserUnpaid}}</div>
                         </div>
                     </div>
                 </div>

@@ -15,11 +15,13 @@ class AdminController extends Controller
     {
         $countCourse = Course::all()->count();
         $countUser = User::all()->count();
-        $countUserPurchase = UserPurchase::all()->count();
+        $countUserPurchase = UserPurchase::where('is_sudah_bayar', 'Paid')->count();
+        $countUserUnpaid = UserPurchase::where('is_sudah_bayar', 'Unpaid')->count();
         return view('admin.dashboard',[
             'countCourse' => $countCourse,
             'countUser' => $countUser,
             'countUserPurchase' => $countUserPurchase,
+            'countUserUnpaid' => $countUserUnpaid,
         ]);
     }
 
