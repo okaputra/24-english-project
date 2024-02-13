@@ -10,6 +10,7 @@ use App\Models\tb_paket_terpilih as PaketTerpilih;
 use App\Models\tb_paket as Paket;
 use App\Models\tb_users as User;
 use Session;
+use Carbon\Carbon;
 
 use Illuminate\Http\Request;
 
@@ -146,9 +147,14 @@ class MainController extends Controller
     {
         $sub = Sub::find($id_sub_course);
         $order = UserPurchase::find($order_id);
+        $dataUser = User::find(Session::get('id'));
+        $formattedDate = Carbon::parse($order['created_at'])->format('d, M Y');
         $order->update(['is_sudah_bayar' => 'Paid']);
         return view('main.printed-invoice', [
-            'sub' => $sub
+            'sub' => $sub,
+            'order' => $order,
+            'dataUser' => $dataUser,
+            'formattedDate' => $formattedDate,
         ]);
     }
 
