@@ -45,9 +45,9 @@ Route::middleware(['checkLogin'])->group(function () {
     Route::get('/user-get-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkUserPurchase');
     Route::post('/user-rate-subcourse-material/{id_sub_course}', 'App\Http\Controllers\MainController@rateSubCourseContent')->middleware('checkUserPurchase');
     Route::get('/user-get-free-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkFreeCourse');
-    Route::get('/user-buy-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@buySubCourse');
-    Route::post('/user-confirm-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@confirmSubCourse');
-    Route::post('/user-pay-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@paySubCourse');
+    Route::get('/user-buy-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@buySubCourse')->middleware('checkPaidSubCourse');
+    Route::post('/user-confirm-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@confirmSubCourse')->middleware('checkPaidSubCourse');
+    Route::post('/user-pay-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@paySubCourse')->middleware('checkPaidSubCourse');
     Route::get('/user-invoice-subcourse/{id_sub_course}/{id_order}', 'App\Http\Controllers\MainController@Invoice');
 
     // INI ROUTE YANG DIBERIKAN KE CONFIGURASI WEB HOOK MIDTRANS. ROUTE INI DITEMPATKAN DI API AGAR TIDAK PERLU CSRF TOKEN

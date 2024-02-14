@@ -16,6 +16,15 @@
              });
         </script>
   @endif
+  @if(session('info'))
+        <script>
+            swal({
+                title: "Info",
+                icon: 'info',
+                text: {!! json_encode(session('info')) !!}
+             });
+        </script>
+  @endif
   @if ($errors->any())
         <script>let error = "";</script>
         @foreach ($errors->all() as $error)
