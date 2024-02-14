@@ -44,6 +44,7 @@ Route::get('/about', 'App\Http\Controllers\MainController@about');
 Route::middleware(['checkLogin'])->group(function () {
     Route::get('/user-get-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkUserPurchase');
     Route::post('/user-rate-subcourse-material/{id_sub_course}', 'App\Http\Controllers\MainController@rateSubCourseContent')->middleware('checkUserPurchase');
+    Route::get('/user-get-free-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkFreeCourse');
     Route::get('/user-buy-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@buySubCourse');
     Route::post('/user-confirm-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@confirmSubCourse');
     Route::post('/user-pay-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@paySubCourse');

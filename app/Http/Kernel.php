@@ -49,6 +49,9 @@ class Kernel extends HttpKernel
         'checkUserPurchase'=>[
             Middleware\CheckUserPurchase::class,
         ],
+        'checkFreeCourse'=>[
+            Middleware\CheckFreeCourse::class,
+        ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,

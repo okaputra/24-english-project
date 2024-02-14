@@ -48,11 +48,13 @@ class MainController extends Controller
             ->where('is_sudah_bayar', 'Paid')
             ->first();
         $subCourse = Sub::find($id);
-        $quiz = $subCourse->Quiz;
+        $quiz = $subCourse->Quiz->where('is_berbayar', 1);
+        $quizFree = $subCourse->Quiz->where('is_berbayar', 0);
         $userPaidThisSubCourse = UserPurchase::where('id_sub_terbayar', $id)->where('is_sudah_bayar', 'Paid')->count();
         return view('main.detail-subcourse', [
             'subCourse' => $subCourse,
             'quiz' => $quiz,
+            'quizFree' => $quizFree,
             'userPurchase' => $userPurchase,
             'userPaidThisSubCourse' => $userPaidThisSubCourse
         ]);

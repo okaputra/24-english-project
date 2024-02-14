@@ -56,6 +56,27 @@
                 </div>
             </div>
 
+            @if(count($quizFree) > 0)
+              <h3 class="display-6" style="margin-bottom: -19px">FREE MATERIAL</h3>
+            @endif
+            <div class="accordion col-lg-6 wow" id="accordionPanelsStayOpenExample">
+                @foreach($quizFree as $q)
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-heading{{$q['id']}}">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{$q['id']}}" aria-expanded="false" aria-controls="panelsStayOpen-collapse{{$q['id']}}">
+                        {{$q['nama_quiz']}}
+                      </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapse{{$q['id']}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{$q['id']}}">
+                      <div class="accordion-body">
+                        <strong><a href="/user-get-free-subcourse-material/{{$q['id']}}/{{$subCourse['id']}}">Get {{$q['nama_quiz']}} Material</a></strong>
+                      </div>
+                    </div>
+                  </div>
+                @endforeach
+            </div>
+            
+
             <h1 class="display-6" style="margin-bottom: -19px">MATERIAL</h1>
 
             <div class="accordion col-lg-6 wow" id="accordionPanelsStayOpenExample">
