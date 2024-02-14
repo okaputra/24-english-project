@@ -27,7 +27,7 @@ class CheckPaidSubCourse
             ->first();
 
         if ($userPurchase) {
-            return redirect()->back()->with('info', 'Payment Pada Sub Course Ini Telah Dilakukan!');
+            return redirect("/detail-subcourse/$subCourseId")->with('info', 'Payment Pada Sub Course Ini Telah Dilakukan!');
         }
 
         return $next($request);
