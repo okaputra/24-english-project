@@ -44,7 +44,7 @@
                               <div class="card-body">
                                 <p class="card-text">Question &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-book"></i> {{$jumlah_soal}}</p>
                                 <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
-                                <a href="#" class="btn btn-primary"><i class="bi bi-pencil"></i> Attempt Quiz</a>
+                                <a href="/user-attempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Attempt Quiz</a>
                               </div>
                           </div>
                       </div>
@@ -56,5 +56,35 @@
     </div>
 </div>
 <!-- Courses End -->
+<script>
+    $(document).ready(function() {
+        $('.attempt').on('click',function(e){
+        e.preventDefault();
+        const attemptButton = $(this).attr('href');
+        Swal.fire({
+            title: 'Quiz Segera Dimulai!',
+            text: "Jangan Tutup Halaman Browser Anda",
+            icon: 'info',
+            showCancelButton: true,
+            confirmButtonColor: '#09bf25',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Mulai!',
+            width: '600px',
+            height: '20px'
+            }).then((result) => {
+            if (result.value) {
+                document.location.href = attemptButton;
+            }else{
+                Swal.fire({
+                title: 'Quiz Dibatalkan!',
+                icon: 'warning',
+                timer: 1300,
+                showConfirmButton: false, 
+            })
+            }
+        })
+        });
+    });
+</script>
 
 @endsection

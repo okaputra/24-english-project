@@ -52,6 +52,9 @@ Route::middleware(['checkLogin'])->group(function () {
 
     // INI ROUTE YANG DIBERIKAN KE CONFIGURASI WEB HOOK MIDTRANS. ROUTE INI DITEMPATKAN DI API AGAR TIDAK PERLU CSRF TOKEN
     // Route::post('/user-midtrans-webhook-subcourse', 'App\Http\Controllers\MainController@paySubCourse');
+
+    // ================================== ROUTE UNTUK QUIZ ======================================
+    Route::get('/user-attempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@StartQuiz')->middleware('checkUserPurchase');
 });
 
 
