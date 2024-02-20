@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -16,7 +15,7 @@ return new class extends Migration
             $table->integer("id_user");
             $table->integer("id_quiz");
             $table->date("start");
-            $table->date("end");
+            $table->date("end")->nullable();
             $table->timestamps();
         });
     }

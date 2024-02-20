@@ -9,6 +9,7 @@ use App\Models\tb_user_purchase as UserPurchase;
 use App\Models\tb_paket_terpilih as PaketTerpilih;
 use App\Models\tb_paket as Paket;
 use App\Models\tb_users as User;
+use App\Models\tb_user_attempt_quiz as UserAttemptQuiz;
 use Session;
 use Carbon\Carbon;
 
@@ -64,9 +65,11 @@ class MainController extends Controller
         $quiz = Quiz::find($id_quiz);
         $paket = Paket::find($quiz->id_paket);
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
+        $isUserAttempt = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->whereNotNull('end')->first();
         return view('main.category-content', [
             'quiz' => $quiz,
             'jumlah_soal' => $jumlah_soal,
+            'isUserAttempt' => $isUserAttempt,
         ]);
     }
     public function rateSubCourseContent(Request $req, $id_sub_course)

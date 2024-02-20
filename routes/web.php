@@ -55,6 +55,7 @@ Route::middleware(['checkLogin'])->group(function () {
 
     // ================================== ROUTE UNTUK QUIZ ======================================
     Route::get('/user-attempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@StartQuiz')->middleware('checkUserPurchase');
+    Route::get('/user-reattempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@RestartQuiz')->middleware('checkUserPurchase');
 });
 
 

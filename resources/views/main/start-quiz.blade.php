@@ -1,6 +1,12 @@
 @extends('layout.master-main')
 @section('content')
 
+<style>
+    .justify-between{
+        margin-bottom: 20px;
+    }
+</style>
+
 <!-- Courses Start -->
 <div class="container-xxl py-6" style="padding: 4px">
     <div class="container">
@@ -20,6 +26,7 @@
                                     <div class="card-body">
                                         <p class="card-text">Question &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-book"></i> {{$jumlah_soal}}</p>
                                         <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
+                                        <p class="card-text">TIMER &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> 01-10-40</p>
                                     </div>
                                 </div>
                             </div>
@@ -28,9 +35,9 @@
                 </div>
                 <form method="POST" action="#">
                     @php
-                        $no=1;
+                        $no=($soal->currentpage()-1)* $soal->perpage()+1;
                     @endphp
-                    @foreach ($soal as $s)
+                    @foreach ($soal as $index => $s)
                     <br>
                     <div class="form-group">
                       <div class="accordion-item">
@@ -45,6 +52,7 @@
                                         <div class="card-body">
                                             <p class="card-text"> 
                                                 {!! $s['pertanyaan'] !!}
+                                                <input type="hidden" class="form-control" id="exampleFormControlInput1" value="{{$s['id']}}" name="id_soal[]">
                                                 @if($s['audio_file'])
                                                     <audio controls preload="none">
                                                         <source src="{{ asset('audio-soal/' . $s['audio_file'] . '/' . $s['audio_file'])}}" type="audio/{{ pathinfo($s['audio_file'], PATHINFO_EXTENSION) }}">
@@ -52,13 +60,12 @@
                                                     </audio>
                                                 @endif
                                             </p>
-                                            <input type="hidden" class="form-control" id="exampleFormControlInput1" value="{{$s['id']}}" placeholder="name@example.com">
                                             @if($s['tipe'] === 'opsi')
                                                 @foreach ($s->opsi as $op)
                                                     <p class="card-text">
                                                         <div class="form-check">
-                                                            <input class="form-check-input" type="radio" name="user_answer" id="exampleRadios1" value="{{$op['id']}}">
-                                                            <label class="form-check-label" for="exampleRadios1">
+                                                            <input class="form-check-input select_ans" type="radio" name="user_answers[{{$index+1}}]" id="exampleRadios{{$index+1}}" value="{{$op['id']}}">
+                                                            <label class="form-check-label" for="exampleRadios{{$index+1}}">
                                                                 {!! $op['opsi'] !!}
                                                                 @if($op['audio_file'])
                                                                     <audio controls preload="none">
@@ -74,7 +81,7 @@
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                 </div>
-                                                <textarea class="form-control" name="deskripsi_user_answer" aria-label="With textarea"></textarea>
+                                                <textarea class="form-control" name="deskripsi_user_answer[]" aria-label="With textarea"></textarea>
                                               </div>
                                             @endif
                                         </div>
@@ -85,12 +92,15 @@
                     </div>
                     @endforeach
                     <br>
-                    <button type="submit" class="btn btn-primary">Submit Answer</button>
+                    @if($soal->onLastPage())
+                        <button type="submit" class="btn btn-primary">Submit Answer</button>
+                    @endif
                 </form>
+                <br>
+                {{ $soal->links() }}
             </div>
         </div>
     </div>
 </div>
 <!-- Courses End -->
-
 @endsection
