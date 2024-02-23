@@ -94,19 +94,11 @@ class QuizController extends Controller
                 ->get();
 
             if ($existingAnswer->isEmpty()) {
-                // // Jika belum ada, create data baru
-                // $answer = new UserAnswer();
-                // $answer->id_attempt_quiz = $data['id_attempt_quiz'];
-                // $answer->id_question = $questionId;
-                // $answer->user_answer = $userAnswer;
-                // $answer->is_correct = 0;
-                // // $answer->is_correct = $this->checkAnswer($questionId, $userAnswer);
-                // $answer->save();
                 foreach ($userAnswer as $index => $answer) {
                     $newAnswer = new UserAnswer();
                     $newAnswer->id_attempt_quiz = $data['id_attempt_quiz'];
                     $newAnswer->id_question = $questionId;
-                    $newAnswer->user_answer = $answer; // Pastikan data yang disimpan adalah string, bukan array
+                    $newAnswer->user_answer = $answer;
                     $newAnswer->is_correct = 0;
                     $newAnswer->save();
                 }

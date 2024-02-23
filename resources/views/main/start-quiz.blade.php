@@ -109,7 +109,7 @@
     $(document).ready(function() {
         var csrfToken = '{{ csrf_token() }}';
     $('.select_ans').change(function() {
-        var formData = $('#formJ').serialize(); // Ganti yourFormId dengan ID formulir Anda
+        var formData = $('#formJ').serialize();
         $.ajax({
             type: 'POST',
             url: '{{ route("save-answer") }}',
@@ -118,10 +118,10 @@
                 'X-CSRF-TOKEN': csrfToken
             },
             success: function(response) {
-                console.log(response); // Just for debugging, you can remove this line
+                console.log(response);
             },
             error: function(xhr, status, error) {
-                console.error(xhr.responseText); // Just for debugging, you can remove this line
+                console.error(xhr.responseText);
             }
         });
     });
