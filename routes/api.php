@@ -17,15 +17,3 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
-
-Route::post('/save-answer', function () {
-    // Ambil data jawaban dari permintaan
-    $questionIndex = request('questionIndex');
-    $selectedOption = request('selectedOption');
-
-    // Simpan data jawaban dalam session
-    Session::put("user_answers.$questionIndex", $selectedOption);
-
-    // Kirim respons (opsional)
-    return response()->json(['success' => true]);
-});

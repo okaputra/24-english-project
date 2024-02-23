@@ -33,7 +33,7 @@
                         </div>
                     </div>
                 </div>
-                <form method="POST" action="#">
+                <form method="POST" action="#" id="formJ">
                     @php
                         $no=($soal->currentpage()-1)* $soal->perpage()+1;
                     @endphp
@@ -52,7 +52,8 @@
                                         <div class="card-body">
                                             <p class="card-text"> 
                                                 {!! $s['pertanyaan'] !!}
-                                                <input type="hidden" class="form-control" id="exampleFormControlInput1" value="{{$s['id']}}" name="id_soal[]">
+                                                <input type="hidden" class="form-control" id="exampleFormControlInput1" value="{{$index+1}}" name="id_soal[]">
+                                                <input type="hidden" class="form-control" id="exampleFormControlInput1" value="{{$currentQuiz['id']}}" name="id_attempt_quiz">
                                                 @if($s['audio_file'])
                                                     <audio controls preload="none">
                                                         <source src="{{ asset('audio-soal/' . $s['audio_file'] . '/' . $s['audio_file'])}}" type="audio/{{ pathinfo($s['audio_file'], PATHINFO_EXTENSION) }}">
@@ -64,7 +65,7 @@
                                                 @foreach ($s->opsi as $op)
                                                     <p class="card-text">
                                                         <div class="form-check">
-                                                            <input class="form-check-input select_ans" type="radio" name="user_answers[{{$index+1}}]" id="exampleRadios{{$index+1}}" value="{{$op['id']}}" @if(Session::get('user_answers') && Session::get('user_answers')[$index+1] == $op['id']) checked @endif>
+                                                            <input class="form-check-input select_ans" type="radio" name="user_answers[{{$s['id']}}][{{$index+1}}]" id="exampleRadios{{$s['id']}}_{{$index+1}}" value="{{$op['id']}}" @if(in_array($op['id'], $user_answers)) checked @endif>
                                                             <label class="form-check-label" for="exampleRadios{{$index+1}}">
                                                                 {!! $op['opsi'] !!}
                                                                 @if($op['audio_file'])
@@ -81,7 +82,7 @@
                                             <div class="input-group">
                                                 <div class="input-group-prepend">
                                                 </div>
-                                                <textarea class="form-control" name="deskripsi_user_answer[]" aria-label="With textarea">@if(Session::get('deskripsi_user_answer')){{ Session::get('deskripsi_user_answer')[$index] }}@endif</textarea>
+                                                <textarea class="form-control" name="user_answers[{{$s['id']}}][{{$index+1}}]" aria-label="With textarea">{{$userAnswer}}</textarea>
                                               </div>
                                             @endif
                                         </div>
@@ -106,38 +107,26 @@
 
 <script>
     $(document).ready(function() {
-
-    // Ketika pengguna memilih opsi
-    $(".select_ans").change(function() {
-        // Ambil nilai opsi yang dipilih
-        var selectedOption = $(this).val();
-        // Ambil nomor indeks pertanyaan
-        var questionIndex = $(this).attr('name').replace('user_answers[', '').replace(']', '');
-
-        // Kirim data jawaban ke server dengan menyertakan token CSRF
+        var csrfToken = '{{ csrf_token() }}';
+    $('.select_ans').change(function() {
+        var formData = $('#formJ').serialize(); // Ganti yourFormId dengan ID formulir Anda
         $.ajax({
-            url: '/api/save-answer', // Ubah URL dengan URL Anda sendiri
-            method: 'POST',
-            data: {
-                questionIndex: questionIndex,
-                selectedOption: selectedOption
+            type: 'POST',
+            url: '{{ route("save-answer") }}',
+            data: formData,
+            headers: {
+                'X-CSRF-TOKEN': csrfToken
             },
             success: function(response) {
-                console.log(response); // Tampilkan respons dari server (opsional)
-                // Ubah radio button yang dipilih sesuai dengan data yang tersimpan
-                var selectedOptionId = response.selectedOption; // ID opsi yang dipilih dari respons server
-                $(".select_ans[name='user_answers[" + (questionIndex+1) + "]']").each(function() {
-                    if ($(this).val() == selectedOptionId) {
-                        $(this).prop('checked', true); // Check radio button yang sesuai dengan jawaban yang disimpan
-                    }
-                });
+                console.log(response); // Just for debugging, you can remove this line
             },
             error: function(xhr, status, error) {
-                console.error(error); // Tampilkan pesan kesalahan (opsional)
+                console.error(xhr.responseText); // Just for debugging, you can remove this line
             }
         });
     });
 });
+
 </script>
 
 @endsection
