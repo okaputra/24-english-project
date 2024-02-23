@@ -39,7 +39,7 @@ class QuizController extends Controller
                 'quiz' => $quiz,
                 'soal' => $soal,
                 'jumlah_soal' => $jumlah_soal,
-                'currentQuiz' => $currentQuiz,
+                'currentQuiz' => $attemptQuiz,
                 'user_answers' => $userAnswers
             ]);
         } elseif ($currentQuiz->end == null) {
