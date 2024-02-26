@@ -24,8 +24,6 @@ class QuizController extends Controller
         $soal = Soal::whereIn('id', $soal_terpilih_ids)->simplePaginate(5);
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
 
-        // ISIKAN TIMER CEK DURASI (SCHEDULE)
-
         $currentQuiz = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->first();
         if ($currentQuiz == null) {
             $attemptQuiz = new UserAttemptQuiz();
@@ -33,25 +31,24 @@ class QuizController extends Controller
             $attemptQuiz->id_quiz = $id_quiz;
             $attemptQuiz->start = Carbon::now();
             $attemptQuiz->save();
-            // Ambil data jawaban dari database, sesuai dengan id pengguna atau id percobaan quiz
             $userAnswers = UserAnswer::where('id_attempt_quiz', $attemptQuiz->id)->pluck('user_answer', 'id_question')->toArray();
             return view('main.start-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
                 'jumlah_soal' => $jumlah_soal,
                 'currentQuiz' => $attemptQuiz,
-                'user_answers' => $userAnswers
+                'user_answers' => $userAnswers,
+                'id_sub_course' => $id_sub_course
             ]);
         } elseif ($currentQuiz->end == null) {
-            // Ambil data jawaban dari database, sesuai dengan id pengguna atau id percobaan quiz
             $userAnswers = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->pluck('user_answer', 'id_question')->toArray();
-            // dd($userAnswers);
             return view('main.start-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
                 'jumlah_soal' => $jumlah_soal,
                 'currentQuiz' => $currentQuiz,
-                'user_answers' => $userAnswers
+                'user_answers' => $userAnswers,
+                'id_sub_course' => $id_sub_course
             ]);
         }
         return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Quiz Telah Selesai, Tekan Re-Attempt Quiz Untuk Memulai Kembali!');
@@ -65,8 +62,6 @@ class QuizController extends Controller
         $soal = Soal::whereIn('id', $soal_terpilih_ids)->simplePaginate(5);
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
         $userAttemptData = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->first();
-
-        // ISIKAN TIMER CEK DURASI (SCHEDULE)
 
         // NANTI RESET JUGA JAWABAN USER PADA TABLE USER ANSWERS
 
@@ -118,8 +113,12 @@ class QuizController extends Controller
 
         return response()->json(['success' => true]);
     }
-    public function submitQuiz(Request $request, $id_quiz)
+    public function submitQuiz(Request $request, $id_quiz, $id_sub_course)
     {
-        return "Coming Soon";
+        $attemptQuiz = UserAttemptQuiz::find($request->id_attempt_quiz);
+        $attemptQuiz->update([
+            'end' => Carbon::now()
+        ]);
+        return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('success', 'Quiz Submitted Succesfully!');
     }
 }

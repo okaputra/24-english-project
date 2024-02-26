@@ -16,7 +16,7 @@
                 <div class="accordion col-lg-10 wow" id="accordionPanelsStayOpenExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                            <button class="accordion-button" type="button" data-bs-toggle="collaps" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
                                 Answer Question
                             </button>
                         </h2>
@@ -26,14 +26,16 @@
                                     <div class="card-body">
                                         <p class="card-text">Question &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-book"></i> {{$jumlah_soal}}</p>
                                         <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
-                                        <p class="card-text">TIMER &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> 01-10-40</p>
+                                        {{-- <p class="card-text">TIMER &emsp;&emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i></p> --}}
+                                        <h1 id="timer"></h1>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <form method="POST" action="#" id="formJ">
+                <form method="POST" action="/user-submit-quiz/{{$quiz['id']}}/{{$id_sub_course}}" id="formJ">
+                    @csrf
                     @php
                         $no=($soal->currentpage()-1)* $soal->perpage()+1;
                     @endphp
@@ -108,25 +110,58 @@
 <script>
     $(document).ready(function() {
         var csrfToken = '{{ csrf_token() }}';
-    $('.select_ans').change(function() {
-        var formData = $('#formJ').serialize();
-        $.ajax({
-            type: 'POST',
-            url: '{{ route("save-answer") }}',
-            data: formData,
-            headers: {
-                'X-CSRF-TOKEN': csrfToken
-            },
-            success: function(response) {
-                console.log(response);
-            },
-            error: function(xhr, status, error) {
-                console.error(xhr.responseText);
-            }
+        $('.select_ans').change(function() {
+            var formData = $('#formJ').serialize();
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("save-answer") }}',
+                data: formData,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
         });
     });
-});
+</script>
 
+<script>
+    function startTimer(duration) {
+      var timerDisplay = document.getElementById('timer');
+    
+      var startTime = localStorage.getItem('startTime');
+      if (!startTime) {
+        startTime = Date.now();
+        localStorage.setItem('startTime', startTime);
+      }
+    
+      var timer = Math.max(duration * 60 - Math.floor((Date.now() - startTime) / 1000), 0);
+    
+      var interval = setInterval(function () {
+        var hours = Math.floor(timer / 3600);
+        var minutes = Math.floor((timer % 3600) / 60);
+        var seconds = timer % 60;
+    
+        timerDisplay.textContent = hours + "h : " + minutes + "m : " + seconds + "s ";
+    
+        if (--timer < 0) {
+          clearInterval(interval);
+          timerDisplay.textContent = "Time's up!";
+          localStorage.removeItem('startTime');
+          document.getElementById('formJ').submit(); // Submit the form
+        }
+      }, 1000);
+    }
+    
+    // Change the value of minutes here
+    var minutes = {{$quiz['durasi']}};
+    startTimer(minutes);
+    
 </script>
 
 @endsection

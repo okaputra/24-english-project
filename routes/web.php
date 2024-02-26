@@ -57,6 +57,7 @@ Route::middleware(['checkLogin'])->group(function () {
     Route::get('/user-attempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@StartQuiz')->middleware('checkUserPurchase');
     Route::get('/user-reattempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@RestartQuiz')->middleware('checkUserPurchase');
     Route::post('/save-answer', 'App\Http\Controllers\QuizController@SimpanJawabanUser')->name('save-answer');
+    Route::post('/user-submit-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@submitQuiz');
 });
 
 
