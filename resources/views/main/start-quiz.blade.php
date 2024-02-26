@@ -96,7 +96,7 @@
                     @endforeach
                     <br>
                     @if($soal->onLastPage())
-                        <button type="submit" class="btn btn-primary">Submit Answer</button>
+                        <button type="submit" class="btn btn-primary submitQuiz">Submit Answer</button>
                     @endif
                 </form>
                 <br>
@@ -161,7 +161,38 @@
     // Change the value of minutes here
     var minutes = {{$quiz['durasi']}};
     startTimer(minutes);
-    
 </script>
+
+<script>
+    $(document).ready(function() {
+        $('.submitQuiz').on('click',function(e){
+        e.preventDefault();
+        const form = $(this).closest('form');
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Your Answer Will Submit Immediately!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#09bf25',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, submit it!',
+            width: '600px',
+            height: '20px'
+            }).then((result) => {
+            if (result.value) {
+                localStorage.removeItem('startTime');
+                form.submit();
+            }else{
+                Swal.fire({
+                title: 'Canceled!',
+                icon: 'error',
+                timer: 1300,
+                showConfirmButton: false, 
+            })
+            }
+        })
+        });
+    });
+  </script>
 
 @endsection

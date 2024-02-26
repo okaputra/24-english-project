@@ -55,28 +55,20 @@ class QuizController extends Controller
     }
     public function RestartQuiz($id_quiz, $id_sub_course)
     {
-        $quiz = Quiz::find($id_quiz);
-        $paket = Paket::find($quiz->id_paket);
-        $soal_terpilih = PaketTerpilih::where('id_paket', $paket->id)->get();
-        $soal_terpilih_ids = $soal_terpilih->pluck('id_soal')->toArray();
-        $soal = Soal::whereIn('id', $soal_terpilih_ids)->simplePaginate(5);
-        $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
         $userAttemptData = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->first();
-
-        // NANTI RESET JUGA JAWABAN USER PADA TABLE USER ANSWERS
 
         if ($userAttemptData == null) {
             return redirect()->back()->with('error', 'Quiz Tidak Ditemukan!');
         }
+
+        // NANTI RESET JUGA JAWABAN USER PADA TABLE USER ANSWERS
+
+        UserAnswer::where('id_attempt_quiz', $userAttemptData->id)->delete();
+
         $userAttemptData->update([
             'end' => NULL
         ]);
-
-        return view('main.start-quiz', [
-            'quiz' => $quiz,
-            'soal' => $soal,
-            'jumlah_soal' => $jumlah_soal,
-        ]);
+        return redirect("/user-attempt-quiz/$id_quiz/$id_sub_course");
     }
     public function SimpanJawabanUser(Request $request)
     {
@@ -86,9 +78,9 @@ class QuizController extends Controller
             // Cek apakah data sudah ada
             $existingAnswer = UserAnswer::where('id_attempt_quiz', $data['id_attempt_quiz'])
                 ->where('id_question', $questionId)
-                ->get();
+                ->first();
 
-            if ($existingAnswer->isEmpty()) {
+            if (!$existingAnswer) {
                 foreach ($userAnswer as $index => $answer) {
                     $newAnswer = new UserAnswer();
                     $newAnswer->id_attempt_quiz = $data['id_attempt_quiz'];
@@ -98,15 +90,12 @@ class QuizController extends Controller
                     $newAnswer->save();
                 }
             } else {
-                // Jika sudah ada, lakukan perubahan
-                foreach ($existingAnswer as $ea) {
-                    // Jika ada jawaban baru untuk pertanyaan ini
-                    if (isset($userAnswer[$ea->id_question])) {
-                        $ea->user_answer = $userAnswer[$ea->id_question];
-                        // $ea->is_correct = $this->checkAnswer($ea->id_question, $userAnswer[$ea->id_question]);
-                        $ea->is_correct = 0;
-                        $ea->save();
-                    }
+                // Jika ada jawaban baru untuk pertanyaan ini
+                foreach ($userAnswer as $index => $answer) {
+                    $existingAnswer->user_answer = $answer;
+                    // $existingAnswer->is_correct = $this->checkAnswer($existingAnswer->id_question, $userAnswer[$existingAnswer->id_question]);
+                    $existingAnswer->is_correct = 0;
+                    $existingAnswer->save();
                 }
             }
         }
