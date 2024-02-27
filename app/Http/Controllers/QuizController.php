@@ -8,6 +8,7 @@ use App\Models\tb_paket as Paket;
 use App\Models\tb_soal as Soal;
 use App\Models\tb_user_attempt_quiz as UserAttemptQuiz;
 use App\Models\tb_user_answer as UserAnswer;
+use App\Helper\CheckIsCorrect;
 use Session;
 use Carbon\Carbon;
 
@@ -87,15 +88,14 @@ class QuizController extends Controller
                     $newAnswer->id_attempt_quiz = $data['id_attempt_quiz'];
                     $newAnswer->id_question = $questionId;
                     $newAnswer->user_answer = $answer;
-                    $newAnswer->is_correct = 0;
+                    $newAnswer->is_correct = CheckIsCorrect::CheckIsCorrectAnswer($questionId, $answer);
                     $newAnswer->save();
                 }
             } else {
                 // Jika ada jawaban baru untuk pertanyaan ini
                 foreach ($userAnswer as $index => $answer) {
                     $existingAnswer->user_answer = $answer;
-                    // $existingAnswer->is_correct = $this->checkAnswer($existingAnswer->id_question, $userAnswer[$existingAnswer->id_question]);
-                    $existingAnswer->is_correct = 0;
+                    $existingAnswer->is_correct = CheckIsCorrect::CheckIsCorrectAnswer($questionId, $answer);
                     $existingAnswer->save();
                 }
             }
