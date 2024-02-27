@@ -55,7 +55,7 @@
                                             <p class="card-text"> 
                                                 {!! $s['pertanyaan'] !!}
                                                 <input type="hidden" class="form-control" id="exampleFormControlInput1" value="{{$index+1}}" name="id_soal[]">
-                                                <input type="hidden" class="form-control" id="exampleFormControlInput1" value="{{$currentQuiz['id']}}" name="id_attempt_quiz">
+                                                <input type="hidden" class="form-control" id="exampleFormControlInput2" value="{{$currentQuiz['id']}}" name="id_attempt_quiz">
                                                 @if($s['audio_file'])
                                                     <audio controls preload="none">
                                                         <source src="{{ asset('audio-soal/' . $s['audio_file'] . '/' . $s['audio_file'])}}" type="audio/{{ pathinfo($s['audio_file'], PATHINFO_EXTENSION) }}">
@@ -81,11 +81,13 @@
                                                     </p>
                                                 @endforeach
                                             @else
+                                            @php
+                                                // Find the user answer for this question
+                                                $userAnswerDesc = $user_answers_desc->where('id_question', $s['id'])->first();
+                                            @endphp
                                             <div class="input-group">
-                                                <div class="input-group-prepend">
-                                                </div>
-                                                <textarea class="form-control" name="user_answers[{{$s['id']}}][{{$index+1}}]" aria-label="With textarea">{{$userAnswer}}</textarea>
-                                              </div>
+                                                <textarea rows="7" class="form-control answer_description" name="user_answers[{{$s['id']}}][{{$index+1}}]" aria-label="With textarea">{{$userAnswerDesc ? $userAnswerDesc['user_answer'] : ''}} </textarea>
+                                            </div>
                                             @endif
                                         </div>
                                     </div>
@@ -111,6 +113,28 @@
     $(document).ready(function() {
         var csrfToken = '{{ csrf_token() }}';
         $('.select_ans').change(function() {
+            var formData = $('#formJ').serialize();
+            $.ajax({
+                type: 'POST',
+                url: '{{ route("save-answer") }}',
+                data: formData,
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.error(xhr.responseText);
+                }
+            });
+        });
+    });
+</script>
+<script>
+    $(document).ready(function() {
+        var csrfToken = '{{ csrf_token() }}';
+        $('.answer_description').keyup(function() {
             var formData = $('#formJ').serialize();
             $.ajax({
                 type: 'POST',

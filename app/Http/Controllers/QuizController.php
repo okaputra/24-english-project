@@ -32,22 +32,26 @@ class QuizController extends Controller
             $attemptQuiz->start = Carbon::now();
             $attemptQuiz->save();
             $userAnswers = UserAnswer::where('id_attempt_quiz', $attemptQuiz->id)->pluck('user_answer', 'id_question')->toArray();
+            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $attemptQuiz->id)->whereRaw("user_answer NOT REGEXP '^[0-9]+$'")->get();
             return view('main.start-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
                 'jumlah_soal' => $jumlah_soal,
                 'currentQuiz' => $attemptQuiz,
                 'user_answers' => $userAnswers,
+                'user_answers_desc' => $userAnswersDesc,
                 'id_sub_course' => $id_sub_course
             ]);
         } elseif ($currentQuiz->end == null) {
             $userAnswers = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->pluck('user_answer', 'id_question')->toArray();
+            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer NOT REGEXP '^[0-9]+$'")->get();
             return view('main.start-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
                 'jumlah_soal' => $jumlah_soal,
                 'currentQuiz' => $currentQuiz,
                 'user_answers' => $userAnswers,
+                'user_answers_desc' => $userAnswersDesc,
                 'id_sub_course' => $id_sub_course
             ]);
         }
@@ -60,9 +64,6 @@ class QuizController extends Controller
         if ($userAttemptData == null) {
             return redirect()->back()->with('error', 'Quiz Tidak Ditemukan!');
         }
-
-        // NANTI RESET JUGA JAWABAN USER PADA TABLE USER ANSWERS
-
         UserAnswer::where('id_attempt_quiz', $userAttemptData->id)->delete();
 
         $userAttemptData->update([
