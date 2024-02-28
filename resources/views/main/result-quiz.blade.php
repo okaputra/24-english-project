@@ -66,7 +66,7 @@
                                                 @foreach ($s->opsi as $op)
                                                     <p class="card-text">
                                                         <div class="form-check">
-                                                            <input class="form-check-input select_ans" type="radio" name="user_answers[{{$s['id']}}][{{$index+1}}]" id="exampleRadios{{$s['id']}}_{{$index+1}}" value="{{$op['id']}}" @if(in_array($op['id'], $user_answers)) checked @endif>
+                                                            <input class="form-check-input select_ans" type="radio" name="user_answers[{{$s['id']}}][{{$index+1}}]" id="exampleRadios{{$s['id']}}_{{$index+1}}" value="{{$op['id']}}" @if(in_array($op['id'], $user_answers)) checked @endif disabled>
                                                             <label class="form-check-label" for="exampleRadios{{$index+1}}">
                                                                 {!! $op['opsi'] !!}
                                                                 @if($op['audio_file'])
@@ -85,7 +85,7 @@
                                                 $userAnswerDesc = $user_answers_desc->where('id_question', $s['id'])->first();
                                             @endphp
                                             <div class="input-group">
-                                                <textarea rows="7" class="form-control answer_description" name="user_answers[{{$s['id']}}][{{$index+1}}]" aria-label="With textarea">{{$userAnswerDesc ? $userAnswerDesc['user_answer'] : ''}} </textarea>
+                                                <textarea rows="7" class="form-control answer_description" name="user_answers[{{$s['id']}}][{{$index+1}}]" aria-label="With textarea" disabled>{{$userAnswerDesc ? $userAnswerDesc['user_answer'] : ''}} </textarea>
                                             </div>
                                             @endif
                                         </div>
