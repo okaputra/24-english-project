@@ -109,6 +109,37 @@ class QuizController extends Controller
         $attemptQuiz->update([
             'end' => Carbon::now()
         ]);
-        return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('success', 'Quiz Submitted Succesfully!');
+        return redirect("/user-get-result-quiz/$id_quiz/$id_sub_course")->with('success', 'Quiz Submitted Succesfully!');
+    }
+    public function GetQuizResult($id_quiz, $id_sub_course){
+        $quiz = Quiz::find($id_quiz);
+        $paket = Paket::find($quiz->id_paket);
+        $soal_terpilih = PaketTerpilih::where('id_paket', $paket->id)->get();
+        $soal_terpilih_ids = $soal_terpilih->pluck('id_soal')->toArray();
+        $soal = Soal::whereIn('id', $soal_terpilih_ids)->simplePaginate(5);
+        $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
+
+        $currentQuiz = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->first();
+        if(!$currentQuiz){
+            return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Not Found!');
+        }
+        if ($currentQuiz->end != null) {
+            $userAnswers = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->pluck('user_answer', 'id_question')->toArray();
+            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer NOT REGEXP '^[0-9]+$'")->get();
+            $correctAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 1)->count();
+            $wrongAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 0)->count();
+            return view('main.result-quiz', [
+                'quiz' => $quiz,
+                'soal' => $soal,
+                'jumlah_soal' => $jumlah_soal,
+                'currentQuiz' => $currentQuiz,
+                'user_answers' => $userAnswers,
+                'user_answers_desc' => $userAnswersDesc,
+                'correctAnswer' => $correctAnswer,
+                'wrongAnswer' => $wrongAnswer,
+                'id_sub_course' => $id_sub_course
+            ]);
+        }
+        return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Not Found!');
     }
 }

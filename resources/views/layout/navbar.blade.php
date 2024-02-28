@@ -42,6 +42,7 @@
             <a href="/about" class="nav-item nav-link">About</a>
             <a href="/our-courses" class="nav-item nav-link">Courses</a>
             @if(Session::get("login"))
+                <a href="/my-courses" class="nav-item nav-link">My Courses</a>
                 <h5 style="margin-right: 20px; height: 40px; margin-top: 25px">Hi, {{ Session::get("first_name") }}</h5>
                 <a href="/logout" class="btn btn-primary" style="margin-right: 20px; height: 40px; margin-top: 19px">Logout</a>
             @else

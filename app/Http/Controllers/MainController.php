@@ -41,6 +41,19 @@ class MainController extends Controller
             'subCourses' => $subCourses
         ]);
     }
+    public function MyCourses(){
+        $myCourses = UserPurchase::where('id_user', Session::get('id'))->where('is_sudah_bayar', 'Paid')->get();
+        $subCourses = [];
+        foreach ($myCourses as $course) {
+            $subCourse = Sub::find($course->id_sub_terbayar);
+            if ($subCourse) {
+                $subCourses[] = $subCourse;
+            }
+        }
+        return view('main.mycourses',[
+            'subCourses' => $subCourses
+        ]);
+    }
     public function detailSubCourse($id)
     {
         $userId = Session::get('id');

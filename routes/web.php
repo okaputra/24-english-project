@@ -42,6 +42,11 @@ Route::get('/about', 'App\Http\Controllers\MainController@about');
 
 // MIDDLEWARE CHECKING USER
 Route::middleware(['checkLogin'])->group(function () {
+    // ================================== ROUTE UNTUK PERSONAL COURSES (PAID) ======================================
+    Route::get('/my-courses', 'App\Http\Controllers\MainController@MyCourses');
+    Route::get('/detail-my-subcourse/{id}', 'App\Http\Controllers\MainController@detailSubCourse');
+
+    // ================================== ROUTE UNTUK PAYMENT ======================================
     Route::get('/user-get-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkUserPurchase');
     Route::post('/user-rate-subcourse-material/{id_sub_course}', 'App\Http\Controllers\MainController@rateSubCourseContent')->middleware('checkUserPurchase');
     Route::get('/user-get-free-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkFreeCourse');
@@ -56,6 +61,7 @@ Route::middleware(['checkLogin'])->group(function () {
     // ================================== ROUTE UNTUK QUIZ ======================================
     Route::get('/user-attempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@StartQuiz')->middleware('checkUserPurchase');
     Route::get('/user-reattempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@RestartQuiz')->middleware('checkUserPurchase');
+    Route::get('/user-get-result-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@GetQuizResult')->middleware('checkUserPurchase');
     Route::post('/save-answer', 'App\Http\Controllers\QuizController@SimpanJawabanUser')->name('save-answer');
     Route::post('/user-submit-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@submitQuiz');
 });
