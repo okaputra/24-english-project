@@ -13,6 +13,7 @@ return new class extends Migration {
         Schema::create('tb_soal', function (Blueprint $table) {
             $table->id();
             $table->longText("pertanyaan");
+            $table->longText("clue")->nullable();
             $table->string("tipe");
             $table->string("audio_file")->nullable();
             $table->timestamps();

@@ -14,13 +14,13 @@
                             <form action="/admin-update-soal/{{$soal['id']}}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Tipe soal ini</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Tipe soal ini</label>
                                     <div class="col-sm-10">
                                         <h5>{{$soal['tipe']}}</h5>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Pertanyaan</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Pertanyaan</label>
                                     <div class="col-sm-10">
                                         <textarea name="pertanyaan" class="summernote" id="" cols="30" rows="10">{!!$soal['pertanyaan']!!}</textarea>
                                         @if($soal['audio_file'])
@@ -32,9 +32,15 @@
                                         @endif
                                     </div>
                                 </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label" style="color: black">Clue</label>
+                                    <div class="col-sm-10">
+                                        <textarea name="clue" class="form-control" id="" cols="30" rows="10">{{$soal['clue']}}</textarea>
+                                    </div>
+                                </div>
 
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Audio (opsional)</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Audio (opsional)</label>
                                     <div class="col-sm-10">
                                         <input type="file" name="audio_soal" accept="audio/*" class="">
                                     </div>
@@ -58,7 +64,7 @@
                                 </div> --}}
                                 
                                 <div class="form-group row" id="opsiSection" style="{{ $soal['tipe'] === 'deskripsi' ? 'display: none;' : '' }}">
-                                    <label class="col-sm-2 col-form-label">Opsi</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Opsi</label>
                                     <div class="col-sm-10" id="disini">
                                         <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+ Tambah Opsi</button>
                                         <div id="opsi-container">
@@ -81,7 +87,7 @@
                                                         @endif
                                                     </div>
                                                     <div class="form-group row">
-                                                        <label class="col-sm-2 col-form-label">Audio (opsional)</label>
+                                                        <label class="col-sm-2 col-form-label" style="color: black">Audio (opsional)</label>
                                                         <div class="col-sm-10">
                                                             <input type="file" name="audio_opsi[]" accept="audio/*" class="" data-audio-opsi-id="{{ $o['id'] }}">
                                                             <input type="hidden" name="audio_opsi_id[{{ $key }}]" value="{{ $key }}">

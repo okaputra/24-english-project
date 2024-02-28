@@ -189,6 +189,7 @@ class AdminContentController extends Controller
                 $audio_file->move($audioSoalPath, $audio_name);
                 $soal = Soal::create([
                     'pertanyaan' => $content,
+                    'clue' => $req->clue,
                     'tipe' => 'deskripsi',
                     'audio_file' => $audio_name,
                 ]);
@@ -198,6 +199,7 @@ class AdminContentController extends Controller
             if (!$req->hasFile('audio_soal')) {
                 $soal = Soal::create([
                     'pertanyaan' => $content,
+                    'clue' => $req->clue,
                     'tipe' => 'deskripsi',
                 ]);
             }
@@ -215,6 +217,7 @@ class AdminContentController extends Controller
                 // simpan dengan audio
                 $soal = Soal::create([
                     'pertanyaan' => $content,
+                    'clue' => $req->clue,
                     'tipe' => 'opsi',
                     'audio_file' => $audio_name,
                 ]);
@@ -223,6 +226,7 @@ class AdminContentController extends Controller
             if (!$req->hasFile('audio_soal')) {
                 $soal = Soal::create([
                     'pertanyaan' => $content,
+                    'clue' => $req->clue,
                     'tipe' => 'opsi',
                 ]);
             }
@@ -411,6 +415,7 @@ class AdminContentController extends Controller
             // Update soal
             $soal->update([
                 'pertanyaan' => $content,
+                'clue' => $req->clue,
                 'tipe' => $req->tipe,
                 'audio_file' => $audio_name_soal,
             ]);
@@ -434,6 +439,7 @@ class AdminContentController extends Controller
             // Update soal
             $soal->update([
                 'pertanyaan' => $content,
+                'clue' => $req->clue,
                 'tipe' => $req->tipe,
                 'audio_file' => $audio_name_soal,
             ]);

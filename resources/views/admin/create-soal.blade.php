@@ -14,20 +14,26 @@
                             <form action="/admin-create-soal" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Pertanyaan</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Pertanyaan</label>
                                     <div class="col-sm-10">
                                         <textarea name="pertanyaan" class="summernote" cols="30" rows="10"></textarea>
                                     </div>
                                 </div>
                                 <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Audio (opsional)</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Clue</label>
+                                    <div class="col-sm-10">
+                                        <textarea name="clue" class="form-control" rows="10"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <label class="col-sm-2 col-form-label" style="color: black">Audio (opsional)</label>
                                     <div class="col-sm-10">
                                         <input type="file" name="audio_soal" accept="audio/*" class="">
                                     </div>
                                 </div>
                             
                                 <div class="form-group row" >
-                                    <label class="col-sm-2 col-form-label">Tipe Soal</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Tipe Soal</label>
                                     <div class="col-sm-10">
                                         <select name="tipe" id="tipeSoal" class="form-control" style="width: 300px;">
                                             <option value="deskripsi">Deskripsi</option>
@@ -37,7 +43,7 @@
                                 </div>
                             
                                 <div class="form-group row" id="opsiSection">
-                                    <label class="col-sm-2 col-form-label">Opsi</label>
+                                    <label class="col-sm-2 col-form-label" style="color: black">Opsi</label>
                                     <div class="col-sm-10" id="disini">
                                         <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form">+ Tambah Opsi</button>
                                         <div id="opsi-container">
@@ -50,7 +56,7 @@
                                                 </div>
                                             </div>
                                             <div class="form-group row">
-                                                <label class="col-sm-2 col-form-label">Audio (opsional)</label>
+                                                <label class="col-sm-2 col-form-label" style="color: black">Audio (opsional)</label>
                                                 <div class="col-sm-10">
                                                     <input type="file" name="audio_opsi[]" accept="audio/*" class="">
                                                 </div>
@@ -117,6 +123,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Pertanyaan</th>
+                                        <th>Tipe</th>
                                         <th>Option</th>
                                     </tr>
                                 </thead>
@@ -136,6 +143,7 @@
                                                 </audio>
                                             @endif
                                         </td>
+                                        <td style="color: black">{{$ds['tipe']}}</td>
                                         <td>
                                             <span style="color: black">
                                                 <a href="/admin-update-soal/{{$ds['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
