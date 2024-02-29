@@ -117,6 +117,7 @@ class QuizController extends Controller
         $soal_terpilih = PaketTerpilih::where('id_paket', $paket->id)->get();
         $soal_terpilih_ids = $soal_terpilih->pluck('id_soal')->toArray();
         $soal = Soal::whereIn('id', $soal_terpilih_ids)->simplePaginate(5);
+        $soalAll = Soal::whereIn('id', $soal_terpilih_ids)->get();
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
 
         $currentQuiz = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->first();
@@ -128,6 +129,28 @@ class QuizController extends Controller
             $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer NOT REGEXP '^[0-9]+$'")->get();
             $correctAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 1)->count();
             $wrongAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 0)->count();
+            $showClue = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 0)->pluck('id_question');
+            $showClueifBlank = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->pluck('id_question');
+
+            $isShowClue = [];
+            $blankAnswer =[];
+            foreach ($soalAll as $q) {
+                // Determine if the clue should be shown for this question
+                $isShowClue[$q->id] = $showClue->contains($q->id);
+                $blankAnswer[$q->id] = !$showClueifBlank->contains($q->id);
+            }
+
+            // Count Blank Answer
+            $blankAnswerCount = 0;
+            foreach ($blankAnswer as $questionId => $isBlank) {
+                // Assuming $questions is a collection of all questions with their details
+                $questionType = $soalAll->where('id', $questionId)->pluck('tipe')->first();
+                
+                // Check if the question type is "opsi" and the answer is blank
+                if ($questionType === 'opsi' && $isBlank) {
+                    $blankAnswerCount++;
+                }
+            }
             return view('main.result-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
@@ -137,6 +160,9 @@ class QuizController extends Controller
                 'user_answers_desc' => $userAnswersDesc,
                 'correctAnswer' => $correctAnswer,
                 'wrongAnswer' => $wrongAnswer,
+                'isShowClue' => $isShowClue,
+                'blankAnswer' => $blankAnswer,
+                'blankAnswerCount' => $blankAnswerCount,
                 'id_sub_course' => $id_sub_course
             ]);
         }

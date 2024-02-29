@@ -27,7 +27,8 @@
                                         <p class="card-text">Question &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-book"></i> {{$jumlah_soal}}</p>
                                         <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
                                         <p class="card-text" style="color: green">CORRECT &emsp;&emsp;&emsp;&emsp; : <i class="bi bi-check"></i> {{$correctAnswer}}</p>
-                                        <p class="card-text" style="color: red">WRONG &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-exclamation-circle"></i> {{$wrongAnswer}}</p>
+                                        <p class="card-text" style="color: red">INCORRECT &emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-exclamation-circle"></i> {{$wrongAnswer}}</p>
+                                        <p class="card-text" style="color: red">BLANK &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-circle"></i> {{$blankAnswerCount}}</p>
                                         <a href="/user-reattempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Re-Attempt Quiz</a>
                                     </div>
                                 </div>
@@ -48,7 +49,11 @@
                                 <div class="accordion-body">
                                     <nav aria-label="breadcrumb">
                                         <ol class="breadcrumb">
-                                          <li class="breadcrumb-item active" aria-current="page">{{$no++}}</li>
+                                            @if ($isShowClue[$s['id']])
+                                                <li class="breadcrumb-item active" aria-current="page" style="color: red; font-size:2em"><b>{{$no++}}</b></li>
+                                            @else
+                                                <li class="breadcrumb-item active" aria-current="page" style="font-size:2em;"><b>{{$no++}}</b></li>
+                                            @endif
                                         </ol>
                                     </nav>
                                     <div class="card">
@@ -90,6 +95,20 @@
                                             @endif
                                         </div>
                                     </div>
+                                    @if ($isShowClue[$s['id']])
+                                        <br>
+                                        <div class="alert alert-warning" role="alert">
+                                            <b>Clue: {{$s['clue']}}</b>
+                                        </div>
+                                    @endif
+                                    @if ($blankAnswer[$s['id']])
+                                        @if($s['tipe']=='opsi')
+                                            <br>
+                                            <div class="alert alert-danger" role="alert">
+                                                <b>Not Answered!</b>
+                                            </div>
+                                        @endif
+                                    @endif
                                 </div>
                             </div>
                         </div>
