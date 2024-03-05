@@ -7,6 +7,8 @@ use willvincent\Rateable\Rateable;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\tb_courses as Course;
 use App\Models\tb_quiz as Quiz;
+use App\Models\tb_tryout as Tryout;
+use App\Models\tb_final_exam as Exam;
 use App\Models\tb_ratings as Rating;
 
 class tb_sub_courses extends Model
@@ -40,6 +42,14 @@ class tb_sub_courses extends Model
     public function Quiz()
     {
         return $this->hasMany(Quiz::class, 'id_sub_course');
+    }
+    public function tryout()
+    {
+        return $this->hasMany(Tryout::class, 'id_sub_course');
+    }
+    public function exam()
+    {
+        return $this->hasMany(Exam::class, 'id_sub_course');
     }
     public function ratings()
     {

@@ -8,4 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class tb_user_answer_tryout extends Model
 {
     use HasFactory;
+    protected $table = 'tb_user_answer_tryouts';
+
+    protected $guarded = ['id'];
 }
