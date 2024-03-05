@@ -81,6 +81,7 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     Route::get('/admin-edit-subcourse/{id}/{id_course}', 'App\Http\Controllers\AdminController@UpdateSubCourse');
     Route::post('/admin-update-subcourse/{id}/{id_course}', 'App\Http\Controllers\AdminController@PostUpdateSubCourse');
     Route::get('/admin-input-sub-course/{id}', 'App\Http\Controllers\AdminController@AddNewSubCourse');
+    Route::get('/admin-input-evaluasi/{id_category}', 'App\Http\Controllers\AdminController@AdminInputEvaluasi');
     Route::post('/admin-input-sub-course/{id}', 'App\Http\Controllers\AdminController@PostNewSubCourse');
 
     // SOAL
@@ -108,6 +109,21 @@ Route::middleware(['checkLoginAdmin'])->group(function () {
     Route::get('/admin-update-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@UpdateSubCourseContent');
     Route::post('/admin-update-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@PostUpdateSubCourseContent');
     Route::get('/admin-delete-subcourse-content/{id}', 'App\Http\Controllers\AdminContentController@DeleteSubCourseContent');
+
+    // TRYOUT
+    Route::get('/admin-assign-tryout/{id_category}', 'App\Http\Controllers\AdminManageTryoutController@AdminCreateTryout');
+    Route::post('/admin-assign-tryout/{id_category}', 'App\Http\Controllers\AdminManageTryoutController@AdminPostTryout');
+    Route::get('/admin-update-tryout/{id_tryout}', 'App\Http\Controllers\AdminManageTryoutController@AdminUpdateTryout');
+    Route::post('/admin-update-tryout/{id_tryout}', 'App\Http\Controllers\AdminManageTryoutController@AdminPostUpdateTryout');
+    Route::get('/admin-delete-tryout/{id_tryout}', 'App\Http\Controllers\AdminManageTryoutController@AdminDeleteTryout');
+
+    // EXAM
+    Route::get('/admin-assign-exam/{id_category}', 'App\Http\Controllers\AdminManageExamController@AdminCreateExam');
+    Route::post('/admin-assign-exam/{id_category}', 'App\Http\Controllers\AdminManageExamController@AdminPostExam');
+    Route::get('/admin-update-exam/{id_exam}', 'App\Http\Controllers\AdminManageExamController@AdminUpdateExam');
+    Route::post('/admin-update-exam/{id_exam}', 'App\Http\Controllers\AdminManageExamController@AdminPostUpdateExam');
+    Route::get('/admin-delete-exam/{id_exam}', 'App\Http\Controllers\AdminManageExamController@AdminDeleteExam');
+
 
 });
 

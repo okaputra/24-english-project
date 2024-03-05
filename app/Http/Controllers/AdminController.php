@@ -17,7 +17,7 @@ class AdminController extends Controller
         $countUser = User::all()->count();
         $countUserPurchase = UserPurchase::where('is_sudah_bayar', 'Paid')->count();
         $countUserUnpaid = UserPurchase::where('is_sudah_bayar', 'Unpaid')->count();
-        return view('admin.dashboard',[
+        return view('admin.dashboard', [
             'countCourse' => $countCourse,
             'countUser' => $countUser,
             'countUserPurchase' => $countUserPurchase,
@@ -220,5 +220,12 @@ class AdminController extends Controller
         ]);
 
         return redirect("/admin-detail-course/$id")->with('success', "Course Updated Succesfully!");
+    }
+    public function AdminInputEvaluasi($id_category)
+    {
+        $id = $id_category;
+        return view('admin.input-evaluasi', [
+            'id_category' => $id,
+        ]);
     }
 }

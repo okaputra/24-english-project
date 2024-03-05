@@ -3,22 +3,17 @@
 @include('layout.script')
 <div class="content-body">
     <div class="container-fluid">
+        @if(count($tryout)<1)
         <div class="row">
             <div class="col-xl-10 col-xxl-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Form Create Quiz / Category</h4>
+                        <h4 class="card-title">Form Create Tryout</h4>
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
-                            <form action="/admin-input-subcourse-content/{{$id_sub_course}}" method="POST" enctype="multipart/form-data">
+                            <form action="/admin-assign-tryout/{{$id_category}}" method="POST">
                                 @csrf
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Category Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" name="nama_quiz" value="{{old('nama_quiz')}}">
-                                    </div>
-                                </div>
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Choose Paket</label>
                                     <div class="col-sm-10">
@@ -35,37 +30,6 @@
                                         <input type="text" class="form-control" name="durasi" value="{{old('durasi')}}">
                                     </div>
                                 </div>
-                                <fieldset class="form-group">
-                                    <div class="row">
-                                        <label class="col-form-label col-sm-2 pt-0">Paid</label>
-                                        <div class="col-sm-10">
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="is_berbayar" value="1">
-                                                <label class="form-check-label">
-                                                    Yes
-                                                </label>
-                                            </div>
-                                            <div class="form-check">
-                                                <input class="form-check-input" type="radio" name="is_berbayar" value="0">
-                                                <label class="form-check-label">
-                                                    No
-                                                </label>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </fieldset>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Learning Video</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-control" name="video" accept="video/mp4" type="file" id="formFile">
-                                    </div>
-                                </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Video Thumbnail</label>
-                                    <div class="col-sm-10">
-                                        <input class="form-control" name="video_thumbnail" accept="image/png, image/gif, image/jpeg" type="file" id="formFile">
-                                    </div>
-                                </div>
                                 <div class="form-group row">
                                     <div class="col-sm-10">
                                         <button type="submit" class="btn btn-primary">Submit</button>
@@ -77,13 +41,14 @@
                 </div>
             </div>
         </div>
+        @endif
 
         {{-- Datatable --}}
         <div class="row">
             <div class="col-12">
                 <div class="card">
                     <div class="card-header">
-                        <h4 class="card-title">Daftar Category/Quiz Pada Sub Course Ini</h4>
+                        <h4 class="card-title">Tryout Pada Category Ini</h4>
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -91,9 +56,8 @@
                                 <thead>
                                     <tr>
                                         <th>No</th>
-                                        <th>Category Name</th>
                                         <th>Duration</th>
-                                        <th>Video</th>
+                                        <th>Paket</th>
                                         <th>Option</th>
                                     </tr>
                                 </thead>
@@ -101,22 +65,24 @@
                                     @php
                                         $no=1;
                                     @endphp
-                                    @foreach ($quiz as $q)
+                                    @foreach ($tryout as $q)
                                     <tr>
                                         <td style="color: black">{{$no++}}</td>
-                                        <td style="color: black">{{$q['nama_quiz']}}</td>
                                         <td style="color: black">{{$q['durasi']}} Minutes</td>
                                         <td style="color: black">
-                                            <video width="320" height="240" controls poster="{{asset('/images/video-thumbnail/'. $q['video_thumbnail'] .'/'.$q['video_thumbnail'])}}">
-                                                <source src="{{ asset('videos/quiz-video/' . $q['video_path'] . '/' . $q['video_path'])}}" type="video/{{ pathinfo($q['video_path'], PATHINFO_EXTENSION) }}" type="video/mp4">
-                                                Your browser does not support the video tag.
-                                            </video>
+                                            @php
+                                                $paket = App\Models\tb_paket::find($q['id_paket']);
+                                                if ($paket) {
+                                                    echo $paket['nama_paket'];
+                                                } else {
+                                                    echo "Paket not found";
+                                                }
+                                            @endphp
                                         </td>
                                         <td>
                                             <span style="color: black">
-                                                <a href="/admin-update-subcourse-content/{{$q['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
-                                                <a href="/admin-input-evaluasi/{{$q['id']}}" type="button" class="mr-4"><i class="fa fa-book color-danger"></i></a>
-                                                <a href="/admin-delete-subcourse-content/{{$q['id']}}" type="button" class="mr-4 delContentSub"><i class="fa fa-close color-danger"></i></a>
+                                                <a href="/admin-update-tryout/{{$q['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
+                                                <a href="/admin-delete-tryout/{{$q['id']}}" type="button" class="mr-4 deltryout"><i class="fa fa-close color-danger"></i></a>
                                             </span>
                                         </td>
                                     </tr>
@@ -135,12 +101,12 @@
 
 <script>
     $(document).ready(function() {
-        $('.delContentSub').on('click',function(e){
+        $('.deltryout').on('click',function(e){
         e.preventDefault();
         const delButton = $(this).attr('href');
         Swal.fire({
             title: 'Are you sure?',
-            text: "This Quiz/Category will be Deleted!",
+            text: "This Tryout will be Deleted!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#09bf25',
