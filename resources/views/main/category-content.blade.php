@@ -35,7 +35,7 @@
                   <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
                       <button class="accordion-button" type="button" data-bs-toggle="collaps" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                        Answer Question
+                        QUIZ
                       </button>
                     </h2>
                     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
@@ -46,6 +46,7 @@
                                 <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
                                 @if($isUserAttempt)
                                     <a href="/user-reattempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Re-Attempt Quiz</a>
+                                    <a href="/user-get-result-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary">RESULT</a>
                                 @else
                                     <a href="/user-attempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Attempt Quiz</a>
                                 @endif
@@ -57,28 +58,53 @@
                 </div>
             </div>
 
-            @if($isUserAttempt)
-            <div class="col-lg-6 wow">
+            <div class="col-lg-8 wow">
                 <div class="accordion col-lg-10 wow" id="accordionPanelsStayOpenExample">
                   <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
                       <button class="accordion-button" type="button" data-bs-toggle="collaps" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                        RESULT
+                        TRY OUT
                       </button>
                     </h2>
                     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
                       <div class="accordion-body">
-                          <div class="card">
-                              <div class="card-body">
-                                <a href="/user-get-result-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary">QUIZ RESULT</a>
-                              </div>
+                        <div class="card">
+                          <div class="card-body">
+                            <p class="card-text">Question &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-book"></i> {{$jumlah_soal}}</p>
+                            <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
+                            <a href="/user-reattempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> START</a>
+                            <a href="/user-get-result-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary">RESULT</a>
                           </div>
+                      </div>
                       </div>
                     </div>
                   </div>
                 </div>
             </div>
-            @endif
+
+            <div class="col-lg-8 wow">
+                <div class="accordion col-lg-10 wow" id="accordionPanelsStayOpenExample">
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                      <button class="accordion-button" type="button" data-bs-toggle="collaps" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+                        FINAL EXAM
+                      </button>
+                    </h2>
+                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+                      <div class="accordion-body">
+                        <div class="card">
+                          <div class="card-body">
+                            <p class="card-text">Question &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-book"></i> {{$jumlah_soal}}</p>
+                            <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
+                            <a href="/user-reattempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> START</a>
+                            <a href="/user-get-result-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary">RESULT</a>
+                          </div>
+                      </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
