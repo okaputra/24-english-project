@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\tb_courses as Course;
 use App\Models\tb_sub_courses as Sub;
 use App\Models\tb_quiz as Quiz;
+use App\Models\tb_tryout as Tryout;
 use App\Models\tb_user_purchase as UserPurchase;
 use App\Models\tb_paket_terpilih as PaketTerpilih;
 use App\Models\tb_paket as Paket;
 use App\Models\tb_users as User;
 use App\Models\tb_user_attempt_quiz as UserAttemptQuiz;
+use App\Models\tb_user_attempt_tryout as UserAttemptTryout;
 use Session;
 use Carbon\Carbon;
 
@@ -41,7 +43,8 @@ class MainController extends Controller
             'subCourses' => $subCourses
         ]);
     }
-    public function MyCourses(){
+    public function MyCourses()
+    {
         $myCourses = UserPurchase::where('id_user', Session::get('id'))->where('is_sudah_bayar', 'Paid')->get();
         $subCourses = [];
         foreach ($myCourses as $course) {
@@ -50,7 +53,7 @@ class MainController extends Controller
                 $subCourses[] = $subCourse;
             }
         }
-        return view('main.mycourses',[
+        return view('main.mycourses', [
             'subCourses' => $subCourses
         ]);
     }

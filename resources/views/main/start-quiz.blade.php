@@ -122,10 +122,10 @@
                     'X-CSRF-TOKEN': csrfToken
                 },
                 success: function(response) {
-                    // console.log(response);
+                    console.log(response);
                 },
                 error: function(xhr, status, error) {
-                    // console.error(xhr.responseText);
+                    console.error(xhr.responseText);
                 }
             });
         });

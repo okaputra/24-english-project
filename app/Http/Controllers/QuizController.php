@@ -111,7 +111,8 @@ class QuizController extends Controller
         ]);
         return redirect("/user-get-result-quiz/$id_quiz/$id_sub_course")->with('success', 'Quiz Submitted Succesfully!');
     }
-    public function GetQuizResult($id_quiz, $id_sub_course){
+    public function GetQuizResult($id_quiz, $id_sub_course)
+    {
         $quiz = Quiz::find($id_quiz);
         $paket = Paket::find($quiz->id_paket);
         $soal_terpilih = PaketTerpilih::where('id_paket', $paket->id)->get();
@@ -121,7 +122,7 @@ class QuizController extends Controller
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
 
         $currentQuiz = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->first();
-        if(!$currentQuiz){
+        if (!$currentQuiz) {
             return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Not Found!');
         }
         if ($currentQuiz->end != null) {
@@ -133,7 +134,7 @@ class QuizController extends Controller
             $showClueifBlank = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->pluck('id_question');
 
             $isShowClue = [];
-            $blankAnswer =[];
+            $blankAnswer = [];
             foreach ($soalAll as $q) {
                 // Determine if the clue should be shown for this question
                 $isShowClue[$q->id] = $showClue->contains($q->id);
@@ -145,7 +146,7 @@ class QuizController extends Controller
             foreach ($blankAnswer as $questionId => $isBlank) {
                 // Assuming $questions is a collection of all questions with their details
                 $questionType = $soalAll->where('id', $questionId)->pluck('tipe')->first();
-                
+
                 // Check if the question type is "opsi" and the answer is blank
                 if ($questionType === 'opsi' && $isBlank) {
                     $blankAnswerCount++;
