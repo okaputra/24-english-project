@@ -3,6 +3,8 @@
 @include('layout.script')
 <div class="content-body">
     <div class="container-fluid">
+        <a href="/admin-input-evaluasi/{{$id_sub_course}}" type="button" class="btn btn-warning" style="margin-bottom:20px;">TAMBAH EVALUASI</a>
+        <br>
         <div class="row">
             <div class="col-xl-10 col-xxl-12">
                 <div class="card">
@@ -23,6 +25,7 @@
                                     <label class="col-sm-2 col-form-label">Choose Paket</label>
                                     <div class="col-sm-10">
                                         <select class="form-control" name="id_paket" id="sel1">
+                                                <option value="" selected></option>
                                             @foreach ($paket as $p)
                                                 <option value="{{$p['id']}}">{{$p['nama_paket']}}</option>
                                             @endforeach
@@ -115,7 +118,6 @@
                                         <td>
                                             <span style="color: black">
                                                 <a href="/admin-update-subcourse-content/{{$q['id']}}" type="button" class="mr-4"><i class="fa fa-pencil color-danger"></i></a>
-                                                <a href="/admin-input-evaluasi/{{$q['id']}}" type="button" class="mr-4"><i class="fa fa-book color-danger"></i></a>
                                                 <a href="/admin-delete-subcourse-content/{{$q['id']}}" type="button" class="mr-4 delContentSub"><i class="fa fa-close color-danger"></i></a>
                                             </span>
                                         </td>

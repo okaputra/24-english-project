@@ -10,7 +10,7 @@
                     <div class="stat-widget-two card-body">
                         <div class="stat-content">
                             <div class="stat-text">TRYOUT</div><br>
-                            <div class="stat-digit"> <a href="/admin-assign-tryout/{{$id_category}}" class="btn btn-primary" style="margin-bottom:20px;">ADD TRYOUT</a></div>
+                            <div class="stat-digit"> <a href="/admin-assign-tryout/{{$id_sub_course}}" class="btn btn-primary" style="margin-bottom:20px;">ADD TRYOUT</a></div>
                         </div>
                     </div>
                 </div>
@@ -20,7 +20,7 @@
                     <div class="stat-widget-two card-body">
                         <div class="stat-content">
                             <div class="stat-text">FINAL EXAM</div><br>
-                            <div class="stat-digit"> <a href="/admin-assign-exam/{{$id_category}}" class="btn btn-primary" style="margin-bottom:20px;">ADD FINAL EXAM</a></div>
+                            <div class="stat-digit"> <a href="/admin-assign-exam/{{$id_sub_course}}" class="btn btn-primary" style="margin-bottom:20px;">ADD FINAL EXAM</a></div>
                         </div>
                     </div>
                 </div>

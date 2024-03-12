@@ -66,11 +66,13 @@ class MainController extends Controller
             ->first();
         $subCourse = Sub::find($id);
         $quiz = $subCourse->Quiz->where('is_berbayar', 1);
+        $tryout = $subCourse->tryout;
         $quizFree = $subCourse->Quiz->where('is_berbayar', 0);
         $userPaidThisSubCourse = UserPurchase::where('id_sub_terbayar', $id)->where('is_sudah_bayar', 'Paid')->count();
         return view('main.detail-subcourse', [
             'subCourse' => $subCourse,
             'quiz' => $quiz,
+            'tryout' => $tryout,
             'quizFree' => $quizFree,
             'userPurchase' => $userPurchase,
             'userPaidThisSubCourse' => $userPaidThisSubCourse
@@ -79,13 +81,37 @@ class MainController extends Controller
     public function getSubCourseContent($id_quiz, $id_sub_course)
     {
         $quiz = Quiz::find($id_quiz);
-        $paket = Paket::find($quiz->id_paket);
-        $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
-        $isUserAttempt = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->whereNotNull('end')->first();
+        $paket = NULL;
+        $jumlah_soal = 0;
+        if ($quiz) {
+            if ($quiz->id_paket) {
+                $paket = Paket::find($quiz->id_paket);
+                $jumlah_soal = PaketTerpilih::where('id_paket', $quiz->id_paket)->count();
+            }
+        }
+        $isUserAttempt = UserAttemptQuiz::where('id_quiz', $id_quiz)
+            ->where('id_user', Session::get('id'))
+            ->whereNotNull('end')
+            ->first();
+
         return view('main.category-content', [
             'quiz' => $quiz,
             'jumlah_soal' => $jumlah_soal,
             'isUserAttempt' => $isUserAttempt,
+        ]);
+    }
+    public function getSubCourseTryout($id_tryout, $id_sub_course){
+        $tryout = Tryout::find($id_tryout);
+        $paket_tryout = Paket::find($tryout->id_paket);
+        $jumlah_soal_tryout = PaketTerpilih::where('id_paket', $tryout->id_paket)->count();
+        $isUserAttemptTryout = UserAttemptTryout::where('id_tryout', $id_tryout)
+            ->where('id_user', Session::get('id'))
+            ->whereNotNull('end')
+            ->first();
+        return view('main.tryout-content', [
+            'tryout' => $tryout,
+            'jumlah_soal_tryout' => $jumlah_soal_tryout,
+            'isUserAttemptTryout' => $isUserAttemptTryout,
         ]);
     }
     public function rateSubCourseContent(Request $req, $id_sub_course)

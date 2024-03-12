@@ -221,11 +221,10 @@ class AdminController extends Controller
 
         return redirect("/admin-detail-course/$id")->with('success', "Course Updated Succesfully!");
     }
-    public function AdminInputEvaluasi($id_category)
+    public function AdminInputEvaluasi($id_sub_course)
     {
-        $id = $id_category;
         return view('admin.input-evaluasi', [
-            'id_category' => $id,
+            'id_sub_course' => $id_sub_course,
         ]);
     }
 }

@@ -12,7 +12,6 @@ return new class extends Migration {
     {
         Schema::create('tb_tryouts', function (Blueprint $table) {
             $table->id();
-            $table->integer("id_quiz");
             $table->integer("durasi");
             $table->integer("id_sub_course");
             $table->integer("id_paket");

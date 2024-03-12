@@ -3,7 +3,6 @@
 @include('layout.script')
 <div class="content-body">
     <div class="container-fluid">
-        @if(count($tryout)<1)
         <div class="row">
             <div class="col-xl-10 col-xxl-12">
                 <div class="card">
@@ -12,7 +11,7 @@
                     </div>
                     <div class="card-body">
                         <div class="basic-form">
-                            <form action="/admin-assign-tryout/{{$id_category}}" method="POST">
+                            <form action="/admin-assign-tryout/{{$id_sub_course}}" method="POST">
                                 @csrf
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Choose Paket</label>
@@ -41,7 +40,6 @@
                 </div>
             </div>
         </div>
-        @endif
 
         {{-- Datatable --}}
         <div class="row">

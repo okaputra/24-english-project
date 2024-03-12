@@ -19,16 +19,26 @@
                                         <input type="text" class="form-control" name="nama_quiz" value="{{$quiz['nama_quiz']}}">
                                     </div>
                                 </div>
-                                <div class="form-group row">
-                                    <label class="col-sm-2 col-form-label">Current Paket</label>
-                                    <div class="col-sm-10" id="disini">
-                                        <input type="text" class="form-control" name="pkt" value="{{$paket_terpilih['nama_paket']}}" disabled style="background-color: blue; color:white;">
+                                @if($paket_terpilih==NULL)
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Current Paket</label>
+                                        <div class="col-sm-10" id="disini">
+                                            <input type="text" class="form-control" name="pkt" value="Empty Quiz, Video Only!" disabled style="background-color: red; color:white;">
+                                        </div>
                                     </div>
-                                </div>
+                                @else
+                                    <div class="form-group row">
+                                        <label class="col-sm-2 col-form-label">Current Paket</label>
+                                        <div class="col-sm-10" id="disini">
+                                            <input type="text" class="form-control" name="pkt" value="{{$paket_terpilih['nama_paket']}}" disabled style="background-color: blue; color:white;">
+                                        </div>
+                                    </div>
+                                @endif
                                 <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Choose Another Paket</label>
                                     <div class="col-sm-10">
                                         <select class="form-control" name="id_paket" id="sel1">
+                                                <option value="" selected></option>
                                             @foreach ($paket as $p)
                                                 <option value="{{$p['id']}}">{{$p['nama_paket']}}</option>
                                             @endforeach

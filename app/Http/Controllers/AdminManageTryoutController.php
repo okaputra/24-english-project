@@ -9,29 +9,25 @@ use Illuminate\Http\Request;
 
 class AdminManageTryoutController extends Controller
 {
-    public function AdminCreateTryout($id_category)
+    public function AdminCreateTryout($id_sub_course)
     {
-        $id = $id_category;
         $paket = Paket::all();
-        $tryout = Tryout::where('id_quiz', $id)->get();
+        $tryout = Tryout::where('id_sub_course', $id_sub_course)->get();
         return view('admin.input-tryout', [
             'paket' => $paket,
-            'id_category' => $id,
-            'tryout' => $tryout,
+            'id_sub_course' => $id_sub_course,
+            'tryout'=>$tryout
         ]);
     }
-    public function AdminPostTryout(Request $request, $id_category)
+    public function AdminPostTryout(Request $request, $id_sub_course)
     {
         $request->validate([
             "id_paket" => 'required',
             "durasi" => 'required',
         ]);
-        $category = Quiz::where('id', $id_category)->first();
-
         Tryout::create([
-            'id_quiz' => $id_category,
             'id_paket' => $request->id_paket,
-            'id_sub_course' => $category->id_sub_course,
+            'id_sub_course' => $id_sub_course,
             'durasi' => $request->durasi,
         ]);
         return redirect()->back()->with('success', "Tryout Submitted Succesfully!");
@@ -59,7 +55,7 @@ class AdminManageTryoutController extends Controller
             'durasi' => $request->durasi,
         ]);
 
-        return redirect("/admin-assign-tryout/$tryout->id_quiz")->with('success', "Tryout Updated Succesfully!");
+        return redirect("/admin-assign-tryout/$tryout->id_sub_course")->with('success', "Tryout Updated Succesfully!");
     }
     public function AdminDeleteTryout($id)
     {

@@ -167,7 +167,7 @@
                             <p>{{Str::limit($c['description'], 120, '...')}}</p>
                             <ol class="breadcrumb justify-content-center mb-0">
                                 @foreach ($components as $com)
-                                    <li class="breadcrumb-item small">{{$com}}</li>
+                                    <li class="breadcrumb-item small"><b>{{$com}}</b></li>
                                 @endforeach
                             </ol>
                         </div>

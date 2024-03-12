@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string("video_thumbnail");
             $table->integer("durasi");
             $table->integer("id_sub_course");
-            $table->integer("id_paket");
+            $table->integer("id_paket")->nullable();
             $table->boolean("is_berbayar")->default(1);
             $table->timestamps();
         });

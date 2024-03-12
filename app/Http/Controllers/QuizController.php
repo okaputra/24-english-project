@@ -19,6 +19,9 @@ class QuizController extends Controller
     public function StartQuiz($id_quiz, $id_sub_course)
     {
         $quiz = Quiz::find($id_quiz);
+        if($quiz->id_paket==NULL){
+            return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Quiz Not Found!');
+        }
         $paket = Paket::find($quiz->id_paket);
         $soal_terpilih = PaketTerpilih::where('id_paket', $paket->id)->get();
         $soal_terpilih_ids = $soal_terpilih->pluck('id_soal')->toArray();
@@ -114,6 +117,9 @@ class QuizController extends Controller
     public function GetQuizResult($id_quiz, $id_sub_course)
     {
         $quiz = Quiz::find($id_quiz);
+        if($quiz->id_paket==NULL){
+            return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Quiz Not Found!');
+        }
         $paket = Paket::find($quiz->id_paket);
         $soal_terpilih = PaketTerpilih::where('id_paket', $paket->id)->get();
         $soal_terpilih_ids = $soal_terpilih->pluck('id_soal')->toArray();

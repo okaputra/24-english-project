@@ -31,7 +31,6 @@ class AdminContentController extends Controller
     {
         $req->validate([
             "nama_quiz" => 'required',
-            "id_paket" => 'required',
             "durasi" => 'required',
             "is_berbayar" => 'required',
             "video" => 'required|file|mimetypes:video/mp4',
@@ -73,7 +72,11 @@ class AdminContentController extends Controller
     {
         $quiz = Quiz::find($id);
         $paket = Paket::all();
-        $paket_terpilih = Paket::where('id', $quiz->id_paket)->first();
+        if($quiz == NULL || $quiz->id_paket == NULL){
+            $paket_terpilih = NULL;
+        }else{
+            $paket_terpilih = Paket::where('id', $quiz->id_paket)->first();
+        }
         return view('admin.update-subcourse-content',[
             'quiz' => $quiz,
             'paket' => $paket,
@@ -85,7 +88,6 @@ class AdminContentController extends Controller
     {
         $req->validate([
             "nama_quiz" => 'required',
-            "id_paket" => 'required',
             "durasi" => 'required',
             "is_berbayar" => 'required',
         ]);

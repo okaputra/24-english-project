@@ -97,6 +97,29 @@
                   <p class="card-text">No Material Published Yet!</p>
                 @endforelse
             </div>
+
+            <h1 class="display-6" style="margin-bottom: -19px; color:brown;">TRYOUT</h1>
+            <div class="accordion col-lg-6 wow" id="accordionPanelsStayOpenExample">
+                @php
+                    $no=1;
+                @endphp
+                @forelse($tryout as $t)
+                  <div class="accordion-item">
+                    <h2 class="accordion-header" id="panelsStayOpen-headings{{$t['id']}}">
+                      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collaps{{$t['id']}}" aria-expanded="false" aria-controls="panelsStayOpen-collapse{{$t['id']}}">
+                        TRYOUT {{$no++}}
+                      </button>
+                    </h2>
+                    <div id="panelsStayOpen-collaps{{$t['id']}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{$t['id']}}">
+                      <div class="accordion-body">
+                        <strong><a href="/user-get-tryout/{{$t['id']}}/{{$subCourse['id']}}">Get Tryout</a></strong>
+                      </div>
+                    </div>
+                  </div>
+                @empty
+                  <p class="card-text">No Tryout Published Yet!</p>
+                @endforelse
+            </div>
             <p class="card-text" style="margin-bottom: -32px"><i class="bi bi-star"></i>  {{ number_format( $subCourse->averageRating, 1) }}</p>
             <form class="rating" method="POST" action="/user-rate-subcourse-material/{{$subCourse['id']}}" >
               @csrf

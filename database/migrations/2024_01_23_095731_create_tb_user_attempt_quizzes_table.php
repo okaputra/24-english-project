@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->integer("id_quiz");
             $table->date("start");
             $table->date("end")->nullable();
+            $table->boolean("is_complete")->default(0);//this is used to check whether the users answer is complete/all correct
             $table->timestamps();
         });
     }
