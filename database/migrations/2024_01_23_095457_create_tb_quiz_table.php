@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string("nama_quiz");
             $table->string("video_path");
             $table->string("video_thumbnail");
-            $table->integer("durasi");
+            $table->integer("durasi")->nullable();
             $table->integer("id_sub_course");
             $table->integer("id_paket")->nullable();
             $table->boolean("is_berbayar")->default(1);

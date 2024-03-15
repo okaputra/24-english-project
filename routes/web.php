@@ -63,14 +63,14 @@ Route::middleware(['checkLogin'])->group(function () {
     Route::get('/user-attempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@StartQuiz')->middleware('checkUserPurchase');
     Route::get('/user-reattempt-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@RestartQuiz')->middleware('checkUserPurchase');
     Route::get('/user-get-result-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@GetQuizResult')->middleware('checkUserPurchase');
-    Route::post('/save-answer', 'App\Http\Controllers\QuizController@SimpanJawabanUser')->name('save-answer');
+    Route::post('/save-answer-quiz', 'App\Http\Controllers\QuizController@SimpanJawabanUser')->name('save-answer-quiz');
     Route::post('/user-submit-quiz/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\QuizController@submitQuiz');
 
     // ================================== ROUTE UNTUK TRYOUT ======================================
     Route::get('/user-attempt-tryout/{id_tryout}/{id_sub_course}', 'App\Http\Controllers\TryoutController@StartTryout')->middleware('checkUserPurchase');
     Route::get('/user-reattempt-tryout/{id_tryout}/{id_sub_course}', 'App\Http\Controllers\TryoutController@RestartTryout')->middleware('checkUserPurchase');
     Route::get('/user-get-result-tryout/{id_tryout}/{id_sub_course}', 'App\Http\Controllers\TryoutController@GetResultTryout')->middleware('checkUserPurchase');
-    // Route::post('/save-answer', 'App\Http\Controllers\TryoutController@SaveAnswer')->name('save-answer');
+    Route::post('/save-answer', 'App\Http\Controllers\TryoutController@SaveAnswer')->name('save-answer-tryout');
     Route::post('/user-submit-tryout/{id_tryout}/{id_sub_course}', 'App\Http\Controllers\TryoutController@submitTryout');
 });
 

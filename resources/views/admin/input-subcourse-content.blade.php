@@ -25,7 +25,7 @@
                                     <label class="col-sm-2 col-form-label">Choose Paket</label>
                                     <div class="col-sm-10">
                                         <select class="form-control" name="id_paket" id="sel1">
-                                                <option value="" selected></option>
+                                                <option value="" selected>NO QUIZ</option>
                                             @foreach ($paket as $p)
                                                 <option value="{{$p['id']}}">{{$p['nama_paket']}}</option>
                                             @endforeach

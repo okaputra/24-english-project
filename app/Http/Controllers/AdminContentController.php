@@ -31,7 +31,6 @@ class AdminContentController extends Controller
     {
         $req->validate([
             "nama_quiz" => 'required',
-            "durasi" => 'required',
             "is_berbayar" => 'required',
             "video" => 'required|file|mimetypes:video/mp4',
             "video_thumbnail" => 'required|image|max:2048|mimes:jpg,jpeg,png'
@@ -72,12 +71,12 @@ class AdminContentController extends Controller
     {
         $quiz = Quiz::find($id);
         $paket = Paket::all();
-        if($quiz == NULL || $quiz->id_paket == NULL){
+        if ($quiz == NULL || $quiz->id_paket == NULL) {
             $paket_terpilih = NULL;
-        }else{
+        } else {
             $paket_terpilih = Paket::where('id', $quiz->id_paket)->first();
         }
-        return view('admin.update-subcourse-content',[
+        return view('admin.update-subcourse-content', [
             'quiz' => $quiz,
             'paket' => $paket,
             'paket_terpilih' => $paket_terpilih,
@@ -88,7 +87,6 @@ class AdminContentController extends Controller
     {
         $req->validate([
             "nama_quiz" => 'required',
-            "durasi" => 'required',
             "is_berbayar" => 'required',
         ]);
 
@@ -246,7 +244,7 @@ class AdminContentController extends Controller
                 $audio_name_opsi = null;
 
                 // Cek apakah ada pengunggahan file audio untuk opsi ini
-                if ($req->hasFile('audio_opsi.'.$key)) {
+                if ($req->hasFile('audio_opsi.' . $key)) {
                     $audio_file = $audio_files[$key];
                     $audio_extension = $audio_file->getClientOriginalExtension();
                     $audio_name_opsi = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
