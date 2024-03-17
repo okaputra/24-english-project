@@ -155,6 +155,7 @@ class AdminContentController extends Controller
             "pertanyaan" => 'required',
             "tipe" => 'required',
             "opsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
+            "kunci_jawaban_deskripsi.*" => $req->input('tipe') === 'deskripsi' ? 'required' : '',
             'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
             'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
             "audio_soal" => 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
@@ -187,9 +188,11 @@ class AdminContentController extends Controller
                 $audio_name = time() . '.' . $audio_extension;
                 $audioSoalPath = public_path('audio-soal/' . $audio_name);
                 $audio_file->move($audioSoalPath, $audio_name);
+                $combinedInput = implode('|', $req->input('kunci_jawaban_deskripsi'));
                 $soal = Soal::create([
                     'pertanyaan' => $content,
                     'clue' => $req->clue,
+                    'kunci_jawaban_deskripsi' => $combinedInput,
                     'tipe' => 'deskripsi',
                     'audio_file' => $audio_name,
                 ]);
@@ -197,9 +200,11 @@ class AdminContentController extends Controller
             }
             // simpan tanpa audio
             if (!$req->hasFile('audio_soal')) {
+                $combinedInput = implode('|', $req->input('kunci_jawaban_deskripsi'));
                 $soal = Soal::create([
                     'pertanyaan' => $content,
                     'clue' => $req->clue,
+                    'kunci_jawaban_deskripsi' => $combinedInput,
                     'tipe' => 'deskripsi',
                 ]);
             }
@@ -284,7 +289,7 @@ class AdminContentController extends Controller
 
             // Tentukan nama file audio untuk opsi saat ini
             $audio_name_opsi = null;
-            if (isset($audio_names[$key])) {
+            if (isset ($audio_names[$key])) {
                 $audio_name_opsi = $audio_names[$key]['name'];
             }
 
@@ -356,12 +361,14 @@ class AdminContentController extends Controller
     public function UpdateSoal($id)
     {
         $soal = Soal::find($id);
+        $arrKunciJawabanDeskripsi = explode("|", $soal->kunci_jawaban_deskripsi);
         $opsi = $soal->opsi()->get()->toArray();
         // $jawabanBenar = array_filter($opsi, function ($opsi) {
         //     return $opsi['is_jawaban_benar'] == 1;
         // });
         return view('admin.update-soal', [
             'soal' => $soal,
+            'arrKunciJawabanDeskripsi' => $arrKunciJawabanDeskripsi,
             'opsi' => $opsi,
         ]);
     }
@@ -371,6 +378,7 @@ class AdminContentController extends Controller
         $req->validate([
             "pertanyaan" => 'required',
             "opsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
+            "kunci_jawaban_deskripsi.*" => $req->input('tipe') === 'deskripsi' ? '' : 'required',
             'jawaban_benar' => $req->input('tipe') === 'deskripsi' ? '' : 'required|array|size:1',
             'jawaban_benar.*' => $req->input('tipe') === 'deskripsi' ? '' : 'integer',
             "audio_soal" => 'nullable|file|mimes:audio/mpeg,mpga,mp3,wav,aac',
@@ -400,6 +408,7 @@ class AdminContentController extends Controller
         // Simpan soal dengan tipe deskripsi dan file audio pertanyaan
         if ($req->input('tipe') === 'deskripsi') {
             $audio_name_soal = null;
+            $combinedInput = implode('|', $req->input('kunci_jawaban_deskripsi'));
             // Cek apakah ada penggantian audio soal
             if ($req->hasFile('audio_soal')) {
                 $audio_file_soal = $req->file('audio_soal');
@@ -416,6 +425,7 @@ class AdminContentController extends Controller
             $soal->update([
                 'pertanyaan' => $content,
                 'clue' => $req->clue,
+                'kunci_jawaban_deskripsi' => $combinedInput,
                 'tipe' => $req->tipe,
                 'audio_file' => $audio_name_soal,
             ]);
@@ -468,7 +478,7 @@ class AdminContentController extends Controller
                         $audio_name_opsi = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
                         $audioOpsiPath = public_path('audio-opsi/' . $audio_name_opsi);
                         $audio_file->move($audioOpsiPath, $audio_name_opsi);
-                    } elseif (isset($opsi->audio_file)) {
+                    } elseif (isset ($opsi->audio_file)) {
                         // Gunakan audio opsi yang sudah ada jika tidak ada penggantian
                         $audio_name_opsi = $opsi->audio_file;
                     }

@@ -40,7 +40,6 @@
                               <div class="card-body">
                                 <h5 class="card-title">Rp {{number_format($subCourse['pricing'])}}</h5>
                                 <p class="card-text">Enrolled &emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-person"></i> {{$userPaidThisSubCourse}}</p>
-                                <p class="card-text">Published On &emsp;: <i class="bi bi-calendar-check"></i> {{$subCourse['created_at']->diffForHumans()}}</p>
                                 <p class="card-text">Rating &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-star"></i> {{ number_format( $subCourse->averageRating, 1) }}</p>
                                 <p class="card-text">Review &emsp;&emsp;&emsp;&emsp;: <i class="bi bi-people"></i> {{$subCourse['number_of_review']}} Reviews</p>
                                 <p class="card-text">Certificate &emsp;&emsp;&nbsp;: <i class="bi bi-patch-check"></i></p>

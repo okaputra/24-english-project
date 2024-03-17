@@ -41,6 +41,13 @@
                                         </select>
                                     </div>
                                 </div>
+                                <div class="form-group row" id="kunciJawabanDeskripsi">
+                                    <label class="col-sm-2 col-form-label" style="color: black">Kunci Jawaban Deskripsi</label>
+                                    <div class="col-sm-10" id="kjd">
+                                        <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form-kunci">+ Tambah Kunci Jawaban</button>
+                                        <input type="text" class="form-control" name="kunci_jawaban_deskripsi[]" style="margin-bottom: 10px;">
+                                    </div>
+                                </div>
                             
                                 <div class="form-group row" id="opsiSection">
                                     <label class="col-sm-2 col-form-label" style="color: black">Opsi</label>
@@ -174,15 +181,18 @@
     // Ambil elemen-elemen yang dibutuhkan
     const tipeSoalSelect = document.getElementById('tipeSoal');
     const opsiSection = document.getElementById('opsiSection');
+    const kunciJawabanDeskripsii = document.getElementById('kunciJawabanDeskripsi');
 
     // Tambahkan event listener untuk memantau perubahan pada select
     tipeSoalSelect.addEventListener('change', function () {
         // Jika tipe soal adalah "deskripsi", sembunyikan opsiSection
         if (this.value === 'deskripsi') {
             opsiSection.style.display = 'none';
+            kunciJawabanDeskripsii.style.display = 'flex';
         } else {
             // Jika tipe soal adalah "opsi", tampilkan opsiSection
             opsiSection.style.display = 'flex';
+            kunciJawabanDeskripsii.style.display = 'none';
         }
     });
 
@@ -296,5 +306,25 @@
         });
     });
   </script>
+
+<script>
+    $(document).ready(function () {
+        var dynamicForm = $('#kjd');
+        var addButton = $('#add-form-kunci');
+
+        $(addButton).click(function () {
+            // Validasi: Cek apakah form terakhir kosong
+            var lastForm = dynamicForm.find('input:last');
+            if (!lastForm.val()) {
+                alert("Harap isi formulir sebelum menambahkan yang baru.");
+                return;
+            }
+
+            // Tambahkan formulir input baru
+            var newForm = '<input type="text" class="form-control" name="kunci_jawaban_deskripsi[]" style="margin-bottom:10px;">';
+            dynamicForm.append(newForm);
+        });
+    });
+</script>
 
 @endsection

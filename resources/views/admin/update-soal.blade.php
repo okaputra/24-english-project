@@ -53,6 +53,16 @@
                                     </div>
                                 </div>
 
+                                <div class="form-group row" style="{{ $soal['tipe'] === 'opsi' ? 'display: none;' : '' }}">
+                                    <label class="col-sm-2 col-form-label" style="color: black">Kunci Jawaban Deskripsi</label>
+                                    <div class="col-sm-10" id="kunciJD">
+                                        <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form-kunci">+ Tambah Kunci Jawaban</button>
+                                        @foreach ($arrKunciJawabanDeskripsi as $kjd)
+                                            <input type="text" name="kunci_jawaban_deskripsi[]" class="form-control" value="{{$kjd}}">
+                                        @endforeach
+                                    </div>
+                                </div>
+
                                 {{-- <div class="form-group row">
                                     <label class="col-sm-2 col-form-label">Tipe Soal</label>
                                     <div class="col-sm-10">
@@ -380,4 +390,22 @@
         });
     });
   </script>
+  <script>
+    $(document).ready(function () {
+        var dynamicForm = $('#kunciJD');
+        var addButton = $('#add-form-kunci');
+
+        $(addButton).click(function () {
+            // Validasi: Cek apakah form terakhir kosong
+            var lastForm = dynamicForm.find('input:last');
+            if (!lastForm.val()) {
+                alert("Harap isi formulir sebelum menambahkan yang baru.");
+                return;
+            }
+            // Tambahkan formulir input baru
+            var newForm = '<input type="text" class="form-control" name="kunci_jawaban_deskripsi[]" style="margin-bottom:10px;">';
+            dynamicForm.append(newForm);
+        });
+    });
+</script>
 @endsection

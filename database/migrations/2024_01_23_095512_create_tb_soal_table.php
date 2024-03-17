@@ -15,6 +15,7 @@ return new class extends Migration {
             $table->longText("pertanyaan");
             $table->longText("clue")->nullable();
             $table->string("tipe");
+            $table->longText("kunci_jawaban_deskripsi")->nullable();
             $table->string("audio_file")->nullable();
             $table->timestamps();
         });
