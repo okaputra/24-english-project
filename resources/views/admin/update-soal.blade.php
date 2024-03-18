@@ -58,7 +58,7 @@
                                     <div class="col-sm-10" id="kunciJD">
                                         <button type="button" class="btn btn-primary" style="margin-bottom: 10px" id="add-form-kunci">+ Tambah Kunci Jawaban</button>
                                         @foreach ($arrKunciJawabanDeskripsi as $kjd)
-                                            <input type="text" name="kunci_jawaban_deskripsi[]" class="form-control" value="{{$kjd}}">
+                                            <input type="text" name="kunci_jawaban_deskripsi[]" class="form-control" value="{{$kjd}}" style="margin-bottom: 10px;">
                                         @endforeach
                                     </div>
                                 </div>

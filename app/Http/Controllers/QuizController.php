@@ -19,7 +19,7 @@ class QuizController extends Controller
     public function StartQuiz($id_quiz, $id_sub_course)
     {
         $quiz = Quiz::find($id_quiz);
-        if($quiz->id_paket==NULL){
+        if ($quiz->id_paket == NULL) {
             return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Quiz Not Found!');
         }
         $paket = Paket::find($quiz->id_paket);
@@ -36,7 +36,7 @@ class QuizController extends Controller
             $attemptQuiz->start = Carbon::now();
             $attemptQuiz->save();
             $userAnswers = UserAnswer::where('id_attempt_quiz', $attemptQuiz->id)->pluck('user_answer', 'id_question')->toArray();
-            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $attemptQuiz->id)->whereRaw("user_answer NOT REGEXP '^[0-9]+$'")->get();
+            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $attemptQuiz->id)->get();
             return view('main.start-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
@@ -48,7 +48,7 @@ class QuizController extends Controller
             ]);
         } elseif ($currentQuiz->end == null) {
             $userAnswers = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->pluck('user_answer', 'id_question')->toArray();
-            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer NOT REGEXP '^[0-9]+$'")->get();
+            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->get();
             return view('main.start-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
@@ -117,7 +117,7 @@ class QuizController extends Controller
     public function GetQuizResult($id_quiz, $id_sub_course)
     {
         $quiz = Quiz::find($id_quiz);
-        if($quiz->id_paket==NULL){
+        if ($quiz->id_paket == NULL) {
             return redirect("/user-get-subcourse-material/$id_quiz/$id_sub_course")->with('info', 'Quiz Not Found!');
         }
         $paket = Paket::find($quiz->id_paket);
@@ -133,11 +133,11 @@ class QuizController extends Controller
         }
         if ($currentQuiz->end != null) {
             $userAnswers = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->pluck('user_answer', 'id_question')->toArray();
-            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer NOT REGEXP '^[0-9]+$'")->get();
-            $correctAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 1)->count();
-            $wrongAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 0)->count();
-            $showClue = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->where('is_correct', 0)->pluck('id_question');
-            $showClueifBlank = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->whereRaw("user_answer REGEXP '^[0-9]+$'")->pluck('id_question');
+            $userAnswersDesc = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->get();
+            $correctAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->where('is_correct', 1)->count();
+            $wrongAnswer = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->where('is_correct', 0)->count();
+            $showClue = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->where('is_correct', 0)->pluck('id_question');
+            $showClueifBlank = UserAnswer::where('id_attempt_quiz', $currentQuiz->id)->pluck('id_question');
 
             $isShowClue = [];
             $blankAnswer = [];
@@ -150,11 +150,10 @@ class QuizController extends Controller
             // Count Blank Answer
             $blankAnswerCount = 0;
             foreach ($blankAnswer as $questionId => $isBlank) {
-                // Assuming $questions is a collection of all questions with their details
-                $questionType = $soalAll->where('id', $questionId)->pluck('tipe')->first();
+                // $questionType = $soalAll->where('id', $questionId)->pluck('tipe')->first();
 
-                // Check if the question type is "opsi" and the answer is blank
-                if ($questionType === 'opsi' && $isBlank) {
+                // Check if the question is blank
+                if ($isBlank) {
                     $blankAnswerCount++;
                 }
             }

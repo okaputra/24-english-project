@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row g-5">
             <div class="col-lg-8 wow">
-                <h1 class="display-6 mb-4">RESULT: {{$quiz['nama_quiz']}}</h1>
+                <h1 class="display-6 mb-4">RESULT: TRYOUT</h1>
                 <div class="accordion col-lg-10 wow" id="accordionPanelsStayOpenExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-headingOne">
@@ -25,11 +25,11 @@
                                 <div class="card">
                                     <div class="card-body">
                                         <p class="card-text">Question &emsp;&emsp;&emsp;&emsp;&nbsp;: <i class="bi bi-book"></i> {{$jumlah_soal}}</p>
-                                        <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$quiz['durasi']}} Minutes</p>
+                                        <p class="card-text">Duration &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;: <i class="bi bi-clock"></i> {{$tryout['durasi']}} Minutes</p>
                                         <p class="card-text" style="color: green">CORRECT &emsp;&emsp;&emsp;&emsp; : <i class="bi bi-check"></i> {{$correctAnswer}}</p>
                                         <p class="card-text" style="color: red">INCORRECT &emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-exclamation-circle"></i> {{$wrongAnswer}}</p>
                                         <p class="card-text" style="color: red">BLANK &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-circle"></i> {{$blankAnswerCount}}</p>
-                                        <a href="/user-reattempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Re-Attempt Quiz</a>
+                                        <a href="/user-reattempt-tryout/{{$tryout['id']}}/{{$tryout['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Re-Attempt Tryout</a>
                                     </div>
                                 </div>
                             </div>
@@ -126,7 +126,7 @@
         e.preventDefault();
         const attemptButton = $(this).attr('href');
         Swal.fire({
-            title: 'Quiz Segera Dimulai!',
+            title: 'Tryout Segera Dimulai!',
             text: "Jangan Tutup Halaman Browser Anda",
             icon: 'info',
             showCancelButton: true,
@@ -140,7 +140,7 @@
                 document.location.href = attemptButton;
             }else{
                 Swal.fire({
-                title: 'Quiz Dibatalkan!',
+                title: 'Tryout Dibatalkan!',
                 icon: 'warning',
                 timer: 1300,
                 showConfirmButton: false, 

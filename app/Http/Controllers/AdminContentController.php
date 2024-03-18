@@ -188,7 +188,7 @@ class AdminContentController extends Controller
                 $audio_name = time() . '.' . $audio_extension;
                 $audioSoalPath = public_path('audio-soal/' . $audio_name);
                 $audio_file->move($audioSoalPath, $audio_name);
-                $combinedInput = implode('|', $req->input('kunci_jawaban_deskripsi'));
+                $combinedInput = implode(',', $req->input('kunci_jawaban_deskripsi'));
                 $soal = Soal::create([
                     'pertanyaan' => $content,
                     'clue' => $req->clue,
@@ -200,7 +200,7 @@ class AdminContentController extends Controller
             }
             // simpan tanpa audio
             if (!$req->hasFile('audio_soal')) {
-                $combinedInput = implode('|', $req->input('kunci_jawaban_deskripsi'));
+                $combinedInput = implode(',', $req->input('kunci_jawaban_deskripsi'));
                 $soal = Soal::create([
                     'pertanyaan' => $content,
                     'clue' => $req->clue,
@@ -361,7 +361,7 @@ class AdminContentController extends Controller
     public function UpdateSoal($id)
     {
         $soal = Soal::find($id);
-        $arrKunciJawabanDeskripsi = explode("|", $soal->kunci_jawaban_deskripsi);
+        $arrKunciJawabanDeskripsi = explode(",", $soal->kunci_jawaban_deskripsi);
         $opsi = $soal->opsi()->get()->toArray();
         // $jawabanBenar = array_filter($opsi, function ($opsi) {
         //     return $opsi['is_jawaban_benar'] == 1;
@@ -408,7 +408,7 @@ class AdminContentController extends Controller
         // Simpan soal dengan tipe deskripsi dan file audio pertanyaan
         if ($req->input('tipe') === 'deskripsi') {
             $audio_name_soal = null;
-            $combinedInput = implode('|', $req->input('kunci_jawaban_deskripsi'));
+            $combinedInput = implode(',', $req->input('kunci_jawaban_deskripsi'));
             // Cek apakah ada penggantian audio soal
             if ($req->hasFile('audio_soal')) {
                 $audio_file_soal = $req->file('audio_soal');
