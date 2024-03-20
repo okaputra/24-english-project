@@ -15,7 +15,6 @@ return new class extends Migration {
             $table->integer("durasi");
             $table->integer("id_sub_course");
             $table->integer("id_paket");
-            $table->integer("count_attempt")->nullable();
             $table->timestamps();
         });
     }

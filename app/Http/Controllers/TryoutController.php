@@ -27,9 +27,9 @@ class TryoutController extends Controller
         $soal_terpilih_ids = $soal_terpilih->pluck('id_soal')->toArray();
         $soal = Soal::whereIn('id', $soal_terpilih_ids)->simplePaginate(5);
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
-        $allowedReattempt = 3 - $tryout->count_attempt;
 
         $currentTryout = UserAttemptTryout::where('id_tryout', $id_tryout)->where('id_user', Session::get('id'))->first();
+        $allowedReattempt = 3 - $currentTryout->count_attempt;
         if ($currentTryout == null) {
             $attemptTryout = new UserAttemptTryout();
             $attemptTryout->id_user = Session::get('id');
@@ -67,18 +67,17 @@ class TryoutController extends Controller
     public function RestartTryout($id_tryout, $id_sub_course)
     {
         $userAttemptData = UserAttemptTryout::where('id_tryout', $id_tryout)->where('id_user', Session::get('id'))->first();
-        $tryout = Tryout::find($id_tryout);
 
         if ($userAttemptData == null) {
             return redirect()->back()->with('error', 'Tryout Tidak Ditemukan!');
         }
-        if ($tryout->count_attempt < 3) {
+        if ($userAttemptData->count_attempt < 3) {
             UserAnswerTryout::where('id_attempt_tryout', $userAttemptData->id)->delete();
             $userAttemptData->update([
                 'end' => NULL
             ]);
-            $tryout->update([
-                'count_attempt' => $tryout->count_attempt + 1
+            $userAttemptData->update([
+                'count_attempt' => $userAttemptData->count_attempt + 1
             ]);
             return redirect("/user-attempt-tryout/$id_tryout/$id_sub_course");
         } else {

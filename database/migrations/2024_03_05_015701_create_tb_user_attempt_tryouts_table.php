@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->integer("id_tryout");
             $table->date("start");
             $table->date("end")->nullable();
+            $table->integer("count_attempt")->nullable();
             $table->timestamps();
         });
     }
