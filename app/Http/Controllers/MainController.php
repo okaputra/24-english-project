@@ -6,12 +6,14 @@ use App\Models\tb_courses as Course;
 use App\Models\tb_sub_courses as Sub;
 use App\Models\tb_quiz as Quiz;
 use App\Models\tb_tryout as Tryout;
+use App\Models\tb_final_exam as Exam;
 use App\Models\tb_user_purchase as UserPurchase;
 use App\Models\tb_paket_terpilih as PaketTerpilih;
 use App\Models\tb_paket as Paket;
 use App\Models\tb_users as User;
 use App\Models\tb_user_attempt_quiz as UserAttemptQuiz;
 use App\Models\tb_user_attempt_tryout as UserAttemptTryout;
+use App\Models\tb_user_attempt_exam as UserAttemptExam;
 use Session;
 use Carbon\Carbon;
 
@@ -67,12 +69,14 @@ class MainController extends Controller
         $subCourse = Sub::find($id);
         $quiz = $subCourse->Quiz->where('is_berbayar', 1);
         $tryout = $subCourse->tryout;
+        $exam = $subCourse->exam;
         $quizFree = $subCourse->Quiz->where('is_berbayar', 0);
         $userPaidThisSubCourse = UserPurchase::where('id_sub_terbayar', $id)->where('is_sudah_bayar', 'Paid')->count();
         return view('main.detail-subcourse', [
             'subCourse' => $subCourse,
             'quiz' => $quiz,
             'tryout' => $tryout,
+            'exam' => $exam,
             'quizFree' => $quizFree,
             'userPurchase' => $userPurchase,
             'userPaidThisSubCourse' => $userPaidThisSubCourse
@@ -112,6 +116,20 @@ class MainController extends Controller
             'tryout' => $tryout,
             'jumlah_soal_tryout' => $jumlah_soal_tryout,
             'isUserAttemptTryout' => $isUserAttemptTryout,
+        ]);
+    }
+    public function getSubCourseExam($id_exam, $id_sub_course){
+        $exam = Exam::find($id_exam);
+        $paket_exam = Paket::find($exam->id_paket);
+        $jumlah_soal_exam = PaketTerpilih::where('id_paket', $exam->id_paket)->count();
+        $isUserAttemptExam = UserAttemptExam::where('id_exam', $id_exam)
+            ->where('id_user', Session::get('id'))
+            ->whereNotNull('end')
+            ->first();
+        return view('main.exam-content', [
+            'exam' => $exam,
+            'jumlah_soal_exam' => $jumlah_soal_exam,
+            'isUserAttemptExam' => $isUserAttemptExam,
         ]);
     }
     public function rateSubCourseContent(Request $req, $id_sub_course)

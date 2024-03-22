@@ -49,6 +49,7 @@ Route::middleware(['checkLogin'])->group(function () {
     // ================================== ROUTE UNTUK PAYMENT ======================================
     Route::get('/user-get-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkUserPurchase');
     Route::get('/user-get-tryout/{id_tryout}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseTryout')->middleware('checkUserPurchase');
+    Route::get('/user-get-exam/{id_exam}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseExam')->middleware('checkUserPurchase');
     Route::post('/user-rate-subcourse-material/{id_sub_course}', 'App\Http\Controllers\MainController@rateSubCourseContent')->middleware('checkUserPurchase');
     Route::get('/user-get-free-subcourse-material/{id_quiz}/{id_sub_course}', 'App\Http\Controllers\MainController@getSubCourseContent')->middleware('checkFreeCourse');
     Route::get('/user-buy-subcourse/{id_sub_course}', 'App\Http\Controllers\MainController@buySubCourse')->middleware('checkPaidSubCourse');
@@ -72,6 +73,12 @@ Route::middleware(['checkLogin'])->group(function () {
     Route::get('/user-get-result-tryout/{id_tryout}/{id_sub_course}', 'App\Http\Controllers\TryoutController@GetResultTryout')->middleware('checkUserPurchase');
     Route::post('/save-answer', 'App\Http\Controllers\TryoutController@SaveAnswer')->name('save-answer-tryout');
     Route::post('/user-submit-tryout/{id_tryout}/{id_sub_course}', 'App\Http\Controllers\TryoutController@submitTryout');
+
+    // ================================== ROUTE UNTUK EXAM ======================================
+    Route::get('/user-attempt-exam/{id_exam}/{id_sub_course}', 'App\Http\Controllers\ExamController@StartExam')->middleware('checkUserPurchase');
+    Route::get('/user-get-result-exam/{id_exam}/{id_sub_course}', 'App\Http\Controllers\ExamController@GetResultExam')->middleware('checkUserPurchase');
+    Route::post('/save-answer', 'App\Http\Controllers\ExamController@SaveAnswer')->name('save-answer-exam');
+    Route::post('/user-submit-exam/{id_exam}/{id_sub_course}', 'App\Http\Controllers\ExamController@submitExam');
 });
 
 
