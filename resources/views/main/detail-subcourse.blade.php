@@ -139,7 +139,7 @@
                     </div>
                   </div>
                 @empty
-                  <p class="card-text">No Tryout Published Yet!</p>
+                  <p class="card-text">No Final Exam Published Yet!</p>
                 @endforelse
             </div>
 
