@@ -98,7 +98,7 @@
                     @endforeach
                     <br>
                     @if($soal->onLastPage())
-                        <button type="submit" class="btn btn-primary submitExam">Submit Tryout</button>
+                        <button type="submit" class="btn btn-primary submitExam">Submit Exam</button>
                     @endif
                 </form>
                 <br>
