@@ -126,6 +126,7 @@ class QuizController extends Controller
         $soal = Soal::whereIn('id', $soal_terpilih_ids)->simplePaginate(5);
         $soalAll = Soal::whereIn('id', $soal_terpilih_ids)->get();
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
+        $showCongratsEffect = false;
 
         $currentQuiz = UserAttemptQuiz::where('id_quiz', $id_quiz)->where('id_user', Session::get('id'))->first();
         if (!$currentQuiz) {
@@ -157,10 +158,15 @@ class QuizController extends Controller
                     $blankAnswerCount++;
                 }
             }
+
+            if ($correctAnswer == $jumlah_soal) {
+                $showCongratsEffect = true;
+            }
             return view('main.result-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
                 'jumlah_soal' => $jumlah_soal,
+                'showCongratsEffect' => $showCongratsEffect,
                 'currentQuiz' => $currentQuiz,
                 'user_answers' => $userAnswers,
                 'user_answers_desc' => $userAnswersDesc,

@@ -2,17 +2,72 @@
 @section('content')
 
 <style>
-    .justify-between{
-        margin-bottom: 20px;
+    /* Ballon */
+    #balloon-container {
+    height: 1vh;
+    padding: 1em;
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    /* overflow: hidden; */
+    z-index: -9;
+    transition: opacity 500ms;
+    }
+
+    .balloon {
+    height: 125px;
+    width: 105px;
+    border-radius: 75% 75% 70% 70%;
+    position: relative;
+    }
+
+    .balloon:before {
+    content: "";
+    height: 75px;
+    width: 1px;
+    padding: 1px;
+    background-color: #FDFD96;
+    display: block;
+    position: absolute;
+    top: 125px;
+    left: 0;
+    right: 0;
+    margin: auto;
+    }
+
+    .balloon:after {
+        content: "▲";
+        text-align: center;
+        display: block;
+        position: absolute;
+        color: inherit;
+        top: 120px;
+        left: 0;
+        right: 0;
+        margin: auto;
+    }
+
+    @keyframes float {
+    from {transform: translateY(100vh);
+    opacity: 1;}
+    to {transform: translateY(-300vh);
+    opacity: 0;}
     }
 </style>
 
 <!-- Courses Start -->
 <div class="container-xxl py-6" style="padding: 4px">
+    @if($showCongratsEffect)
+        <div id="balloon-container"></div>
+    @endif
     <div class="container">
         <div class="row g-5">
             <div class="col-lg-8 wow">
-                <h1 class="display-6 mb-4">RESULT: {{$quiz['nama_quiz']}}</h1>
+                @if($showCongratsEffect)
+                    <h1 class="display-6 mb-4">CONGRATULATIONS!!</h1>
+                @else
+                    <h1 class="display-6 mb-4">RESULT: {{$quiz['nama_quiz']}}</h1>
+                @endif
                 <div class="accordion col-lg-10 wow" id="accordionPanelsStayOpenExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-headingOne">
@@ -119,6 +174,7 @@
         </div>
     </div>
 </div>
+
 <!-- Courses End -->
 <script>
     $(document).ready(function() {
@@ -149,5 +205,50 @@
         })
         });
     });
+</script>
+
+<script>
+    const balloonContainer = document.getElementById("balloon-container");
+
+    function random(num) {
+        return Math.floor(Math.random() * num);
+    }
+
+    function getRandomStyles() {
+    var r = random(255);
+    var g = random(255);
+    var b = random(255);
+    var mt = random(200);
+    var ml = random(50);
+    var dur = random(5) + 5;
+    return `
+    background-color: rgba(${r},${g},${b},0.7);
+    color: rgba(${r},${g},${b},0.7); 
+    box-shadow: inset -7px -3px 10px rgba(${r - 10},${g - 10},${b - 10},0.7);
+    margin: ${mt}px 0 0 ${ml}px;
+    animation: float ${dur}s ease-in infinite
+    `;
+    }
+
+    function createBalloons(num) {
+    for (var i = num; i > 0; i--) {
+        var balloon = document.createElement("div");
+        balloon.className = "balloon";
+        balloon.style.cssText = getRandomStyles();
+        balloonContainer.append(balloon);
+    }
+    }
+
+    function removeBalloons() {
+    balloonContainer.style.opacity = 0;
+    setTimeout(() => {
+        balloonContainer.remove()
+    }, 500)
+    }
+
+    window.addEventListener("load", () => {
+    createBalloons(120)
+    });
+
 </script>
 @endsection
