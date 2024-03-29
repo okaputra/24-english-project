@@ -111,7 +111,7 @@
                     </h2>
                     <div id="panelsStayOpen-collaps{{$t['id']}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{$t['id']}}">
                       <div class="accordion-body">
-                        <strong><a href="/user-get-tryout/{{$t['id']}}/{{$subCourse['id']}}">Get Tryout</a></strong>
+                        <strong><a href="/user-get-tryout/{{$t['id']}}/{{$subCourse['id']}}">Get Tryout</a>@if(!$userPurchase) <i class="bi bi-lock"></i> @endif</strong>
                       </div>
                     </div>
                   </div>
@@ -134,7 +134,7 @@
                     </h2>
                     <div id="panelsStayOpen-collapss{{$e['id']}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{$e['id']}}">
                       <div class="accordion-body">
-                        <strong><a href="/user-get-exam/{{$e['id']}}/{{$subCourse['id']}}">Get Final Exam</a></strong>
+                        <strong><a href="/user-get-exam/{{$e['id']}}/{{$subCourse['id']}}">Get Final Exam</a>@if(!$userPurchase) <i class="bi bi-lock"></i> @endif</strong>
                       </div>
                     </div>
                   </div>
