@@ -83,7 +83,7 @@
                   <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-heading{{$q['id']}}">
                       <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapse{{$q['id']}}" aria-expanded="false" aria-controls="panelsStayOpen-collapse{{$q['id']}}">
-                        {{$q['nama_quiz']}}
+                        {{$q['posisi']}}. {{$q['nama_quiz']}}
                       </button>
                     </h2>
                     <div id="panelsStayOpen-collapse{{$q['id']}}" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-heading{{$q['id']}}">

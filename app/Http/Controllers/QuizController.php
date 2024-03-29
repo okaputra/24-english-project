@@ -71,7 +71,8 @@ class QuizController extends Controller
         UserAnswer::where('id_attempt_quiz', $userAttemptData->id)->delete();
 
         $userAttemptData->update([
-            'end' => NULL
+            'end' => NULL,
+            'is_complete' => 0,
         ]);
         return redirect("/user-attempt-quiz/$id_quiz/$id_sub_course");
     }
@@ -161,6 +162,9 @@ class QuizController extends Controller
 
             if ($correctAnswer == $jumlah_soal) {
                 $showCongratsEffect = true;
+                $currentQuiz->update([
+                    'is_complete' => 1
+                ]);
             }
             return view('main.result-quiz', [
                 'quiz' => $quiz,

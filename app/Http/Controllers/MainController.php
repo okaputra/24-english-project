@@ -98,11 +98,30 @@ class MainController extends Controller
             ->whereNotNull('end')
             ->first();
 
-        return view('main.category-content', [
-            'quiz' => $quiz,
-            'jumlah_soal' => $jumlah_soal,
-            'isUserAttempt' => $isUserAttempt,
-        ]);
+        if($quiz->posisi==1){
+            return view('main.category-content', [
+                'quiz' => $quiz,
+                'jumlah_soal' => $jumlah_soal,
+                'isUserAttempt' => $isUserAttempt,
+            ]);
+        }else{
+            $previousQuiz = $quiz->posisi - 1;
+            $getQuizByPosition = Quiz::where('id_sub_course', $id_sub_course)->where('posisi', $previousQuiz)->first();
+            $CheckUserCompletePreviousQuiz = UserAttemptQuiz::where('id_quiz', $getQuizByPosition->id)
+                ->where('id_user', Session::get('id'))
+                ->where('is_complete', 1)
+                ->first();
+            if($CheckUserCompletePreviousQuiz==NULL){
+                return redirect()->back()->with('error', "Mohon selesaikan Materi ( $getQuizByPosition->nama_quiz ) Untuk Dapat Melanjutkan ke Materi Selanjutnya!");
+            }else{
+                return view('main.category-content', [
+                    'quiz' => $quiz,
+                    'jumlah_soal' => $jumlah_soal,
+                    'isUserAttempt' => $isUserAttempt,
+                ]);
+            }
+        }
+        
     }
     public function getSubCourseTryout($id_tryout, $id_sub_course){
         $tryout = Tryout::find($id_tryout);
