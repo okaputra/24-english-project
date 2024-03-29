@@ -98,7 +98,7 @@ class MainController extends Controller
             ->whereNotNull('end')
             ->first();
 
-        if($quiz->posisi==1){
+        if($quiz->posisi==1 || $quiz->posisi==0){
             return view('main.category-content', [
                 'quiz' => $quiz,
                 'jumlah_soal' => $jumlah_soal,
