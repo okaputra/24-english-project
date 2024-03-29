@@ -53,6 +53,17 @@ class AdminContentController extends Controller
         $pathThumbnailVideo = public_path() . '/images/video-thumbnail/' . $Thumbnailfilename;
         if (!File::isDirectory($pathThumbnailVideo))
             File::makeDirectory($pathThumbnailVideo, 0755, true);
+
+        $posisi;
+        // Retrieve the last inserted record
+        $lastInsertedRecord = Quiz::where('id_sub_course', $id)->where('is_berbayar', 1)->latest()->first();
+        if($req->is_berbayar==0){
+            $posisi=0;
+        }elseif($req->is_berbayar==1 && $lastInsertedRecord==NULL){
+            $posisi=1;
+        }else{
+            $posisi=$lastInsertedRecord->posisi+1;
+        }
         Quiz::create([
             'nama_quiz' => $req->nama_quiz,
             'id_paket' => $req->id_paket,
@@ -61,6 +72,7 @@ class AdminContentController extends Controller
             'is_berbayar' => $req->is_berbayar,
             'video_path' => $filename,
             'video_thumbnail' => $Thumbnailfilename,
+            'posisi' => $posisi
         ]);
         $video_quiz->move($path, $filename);
         $videoThumbnail->move($pathThumbnailVideo, $Thumbnailfilename);
