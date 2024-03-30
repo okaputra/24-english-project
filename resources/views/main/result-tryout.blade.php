@@ -30,6 +30,7 @@
                                         <p class="card-text" style="color: red">INCORRECT &emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-exclamation-circle"></i> {{$wrongAnswer}}</p>
                                         <p class="card-text" style="color: red">BLANK &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-circle"></i> {{$blankAnswerCount}}</p>
                                         <a href="/user-reattempt-tryout/{{$tryout['id']}}/{{$tryout['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Re-Attempt Tryout</a>
+                                        <a href="/detail-subcourse/{{$tryout['id_sub_course']}}" class="btn btn-danger"><i class="bi bi-back"></i> Back</a>
                                     </div>
                                 </div>
                             </div>

@@ -29,6 +29,7 @@
                                         <p class="card-text" style="color: green">CORRECT &emsp;&emsp;&emsp;&emsp; : <i class="bi bi-check"></i> {{$correctAnswer}}</p>
                                         <p class="card-text" style="color: red">INCORRECT &emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-exclamation-circle"></i> {{$wrongAnswer}}</p>
                                         <p class="card-text" style="color: red">BLANK &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-circle"></i> {{$blankAnswerCount}}</p>
+                                        <a href="/detail-subcourse/{{$exam['id_sub_course']}}" class="btn btn-danger"><i class="bi bi-back"></i> Back</a>
                                     </div>
                                 </div>
                             </div>
