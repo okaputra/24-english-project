@@ -112,7 +112,7 @@ class MainController extends Controller
                 ->where('is_complete', 1)
                 ->first();
             if($CheckUserCompletePreviousQuiz==NULL){
-                return redirect()->back()->with('error', "Mohon selesaikan Materi ( $getQuizByPosition->nama_quiz ) Untuk Dapat Melanjutkan ke Materi Selanjutnya!");
+                return redirect()->back()->with('info', "Mohon selesaikan Materi ( $getQuizByPosition->nama_quiz ) Untuk Dapat Melanjutkan ke Materi Selanjutnya!");
             }else{
                 return view('main.category-content', [
                     'quiz' => $quiz,
