@@ -29,13 +29,13 @@ class TryoutController extends Controller
         $jumlah_soal = PaketTerpilih::where('id_paket', $paket->id)->count();
 
         $currentTryout = UserAttemptTryout::where('id_tryout', $id_tryout)->where('id_user', Session::get('id'))->first();
-        $allowedReattempt = 3 - $currentTryout->count_attempt;
         if ($currentTryout == null) {
             $attemptTryout = new UserAttemptTryout();
             $attemptTryout->id_user = Session::get('id');
             $attemptTryout->id_tryout = $id_tryout;
             $attemptTryout->start = Carbon::now();
             $attemptTryout->save();
+            $allowedReattempt = 3 - $attemptTryout->count_attempt;
             $userAnswers = UserAnswerTryout::where('id_attempt_tryout', $attemptTryout->id)->pluck('user_answer', 'id_question')->toArray();
             $userAnswersDesc = UserAnswerTryout::where('id_attempt_tryout', $attemptTryout->id)->get();
             return view('main.start-tryout', [
@@ -51,6 +51,7 @@ class TryoutController extends Controller
         } elseif ($currentTryout->end == null) {
             $userAnswers = UserAnswerTryout::where('id_attempt_tryout', $currentTryout->id)->pluck('user_answer', 'id_question')->toArray();
             $userAnswersDesc = UserAnswerTryout::where('id_attempt_tryout', $currentTryout->id)->get();
+            $allowedReattempt = 3 - $currentTryout->count_attempt;
             return view('main.start-tryout', [
                 'tryout' => $tryout,
                 'soal' => $soal,
