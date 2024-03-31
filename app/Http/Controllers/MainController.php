@@ -98,22 +98,22 @@ class MainController extends Controller
             ->whereNotNull('end')
             ->first();
 
-        if($quiz->posisi==1 || $quiz->posisi==0){
+        if ($quiz->posisi == 1 || $quiz->posisi == 0) {
             return view('main.category-content', [
                 'quiz' => $quiz,
                 'jumlah_soal' => $jumlah_soal,
                 'isUserAttempt' => $isUserAttempt,
             ]);
-        }else{
+        } else {
             $previousQuiz = $quiz->posisi - 1;
             $getQuizByPosition = Quiz::where('id_sub_course', $id_sub_course)->where('posisi', $previousQuiz)->first();
             $CheckUserCompletePreviousQuiz = UserAttemptQuiz::where('id_quiz', $getQuizByPosition->id)
                 ->where('id_user', Session::get('id'))
                 ->where('is_complete', 1)
                 ->first();
-            if($CheckUserCompletePreviousQuiz==NULL){
+            if ($CheckUserCompletePreviousQuiz == NULL) {
                 return redirect()->back()->with('info', "Mohon selesaikan Materi ( $getQuizByPosition->nama_quiz ) Untuk Dapat Melanjutkan ke Materi Selanjutnya!");
-            }else{
+            } else {
                 return view('main.category-content', [
                     'quiz' => $quiz,
                     'jumlah_soal' => $jumlah_soal,
@@ -121,9 +121,10 @@ class MainController extends Controller
                 ]);
             }
         }
-        
+
     }
-    public function getSubCourseTryout($id_tryout, $id_sub_course){
+    public function getSubCourseTryout($id_tryout, $id_sub_course)
+    {
         $tryout = Tryout::find($id_tryout);
         $paket_tryout = Paket::find($tryout->id_paket);
         $jumlah_soal_tryout = PaketTerpilih::where('id_paket', $tryout->id_paket)->count();
@@ -137,7 +138,8 @@ class MainController extends Controller
             'isUserAttemptTryout' => $isUserAttemptTryout,
         ]);
     }
-    public function getSubCourseExam($id_exam, $id_sub_course){
+    public function getSubCourseExam($id_exam, $id_sub_course)
+    {
         $exam = Exam::find($id_exam);
         $paket_exam = Paket::find($exam->id_paket);
         $jumlah_soal_exam = PaketTerpilih::where('id_paket', $exam->id_paket)->count();
