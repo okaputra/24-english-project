@@ -54,15 +54,15 @@ class AdminContentController extends Controller
         if (!File::isDirectory($pathThumbnailVideo))
             File::makeDirectory($pathThumbnailVideo, 0755, true);
 
-        $posisi;
+        $posisi = 0;
         // Retrieve the last inserted record
         $lastInsertedRecord = Quiz::where('id_sub_course', $id)->where('is_berbayar', 1)->latest()->first();
-        if($req->is_berbayar==0){
-            $posisi=0;
-        }elseif($req->is_berbayar==1 && $lastInsertedRecord==NULL){
-            $posisi=1;
-        }else{
-            $posisi=$lastInsertedRecord->posisi+1;
+        if ($req->is_berbayar == 0) {
+            $posisi = 0;
+        } elseif ($req->is_berbayar == 1 && $lastInsertedRecord == NULL) {
+            $posisi = 1;
+        } else {
+            $posisi = $lastInsertedRecord->posisi + 1;
         }
         Quiz::create([
             'nama_quiz' => $req->nama_quiz,
@@ -301,7 +301,7 @@ class AdminContentController extends Controller
 
             // Tentukan nama file audio untuk opsi saat ini
             $audio_name_opsi = null;
-            if (isset ($audio_names[$key])) {
+            if (isset($audio_names[$key])) {
                 $audio_name_opsi = $audio_names[$key]['name'];
             }
 
@@ -490,7 +490,7 @@ class AdminContentController extends Controller
                         $audio_name_opsi = time() . '_' . rand(1000, 9999) . '.' . $audio_extension;
                         $audioOpsiPath = public_path('audio-opsi/' . $audio_name_opsi);
                         $audio_file->move($audioOpsiPath, $audio_name_opsi);
-                    } elseif (isset ($opsi->audio_file)) {
+                    } elseif (isset($opsi->audio_file)) {
                         // Gunakan audio opsi yang sudah ada jika tidak ada penggantian
                         $audio_name_opsi = $opsi->audio_file;
                     }
