@@ -166,12 +166,15 @@ class QuizController extends Controller
                     'is_complete' => 1
                 ]);
             }
+            $nextQuiz = $quiz->posisi + 1;
+            $getNextQuiz = Quiz::where('id_sub_course', $id_sub_course)->where('posisi', $nextQuiz)->first();
             return view('main.result-quiz', [
                 'quiz' => $quiz,
                 'soal' => $soal,
                 'jumlah_soal' => $jumlah_soal,
                 'showCongratsEffect' => $showCongratsEffect,
                 'currentQuiz' => $currentQuiz,
+                'getNextQuiz' => $getNextQuiz,
                 'user_answers' => $userAnswers,
                 'user_answers_desc' => $userAnswersDesc,
                 'correctAnswer' => $correctAnswer,

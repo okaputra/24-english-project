@@ -68,6 +68,7 @@
                 @else
                     <h1 class="display-6 mb-4">RESULT: {{$quiz['nama_quiz']}}</h1>
                 @endif
+                <a href="/detail-subcourse/{{$quiz['id_sub_course']}}" class="btn btn-danger" style="margin-bottom: 10px"><i class="bi bi-back"></i> Back</a>
                 <div class="accordion col-lg-10 wow" id="accordionPanelsStayOpenExample">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="panelsStayOpen-headingOne">
@@ -85,7 +86,9 @@
                                         <p class="card-text" style="color: red">INCORRECT &emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-exclamation-circle"></i> {{$wrongAnswer}}</p>
                                         <p class="card-text" style="color: red">BLANK &emsp;&emsp;&emsp;&emsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;: <i class="bi bi-circle"></i> {{$blankAnswerCount}}</p>
                                         <a href="/user-reattempt-quiz/{{$quiz['id']}}/{{$quiz['id_sub_course']}}" class="btn btn-primary attempt"><i class="bi bi-pencil"></i> Re-Attempt Quiz</a>
-                                        <a href="/detail-subcourse/{{$quiz['id_sub_course']}}" class="btn btn-danger"><i class="bi bi-back"></i> Back</a>
+                                        @if($getNextQuiz!=NULL && $showCongratsEffect==true)
+                                            <a href="/user-get-subcourse-material/{{$getNextQuiz['id']}}/{{$getNextQuiz['id_sub_course']}}" class="btn btn-info"><i class="bi bi-arrow-right"></i> Next Materi ( {{$getNextQuiz['nama_quiz']}} )</a>
+                                        @endif
                                     </div>
                                 </div>
                             </div>
